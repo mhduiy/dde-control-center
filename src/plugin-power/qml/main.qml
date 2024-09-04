@@ -36,5 +36,9 @@ DccObject {
         displayName: qsTr("电池")
         icon: "power"
         weight: 200
+        page: DccRightView {
+            spacing: 5
+        }
+        BatteryPage {}
     }
 }
