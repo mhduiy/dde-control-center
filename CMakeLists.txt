@@ -20,7 +20,7 @@ option(ENABLE_ASAN "Enable asan" OFF)
 option(BUILD_TESTING "UNIT test" OFF)
 
 # dcc-v23
-set(BUILD_DCC_OLD ON)
+set(BUILD_DCC_OLD OFF)
 if (BUILD_DCC_OLD)
     add_subdirectory(dcc-old)
 endif()
@@ -121,7 +121,8 @@ set(DCC_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR}/dde-control-center)
 set(DCC_PREFIX "")
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DCC_DEBUG_LIBDIR ${DCC_LIBDIR})
-    set(DCC_TRANSLATE_READ_DIR ${PROJECT_BINARY_DIR}/src/dde-control-center)
+    set(DCC_TRANSLATE_READ_DIR ${PROJECT_BINARY_DIR}/src/dde-control-center/build)
+    message("------------------------------" ${DCC_TRANSLATE_READ_DIR})
 else()
     set(DCC_DEBUG_LIBDIR ${DCC_INSTALL_DIR})
     set(DCC_PREFIX "/usr/")
@@ -134,6 +135,9 @@ set(DCC_PLUGINS_INSTALL_DIR ${DCC_DEBUG_LIBDIR}/${DCC_PLUGINS_DIR} CACHE STRING 
 # 插件读取目录
 set(MODULE_READ_DIR "${DCC_PREFIX}${DCC_DEBUG_LIBDIR}" CACHE STRING "Dir to find dde-control-center modules")
 set(PLUGINS_READ_DIR "${DCC_PREFIX}${DCC_PLUGINS_INSTALL_DIR}" CACHE STRING "Dir to find dde-control-center plugins")
+
+
+message("------" ${DCC_PLUGINS_INSTALL_DIR})
 
 add_definitions(-DDefaultModuleDirectory="${MODULE_READ_DIR}")
 add_definitions(-DDefaultPluginsDirectory="${PLUGINS_READ_DIR}")
@@ -185,4 +189,5 @@ add_subdirectory(src/dde-control-center)
 #--------------------------plugins--------------------------
 add_subdirectory(src/plugin-sound)
 add_subdirectory(src/plugin-defaultapp)
+add_subdirectory(src/plugin-power)
 add_subdirectory(src/plugin-mouse)

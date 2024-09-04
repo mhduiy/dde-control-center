@@ -358,7 +358,9 @@ void PluginManager::loadModules(DccObject *root, bool async, const QStringList &
         qCInfo(dccLog()) << "load all finished";
         emit loadAllFinished();
     });
-    watcher->setFuture(m_future);
+    QTimer::singleShot(1000, this, [this, watcher] {
+        watcher->setFuture(m_future);
+    });
 }
 
 void PluginManager::cancelLoad()

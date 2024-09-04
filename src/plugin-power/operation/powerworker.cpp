@@ -3,7 +3,8 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "powerworker.h"
 #include "powermodel.h"
-#include "widgets/utils.h"
+#include "utils.h"
+#include <qlogging.h>
 
 #include <QProcessEnvironment>
 #include <QFutureWatcher>
@@ -22,6 +23,7 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     , m_powerModel(model)
     , m_powerDBusProxy(new PowerDBusProxy(this))
 {
+    qWarning() << "--------------------------------------------------------";
     connect(m_powerDBusProxy, &PowerDBusProxy::noPasswdLoginChanged, m_powerModel, &PowerModel::setNoPasswdLogin);
     connect(m_powerDBusProxy, &PowerDBusProxy::ScreenBlackLockChanged, m_powerModel, &PowerModel::setScreenBlackLock);
     connect(m_powerDBusProxy, &PowerDBusProxy::SleepLockChanged, m_powerModel, &PowerModel::setSleepLock);
@@ -58,6 +60,8 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
 
     // init base property
     m_powerModel->setHaveBettary(m_powerDBusProxy->hasBattery());
+
+    active();
 }
 
 void PowerWorker::active()
@@ -81,6 +85,8 @@ void PowerWorker::active()
     m_powerModel->setBatteryPressPowerBtnAction(m_powerDBusProxy->batteryPressPowerBtnAction());
     m_powerModel->setBatteryLidClosedAction(m_powerDBusProxy->batteryLidClosedAction());
     m_powerModel->setPowerPlan(m_powerDBusProxy->mode());
+
+    qWarning() << "&&&&&&&&&&&&&&&&&&&&" << "m_powerDBusProxy->mode()" << m_powerDBusProxy->mode();
 
     m_powerModel->setNoPasswdLogin(m_powerDBusProxy->noPasswdLogin());
 

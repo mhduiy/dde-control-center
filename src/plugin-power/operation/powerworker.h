@@ -5,6 +5,7 @@
 #define POWERWORKER_H
 
 #include "powerdbusproxy.h"
+#include <qtmetamacros.h>
 #include <QObject>
 
 class PowerModel;
@@ -19,7 +20,7 @@ public:
     void deactive();
 
 public Q_SLOTS:
-    void setScreenBlackLock(const bool lock);
+    Q_INVOKABLE void setScreenBlackLock(const bool lock);
     void setSleepLock(const bool lock);
     void setSleepOnLidOnPowerClosed(const bool sleep);
     void setSleepDelayOnPower(const int delay);
@@ -37,7 +38,7 @@ public Q_SLOTS:
     void setHighPerformanceSupported(bool state);
     void setBalancePerformanceSupported(bool state);
     //------------sp2 add-----------------------
-    void setPowerSavingModeAutoWhenQuantifyLow(bool bLowBatteryAutoIntoSaveEnergyMode);
+    Q_INVOKABLE void setPowerSavingModeAutoWhenQuantifyLow(bool bLowBatteryAutoIntoSaveEnergyMode);
     void setPowerSavingModeAuto(bool bAutoIntoSaveEnergyMode);
     void setPowerSavingModeLowerBrightnessThreshold(uint dPowerSavingModeLowerBrightnessThreshold);
     void setPowerSavingModeAutoBatteryPercentage(uint dPowerSavingModebatteryPentage);
@@ -49,7 +50,7 @@ public Q_SLOTS:
     void setLowPowerNotifyThreshold(int dLowPowerNotifyThreshold);
     void setLowPowerAutoSleepThreshold(int dLowPowerAutoSleepThreshold);
     //------------------------------------------
-    void setPowerPlan(const QString &powerPlan);
+    Q_INVOKABLE void setPowerPlan(const QString &powerPlan);
 
     bool getCurCanSuspend();
     bool getCurCanHibernate();

@@ -2,10 +2,16 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "powermodel.h"
+#include "dccfactory.h"
 
 #include <QDebug>
 
 const double EPSINON = 1e-6;
+
+#define BALANCE "balance"                        // 平衡模式
+#define PERFORMANCE "performance"                // 高性能模式
+#define BALANCEPERFORMANCE "balance_performance" // 性能模式
+#define POWERSAVE "powersave"                    // 节能模式
 
 PowerModel::PowerModel(QObject *parent)
     : QObject(parent)

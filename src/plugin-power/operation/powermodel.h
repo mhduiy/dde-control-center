@@ -4,12 +4,51 @@
 #ifndef POWERMODEL_H
 #define POWERMODEL_H
 
+#include <qtmetamacros.h>
 #include <QObject>
+#include <QtQml/qqml.h>
 
 class PowerWorker;
 class PowerModel : public QObject
 {
     Q_OBJECT
+
+    Q_PROPERTY(bool lidPresent READ lidPresent WRITE setLidPresent NOTIFY lidPresentChanged)
+    Q_PROPERTY(bool sleepOnLidOnPowerClose READ sleepOnLidOnPowerClose WRITE setSleepOnLidOnPowerClose NOTIFY sleepOnLidOnPowerCloseChanged)
+    Q_PROPERTY(bool sleepOnLidOnBatteryClose READ sleepOnLidOnBatteryClose WRITE setSleepOnLidOnBatteryClose NOTIFY sleepOnLidOnBatteryCloseChanged)
+    Q_PROPERTY(bool screenBlackLock READ screenBlackLock WRITE setScreenBlackLock NOTIFY screenBlackLockChanged)
+    Q_PROPERTY(bool sleepLock READ sleepLock WRITE setSleepLock NOTIFY sleepLockChanged)
+    Q_PROPERTY(bool canSuspend READ canSuspend WRITE setCanSuspend NOTIFY suspendChanged)
+    Q_PROPERTY(int screenBlackDelayOnPower READ screenBlackDelayOnPower WRITE setScreenBlackDelayOnPower NOTIFY screenBlackDelayChangedOnPower)
+    Q_PROPERTY(int sleepDelayOnPower READ sleepDelayOnPower WRITE setSleepDelayOnPower NOTIFY sleepDelayChangedOnPower)
+    Q_PROPERTY(int screenBlackDelayOnBattery READ screenBlackDelayOnBattery WRITE setScreenBlackDelayOnBattery NOTIFY screenBlackDelayChangedOnBattery)
+    Q_PROPERTY(int sleepDelayOnBattery READ sleepDelayOnBattery WRITE setSleepDelayOnBattery NOTIFY sleepDelayChangedOnBattery)
+    Q_PROPERTY(bool autoPowerSaveMode READ autoPowerSaveMode WRITE setAutoPowerSaveMode NOTIFY autoPowerSavingModeChanged)
+    Q_PROPERTY(bool powerSaveMode READ powerSaveMode WRITE setPowerSaveMode NOTIFY powerSaveModeChanged)
+    Q_PROPERTY(bool haveBettary READ haveBettary WRITE setHaveBettary NOTIFY haveBettaryChanged)
+    Q_PROPERTY(int batteryLockScreenDelay READ getBatteryLockScreenDelay WRITE setBatteryLockScreenDelay NOTIFY batteryLockScreenDelayChanged)
+    Q_PROPERTY(double batteryPercentage WRITE setBatteryPercentage NOTIFY batteryPercentageChanged) // 没有getter
+    Q_PROPERTY(bool powerSavingModeAutoWhenQuantifyLow READ powerSavingModeAutoWhenQuantifyLow WRITE setPowerSavingModeAutoWhenQuantifyLow NOTIFY powerSavingModeAutoWhenQuantifyLowChanged)
+    Q_PROPERTY(bool powerSavingModeAuto READ powerSavingModeAuto WRITE setPowerSavingModeAuto NOTIFY powerSavingModeAutoChanged)
+    Q_PROPERTY(uint powerSavingModeLowerBrightnessThreshold READ powerSavingModeLowerBrightnessThreshold WRITE setPowerSavingModeLowerBrightnessThreshold NOTIFY powerSavingModeLowerBrightnessThresholdChanged)
+    Q_PROPERTY(uint powerSavingModeAutoBatteryPercentage READ powerSavingModeAutoBatteryPercentage WRITE setPowerSavingModeAutoBatteryPercentage NOTIFY powerSavingModeAutoBatteryPercentageChanged)
+    Q_PROPERTY(int linePowerPressPowerBtnAction READ linePowerPressPowerBtnAction WRITE setLinePowerPressPowerBtnAction NOTIFY linePowerPressPowerBtnActionChanged)
+    Q_PROPERTY(int linePowerLidClosedAction READ linePowerLidClosedAction WRITE setLinePowerLidClosedAction NOTIFY linePowerLidClosedActionChanged)
+    Q_PROPERTY(int batteryPressPowerBtnAction READ batteryPressPowerBtnAction WRITE setBatteryPressPowerBtnAction NOTIFY batteryPressPowerBtnActionChanged)
+    Q_PROPERTY(int batteryLidClosedAction READ batteryLidClosedAction WRITE setBatteryLidClosedAction NOTIFY batteryLidClosedActionChanged)
+    Q_PROPERTY(bool lowPowerNotifyEnable READ lowPowerNotifyEnable WRITE setLowPowerNotifyEnable NOTIFY lowPowerNotifyEnableChanged)
+    Q_PROPERTY(int lowPowerNotifyThreshold READ lowPowerNotifyThreshold WRITE setLowPowerNotifyThreshold NOTIFY lowPowerNotifyThresholdChanged)
+    Q_PROPERTY(int lowPowerAutoSleepThreshold READ lowPowerAutoSleepThreshold WRITE setLowPowerAutoSleepThreshold NOTIFY lowPowerAutoSleepThresholdChanged)
+    Q_PROPERTY(bool isSuspend READ getSuspend WRITE setSuspend NOTIFY suspendChanged)
+    Q_PROPERTY(bool isHibernate READ getHibernate WRITE setHibernate NOTIFY hibernateChanged)
+    Q_PROPERTY(bool isShutdown READ getShutdown WRITE setShutdown NOTIFY shutdownChanged)
+    Q_PROPERTY(QString powerPlan READ getPowerPlan WRITE setPowerPlan NOTIFY powerPlanChanged)
+    Q_PROPERTY(bool isHighPerformanceSupported READ isHighPerformanceSupported WRITE setHighPerformanceSupported NOTIFY highPerformaceSupportChanged)
+    Q_PROPERTY(bool isBalancePerformanceSupported READ isBalancePerformanceSupported WRITE setBalancePerformanceSupported NOTIFY highPerformaceSupportChanged)
+    Q_PROPERTY(bool isNoPasswdLogin READ isNoPasswdLogin WRITE setNoPasswdLogin NOTIFY noPasswdLoginChanged)
+
+    QML_NAMED_ELEMENT(PowerModel)
+    QML_SINGLETON
 
     friend class PowerWorker;
 
@@ -130,7 +169,6 @@ public:
 
     void setNoPasswdLogin(bool value);
 
-
 Q_SIGNALS:
     void sleepLockChanged(const bool sleepLock);
     void canSleepChanged(const bool canSleep);
@@ -217,6 +255,8 @@ private:
 
     // Account
     bool m_noPasswdLogin;
+
+    int m_currentPowerIndex;
 };
 
 #endif // POWERMODEL_H
