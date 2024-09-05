@@ -54,21 +54,25 @@ DccObject {
                     Layout.margins: 10
                     Layout.fillWidth: true
                     slider.handleType: Slider.HandleType.ArrowBottom
-                    slider.from: 0
-                    slider.to: ticks.length - 1
+                    slider.from: 1
+                    slider.to: ticks.length
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
+                    slider.value: dccData.model.screenBlackDelayOnPower
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
+                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 6 },
+                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 7 }
                     ]
+
+                    slider.onValueChanged: {
+                        dccData.worker.setScreenBlackDelayOnPower(slider.value)
+                    }
                 }
             }
         }
@@ -103,21 +107,25 @@ DccObject {
                     Layout.margins: 10
                     Layout.fillWidth: true
                     slider.handleType: Slider.HandleType.ArrowBottom
-                    slider.from: 0
-                    slider.to: ticks.length - 1
+                    slider.from: 1
+                    slider.to: ticks.length
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
+                    slider.value: dccData.model.sleepDelayOnPower
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
+                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 6 },
+                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 7 }
                     ]
+
+                    slider.onValueChanged: {
+                        dccData.worker.setSleepDelayOnPower(slider.value)
+                    }
                 }
             }
         }
@@ -152,21 +160,25 @@ DccObject {
                     Layout.margins: 10
                     Layout.fillWidth: true
                     slider.handleType: Slider.HandleType.ArrowBottom
-                    slider.from: 0
-                    slider.to: ticks.length - 1
+                    slider.from: 1
+                    slider.to: ticks.length
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
+                    slider.value: dccData.model.powerLockScreenDelay
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
+                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 6 },
+                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 7 }
                     ]
+
+                    slider.onValueChanged: {
+                        dccData.worker.setLockScreenDelayOnPower(slider.value)
+                    }
                 }
             }
         }
@@ -185,10 +197,25 @@ DccObject {
             displayName: qsTr("合盖时")
             weight: 1
             pageType: DccObject.Editor
-            page: D.ComboBox {
+            page: CustomComboBox {
+                textRole: "text"
+                valueRole: "value"
+                visibleRole: "visible"
+                enableRole: "enable"
+                currentIndex: {
+                    let value = dccData.model.linePowerLidClosedAction
+                    console.warn("******************", value)
+                    console.warn("******************", indexOfValue(value))
+
+                    return indexOfValue(value)
+
+                }
                 width: 100
-                model: [ "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
-                flat: true
+                model: dccData.powerLidModel
+                onCurrentValueChanged: {
+                    console.warn("-------", currentValue)
+                    dccData.worker.setLinePowerLidClosedAction(currentValue)
+                }
             }
         }
         DccObject {
@@ -197,10 +224,18 @@ DccObject {
             displayName: qsTr("按下电源键时")
             weight: 2
             pageType: DccObject.Editor
-            page: D.ComboBox {
+            page: CustomComboBox {
+                textRole: "text"
+                valueRole: "value"
+                visibleRole: "visible"
+                enableRole: "enable"
                 width: 100
-                model: [ "关机", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
-                flat: true
+                currentIndex: indexOfValue(dccData.model.linePowerPressPowerBtnAction)
+                model: dccData.powerPressModel
+                onCurrentValueChanged: {
+                    console.warn("-----11--", currentValue)
+                    dccData.worker.setLinePowerPressPowerBtnAction(currentValue)
+                }
             }
         }
     }

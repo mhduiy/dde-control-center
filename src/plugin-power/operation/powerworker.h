@@ -23,16 +23,16 @@ public Q_SLOTS:
     Q_INVOKABLE void setScreenBlackLock(const bool lock);
     void setSleepLock(const bool lock);
     void setSleepOnLidOnPowerClosed(const bool sleep);
-    void setSleepDelayOnPower(const int delay);
+    Q_INVOKABLE void setSleepDelayOnPower(const int delay);
     void setSleepDelayOnBattery(const int delay);
-    void setScreenBlackDelayOnPower(const int delay);
+    Q_INVOKABLE void setScreenBlackDelayOnPower(const int delay);
     void setScreenBlackDelayOnBattery(const int delay);
     void setSleepDelayToModelOnPower(const int delay);
     void setScreenBlackDelayToModelOnPower(const int delay);
     void setSleepDelayToModelOnBattery(const int delay);
     void setScreenBlackDelayToModelOnBattery(const int delay);
     void setLockScreenDelayOnBattery(const int delay);
-    void setLockScreenDelayOnPower(const int delay);
+    Q_INVOKABLE void setLockScreenDelayOnPower(const int delay);
     void setResponseBatteryLockScreenDelay(const int delay);
     void setResponsePowerLockScreenDelay(const int delay);
     void setHighPerformanceSupported(bool state);
@@ -43,7 +43,7 @@ public Q_SLOTS:
     void setPowerSavingModeLowerBrightnessThreshold(uint dPowerSavingModeLowerBrightnessThreshold);
     void setPowerSavingModeAutoBatteryPercentage(uint dPowerSavingModebatteryPentage);
     void setLinePowerPressPowerBtnAction(int nLinePowerPressPowerBtnAction);
-    void setLinePowerLidClosedAction(int nLinePowerLidClosedAction);
+    Q_INVOKABLE void setLinePowerLidClosedAction(int nLinePowerLidClosedAction);
     void setBatteryPressPowerBtnAction(int nBatteryPressPowerBtnAction);
     void setBatteryLidClosedAction(int nBatteryLidClosedAction);
     void setLowPowerNotifyEnable(bool bLowPowerNotifyEnable);

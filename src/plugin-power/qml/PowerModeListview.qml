@@ -27,7 +27,7 @@ Rectangle {
             model: powerModeModel
             delegate: D.ItemDelegate {
                 Layout.fillWidth: true
-                visible:  {
+                visible: {
                     if (model.mode === "performance") {
                         return dccData.model.isHighPerformanceSupported
                     } else if (model.mode === "balance_performance") {
@@ -42,6 +42,7 @@ Rectangle {
                 checkable: false
                 contentFlow: true
                 corners: getCornersForBackground(index, powerModeModel.count)
+                icon.name: model.icon
                 content: RowLayout {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -97,24 +98,28 @@ Rectangle {
         ListElement {
             mode: "performance"
             title: qsTr("高性能模式")
+            icon: "dcc_nav_systeminfo"
             description: qsTr("性能优先, 会显著提升功耗和发热")
         }
 
         ListElement {
             mode: "balance_performance"
             title: qsTr("性能模式")
+            icon: "dcc_nav_systeminfo"
             description: qsTr("性能模式性能模式性能模式")
         }
 
         ListElement {
             mode: "balance"
             title: qsTr("平衡模式")
+            icon: "dcc_nav_systeminfo"
             description: qsTr("兼顾性能和续航, 根据使用情况自动调节")
         }
 
         ListElement {
             mode: "powersave"
             title: qsTr("节能模式")
+            icon: "dcc_nav_systeminfo"
             description: qsTr("续航优先, 系统会牺牲一些性能表现来降低功耗")
         }
     }

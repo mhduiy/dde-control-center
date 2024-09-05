@@ -19,6 +19,7 @@ class PowerModel : public QObject
     Q_PROPERTY(bool screenBlackLock READ screenBlackLock WRITE setScreenBlackLock NOTIFY screenBlackLockChanged)
     Q_PROPERTY(bool sleepLock READ sleepLock WRITE setSleepLock NOTIFY sleepLockChanged)
     Q_PROPERTY(bool canSuspend READ canSuspend WRITE setCanSuspend NOTIFY suspendChanged)
+    Q_PROPERTY(bool canHibernate READ canHibernate WRITE setCanHibernate NOTIFY canHibernateChanged)
     Q_PROPERTY(int screenBlackDelayOnPower READ screenBlackDelayOnPower WRITE setScreenBlackDelayOnPower NOTIFY screenBlackDelayChangedOnPower)
     Q_PROPERTY(int sleepDelayOnPower READ sleepDelayOnPower WRITE setSleepDelayOnPower NOTIFY sleepDelayChangedOnPower)
     Q_PROPERTY(int screenBlackDelayOnBattery READ screenBlackDelayOnBattery WRITE setScreenBlackDelayOnBattery NOTIFY screenBlackDelayChangedOnBattery)
@@ -27,6 +28,7 @@ class PowerModel : public QObject
     Q_PROPERTY(bool powerSaveMode READ powerSaveMode WRITE setPowerSaveMode NOTIFY powerSaveModeChanged)
     Q_PROPERTY(bool haveBettary READ haveBettary WRITE setHaveBettary NOTIFY haveBettaryChanged)
     Q_PROPERTY(int batteryLockScreenDelay READ getBatteryLockScreenDelay WRITE setBatteryLockScreenDelay NOTIFY batteryLockScreenDelayChanged)
+    Q_PROPERTY(int powerLockScreenDelay READ getPowerLockScreenDelay WRITE setPowerLockScreenDelay NOTIFY powerLockScreenDelayChanged)
     Q_PROPERTY(double batteryPercentage WRITE setBatteryPercentage NOTIFY batteryPercentageChanged) // 没有getter
     Q_PROPERTY(bool powerSavingModeAutoWhenQuantifyLow READ powerSavingModeAutoWhenQuantifyLow WRITE setPowerSavingModeAutoWhenQuantifyLow NOTIFY powerSavingModeAutoWhenQuantifyLowChanged)
     Q_PROPERTY(bool powerSavingModeAuto READ powerSavingModeAuto WRITE setPowerSavingModeAuto NOTIFY powerSavingModeAutoChanged)
