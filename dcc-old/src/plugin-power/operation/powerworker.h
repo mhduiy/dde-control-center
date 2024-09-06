@@ -56,7 +56,6 @@ public Q_SLOTS:
 
     void setEnablePowerSave(const bool isEnable);
 
-    double getBatteryCapacity();
     int getMaxBacklightBrightness();
 
 private:

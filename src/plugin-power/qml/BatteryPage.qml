@@ -59,7 +59,7 @@ DccObject {
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
+                    slider.value: dccData.model.screenBlackDelayOnBattery
                     ticks: [
                         D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
                         D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
@@ -69,6 +69,10 @@ DccObject {
                         D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
                         D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
                     ]
+
+                    slider.onValueChanged: {
+                        dccData.worker.setScreenBlackDelayOnBattery(slider.value)
+                    }
                 }
             }
         }
@@ -108,7 +112,7 @@ DccObject {
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
+                    slider.value: dccData.model.batteryLockScreenDelay
                     ticks: [
                         D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
                         D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
@@ -118,6 +122,10 @@ DccObject {
                         D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
                         D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
                     ]
+
+                    slider.onValueChanged: {
+                        dccData.worker.setLockScreenDelayOnBattery(slider.value)
+                    }
                 }
             }
         }
@@ -132,7 +140,7 @@ DccObject {
 
         DccObject {
             name: "enterStandbyOnBattery"
-            parentName: "powerManage/battery/enterStandbyGroup"
+            parentName: "powerManage/battery/enterStandbyGroupOnBattry"
             displayName: qsTr("进入待机")
             weight: 1
             pageType: DccObject.Item
@@ -157,7 +165,7 @@ DccObject {
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
+                    slider.value: dccData.model.sleepDelayOnBattery
                     ticks: [
                         D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
                         D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
@@ -167,6 +175,10 @@ DccObject {
                         D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
                         D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
                     ]
+
+                    slider.onValueChanged: {
+                        dccData.worker.setSleepDelayOnBattery(slider.value)
+                    }
                 }
             }
         }
@@ -185,10 +197,16 @@ DccObject {
             displayName: qsTr("合盖时")
             weight: 1
             pageType: DccObject.Editor
-            page: D.ComboBox {
+            page: CustomComboBox {
+                textRole: "text"
+                enableRole: "enable"
                 width: 100
-                model: [ "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
-                flat: true
+                model: dccData.batteryLidModel
+                currentIndex: model.indexOfKey(dccData.model.batteryLidClosedAction)
+
+                onCurrentIndexChanged: {
+                    dccData.worker.setBatteryLidClosedAction(model.keyOfIndex(currentIndex))
+                }
             }
         }
         DccObject {
@@ -197,10 +215,16 @@ DccObject {
             displayName: qsTr("按下电源键时")
             weight: 2
             pageType: DccObject.Editor
-            page: D.ComboBox {
+            page: CustomComboBox {
+                textRole: "text"
+                enableRole: "enable"
                 width: 100
-                model: [ "关机", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
-                flat: true
+                model: dccData.batteryPressModel
+                currentIndex: model.indexOfKey(dccData.model.batteryPressPowerBtnAction)
+
+                onCurrentIndexChanged: {
+                    dccData.worker.setBatteryPressPowerBtnAction(model.keyOfIndex(currentIndex))
+                }
             }
         }
     }
@@ -236,13 +260,39 @@ DccObject {
             pageType: DccObject.Editor
             page: D.ComboBox {
                 width: 100
-                model: [ "20%", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
+                textRole: "text"
+                valueRole: "value"
                 flat: true
+                model: ListModel {
+                    ListElement { text: "10%"; value: 10}
+                    ListElement { text: "15%"; value: 15}
+                    ListElement { text: "20%"; value: 20}
+                    ListElement { text: "25%"; value: 25}
+                }
+                onCurrentValueChanged: {
+                    dccData.worker.setLowPowerNotifyThreshold(currentValue)
+                }
+
+                Component.onCompleted: {
+                    currentIndex = indexOfValue(dccData.model.lowPowerNotifyThreshold)
+                    // currentIndex = Qt.binding(function() {
+                    //     return dccData.model.lowPowerNotifyThreshold
+                    // })
+                }
             }
         }
+    }
+
+    DccObject {
+        name: "lowPowerManageGroup2"
+        parentName: "powerManage/battery"
+        weight: 600
+        pageType: DccObject.Item
+        page: DccGroupView {}
+
         DccObject {
             name: "lowPowerOperator"
-            parentName: "powerManage/battery/lowPowerManageGroup"
+            parentName: "powerManage/battery/lowPowerManageGroup2"
             displayName: qsTr("低电量操作")
             weight: 2
             pageType: DccObject.Editor
@@ -254,7 +304,7 @@ DccObject {
         }
         DccObject {
             name: "lowBatteryThreshold"
-            parentName: "powerManage/battery/lowPowerManageGroup"
+            parentName: "powerManage/battery/lowPowerManageGroup2"
             displayName: qsTr("低电量阈值")
             weight: 3
             pageType: DccObject.Editor
@@ -296,7 +346,10 @@ DccObject {
             weight: 1
             pageType: DccObject.Editor
             page: D.Switch {
-
+                checked: dccData.model.showBatteryTimeToFull
+                onCheckedChanged: {
+                    dccData.worker.setShowBatteryTimeToFull(checked)
+                }
             }
         }
         DccObject {
@@ -305,33 +358,33 @@ DccObject {
             displayName: qsTr("最大容量")
             weight: 1
             pageType: DccObject.Editor
-            page: D.ComboBox {
-                width: 100
-                model: [ "90%", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
-                flat: true
-            }
-        }
-        DccObject {
-            name: "optimizeChargingTime"
-            parentName: "powerManage/battery/batteryManageGroup"
-            displayName: qsTr("优化电池充电")
-            weight: 2
-            pageType: DccObject.Editor
-            page: D.Switch {
+            page: Label {
+                    Layout.leftMargin: 10
+                    text: dccData.model.batteryCapacity
+                }
 
+            DccObject {
+                name: "optimizeChargingTime"
+                parentName: "powerManage/battery/batteryManageGroup"
+                displayName: qsTr("优化电池充电")
+                weight: 2
+                pageType: DccObject.Editor
+                page: D.Switch {
+
+                }
             }
-        }
-        DccObject {
-            name: "maximumChargingCapacity"
-            parentName: "powerManage/battery/batteryManageGroup"
-            displayName: qsTr("最大充电量")
-            description: "不常使用电池时, 可以限制电池最大充电量, 减缓电池老化"
-            weight: 3
-            pageType: DccObject.Editor
-            page: D.ComboBox {
-                width: 100
-                model: [ "80%", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
-                flat: true
+            DccObject {
+                name: "maximumChargingCapacity"
+                parentName: "powerManage/battery/batteryManageGroup"
+                displayName: qsTr("最大充电量")
+                description: "不常使用电池时, 可以限制电池最大充电量, 减缓电池老化"
+                weight: 3
+                pageType: DccObject.Editor
+                page: D.ComboBox {
+                    width: 100
+                    model: [ "80%", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
+                    flat: true
+                }
             }
         }
     }

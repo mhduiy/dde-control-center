@@ -3,15 +3,9 @@
 
 #include <qlist.h>
 #include <qtypes.h>
+#include <QtQml/qqml.h>
 #include <QAbstractListModel>
 
-enum PowerOperatorRole 
-{
-    ValueRole = Qt::UserRole + 1,
-    TextRole,
-    VisibleRole,
-    EnableRole,
-};
 
 struct PowerOperator
 {
@@ -26,7 +20,18 @@ struct PowerOperator
 class PowerOperatorModel : public QAbstractListModel
 {
     Q_OBJECT
+    QML_NAMED_ELEMENT(PowerOperatorModel)
 public:
+
+    enum PowerOperatorRole 
+    {
+        ValueRole = Qt::UserRole + 1,
+        TextRole,
+        VisibleRole,
+        EnableRole,
+    };
+    Q_ENUM(PowerOperatorRole)
+
     PowerOperatorModel(QObject *parent = nullptr);
     ~PowerOperatorModel();
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -35,6 +40,9 @@ public:
     void setEnable(int index, bool enable);
     void setVisible(int index, bool visible);
 
+    Q_INVOKABLE quint8 keyOfIndex(int rowIndex) const;
+    Q_INVOKABLE int indexOfKey(quint8 key) const;
+
 protected:
     QHash<int, QByteArray> roleNames() const override;
 
@@ -42,4 +50,6 @@ private:
     QList<PowerOperator *> m_powerOperatorList;
 };
 
+
+Q_DECLARE_METATYPE(PowerOperatorModel)
 #endif // POWEROPERATORMODEL_H

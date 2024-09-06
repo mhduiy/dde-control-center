@@ -6,11 +6,11 @@ PowerOperatorModel::PowerOperatorModel(QObject *parent)
 : QAbstractListModel(parent)
 {
     appendRow(new PowerOperator(0, "关机", true, true));
-    appendRow(new PowerOperator(1, "待机", false, true));
-    appendRow(new PowerOperator(2, "休眠", true, false));
+    appendRow(new PowerOperator(1, "待机", true, true));
+    appendRow(new PowerOperator(2, "休眠", true, true));
     appendRow(new PowerOperator(3, "关闭显示器", true, true));
     appendRow(new PowerOperator(4, "进入关机界面", true, true));
-    appendRow(new PowerOperator(4, "无任何操作", true, true));
+    appendRow(new PowerOperator(5, "无任何操作", true, true));
 }
 
 PowerOperatorModel::~PowerOperatorModel()
@@ -77,4 +77,22 @@ QHash<int, QByteArray> PowerOperatorModel::roleNames() const
     roles[EnableRole] = "enable";
     roles[VisibleRole] = "visible";
     return roles;
+}
+
+quint8 PowerOperatorModel::keyOfIndex(int rowIndex) const
+{
+    if (rowIndex < 0 || rowIndex >= m_powerOperatorList.size()) {
+        return -1;
+    }
+    return m_powerOperatorList[rowIndex]->value;
+}
+
+int PowerOperatorModel::indexOfKey(quint8 key) const
+{
+    for (int i = 0; i < m_powerOperatorList.size(); i++) {
+        if (m_powerOperatorList[i]->value == key) {
+            return i;
+        }
+    }
+    return -1;
 }

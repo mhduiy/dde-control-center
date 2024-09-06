@@ -48,6 +48,8 @@ class PowerModel : public QObject
     Q_PROPERTY(bool isHighPerformanceSupported READ isHighPerformanceSupported WRITE setHighPerformanceSupported NOTIFY highPerformaceSupportChanged)
     Q_PROPERTY(bool isBalancePerformanceSupported READ isBalancePerformanceSupported WRITE setBalancePerformanceSupported NOTIFY highPerformaceSupportChanged)
     Q_PROPERTY(bool isNoPasswdLogin READ isNoPasswdLogin WRITE setNoPasswdLogin NOTIFY noPasswdLoginChanged)
+    Q_PROPERTY(double batteryCapacity READ batteryCapacity WRITE setBatteryCapacity NOTIFY batteryCapacityChanged)
+    Q_PROPERTY(bool showBatteryTimeToFull READ showBatteryTimeToFull WRITE setShowBatteryTimeToFull NOTIFY showBatteryTimeToFullChanged)
 
     QML_NAMED_ELEMENT(PowerModel)
     QML_SINGLETON
@@ -171,6 +173,12 @@ public:
 
     void setNoPasswdLogin(bool value);
 
+    inline double batteryCapacity() const { return m_batteryCapacity; }
+    void setBatteryCapacity(double batterCapacity);
+
+    inline bool showBatteryTimeToFull() const { return m_showBatteryTimeToFull; }
+    void setShowBatteryTimeToFull(bool showBatteryTimeToFull);
+
 Q_SIGNALS:
     void sleepLockChanged(const bool sleepLock);
     void canSleepChanged(const bool canSleep);
@@ -213,6 +221,9 @@ Q_SIGNALS:
     void highPerformaceSupportChanged(bool value);
 
     void noPasswdLoginChanged(bool value);
+
+    void batteryCapacityChanged(double value);
+    void showBatteryTimeToFullChanged(bool value);
 
 private:
     bool m_lidPresent; //以此判断是否为笔记本
@@ -258,7 +269,8 @@ private:
     // Account
     bool m_noPasswdLogin;
 
-    int m_currentPowerIndex;
+    double m_batteryCapacity;
+    bool m_showBatteryTimeToFull;
 };
 
 #endif // POWERMODEL_H

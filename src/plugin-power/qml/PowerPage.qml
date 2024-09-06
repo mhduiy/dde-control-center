@@ -202,19 +202,12 @@ DccObject {
                 valueRole: "value"
                 visibleRole: "visible"
                 enableRole: "enable"
-                currentIndex: {
-                    let value = dccData.model.linePowerLidClosedAction
-                    console.warn("******************", value)
-                    console.warn("******************", indexOfValue(value))
-
-                    return indexOfValue(value)
-
-                }
                 width: 100
                 model: dccData.powerLidModel
-                onCurrentValueChanged: {
-                    console.warn("-------", currentValue)
-                    dccData.worker.setLinePowerLidClosedAction(currentValue)
+                currentIndex: model.indexOfKey(dccData.model.linePowerLidClosedAction)
+
+                onCurrentIndexChanged: {
+                    dccData.worker.setLinePowerLidClosedAction(model.keyOfIndex(currentIndex))
                 }
             }
         }
@@ -226,15 +219,13 @@ DccObject {
             pageType: DccObject.Editor
             page: CustomComboBox {
                 textRole: "text"
-                valueRole: "value"
-                visibleRole: "visible"
                 enableRole: "enable"
                 width: 100
-                currentIndex: indexOfValue(dccData.model.linePowerPressPowerBtnAction)
                 model: dccData.powerPressModel
-                onCurrentValueChanged: {
-                    console.warn("-----11--", currentValue)
-                    dccData.worker.setLinePowerPressPowerBtnAction(currentValue)
+                currentIndex: model.indexOfKey(dccData.model.linePowerPressPowerBtnAction)
+
+                onCurrentIndexChanged: {
+                    dccData.worker.setLinePowerPressPowerBtnAction(model.keyOfIndex(currentIndex))
                 }
             }
         }

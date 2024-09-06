@@ -16,7 +16,7 @@ class PowerInterface : public QObject
     Q_PROPERTY(PowerOperatorModel *powerLidModel MEMBER m_powerLidClosedOperatorModel)
     Q_PROPERTY(PowerOperatorModel *powerPressModel MEMBER m_powerPressedOperatorModel)
     Q_PROPERTY(PowerOperatorModel *batteryLidModel MEMBER m_batteryLidClosedOperatorModel)
-    Q_PROPERTY(PowerOperatorModel *batteryLidModel MEMBER m_batteryPressedOperatorModel)
+    Q_PROPERTY(PowerOperatorModel *batteryPressModel MEMBER m_batteryPressedOperatorModel)
 public:
     explicit PowerInterface(QObject *parent = nullptr);
     PowerModel *getModel() const { return m_model; };

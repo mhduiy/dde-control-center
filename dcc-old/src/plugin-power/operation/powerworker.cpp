@@ -2,6 +2,7 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "powerworker.h"
+#include "powerdbusproxy.h"
 #include "powermodel.h"
 #include "widgets/utils.h"
 
@@ -55,6 +56,7 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     connect(m_powerDBusProxy, &PowerDBusProxy::LowPowerAutoSleepThresholdChanged, m_powerModel, &PowerModel::setLowPowerAutoSleepThreshold);
     //-------------------------------------------------------
     connect(m_powerDBusProxy, &PowerDBusProxy::ModeChanged, m_powerModel, &PowerModel::setPowerPlan);
+    connect(m_powerDBusProxy, &PowerDBusProxy::BatteryCapacityChanged, m_powerModel, &PowerModel::setBatteryCapacity);
 
     // init base property
     m_powerModel->setHaveBettary(m_powerDBusProxy->hasBattery());
@@ -98,6 +100,8 @@ void PowerWorker::active()
 
     m_powerModel->setAutoPowerSaveMode(m_powerDBusProxy->powerSavingModeAuto());
     m_powerModel->setPowerSaveMode(m_powerDBusProxy->powerSavingModeEnabled());
+
+    m_powerModel->setBatteryCapacity(m_powerDBusProxy->batteryCapacity());
 
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     const bool confVal = valueByQSettings<bool>(DCC_CONFIG_FILES, "Power", "sleep", true);
@@ -305,11 +309,6 @@ void PowerWorker::setLockScreenDelayOnPower(const int delay)
 void PowerWorker::setEnablePowerSave(const bool isEnable)
 {
     m_powerDBusProxy->setPowerSavingModeEnabled(isEnable);
-}
-
-double PowerWorker::getBatteryCapacity()
-{
-    return m_powerDBusProxy->batteryCapacity();
 }
 
 int PowerWorker::getMaxBacklightBrightness()

@@ -130,6 +130,9 @@ public:
 
     void setNoPasswdLogin(bool value);
 
+    inline double batteryCapacity(double capacity) { return m_batteryCapacity = capacity; }
+    void setBatteryCapacity(double capacity);
+
 
 Q_SIGNALS:
     void sleepLockChanged(const bool sleepLock);
@@ -174,6 +177,8 @@ Q_SIGNALS:
 
     void noPasswdLoginChanged(bool value);
 
+    void batteryCapacityChanged(int value);
+
 private:
     bool m_lidPresent; //以此判断是否为笔记本
     bool m_sleepOnLidOnPowerClose;
@@ -217,6 +222,8 @@ private:
 
     // Account
     bool m_noPasswdLogin;
+
+    double m_batteryCapacity;
 };
 
 #endif // POWERMODEL_H
