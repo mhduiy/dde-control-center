@@ -10,9 +10,9 @@ import org.deepin.dtk 1.0 as D
 
 DccObject {
     DccObject {
-        name: "screenAndStandbyMode"
-        parentName: "powerManage/power"
-        displayName: qsTr("屏幕和待机")
+        name: "screenAndSuspendTitle"
+        parentName: "power/onPower"
+        displayName: qsTr("Screen and Suspend")
         weight: 10
         hasBackground: false
         pageType: DccObject.Item
@@ -26,16 +26,16 @@ DccObject {
     }
 
     DccObject {
-        name: "turnOffMonitorGroup"
-        parentName: "powerManage/power"
+        name: "turnOffTheMonitorAfterGroup"
+        parentName: "power/onPower"
         weight: 100
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "turnOffMonitor"
-            parentName: "powerManage/power/turnOffMonitorGroup"
-            displayName: qsTr("关闭显示器")
+            name: "turnOffTheMonitorAfter"
+            parentName: "power/onPower/turnOffTheMonitorAfterGroup"
+            displayName: qsTr("Lock screen after")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -55,7 +55,7 @@ DccObject {
                         { "text": "15m", "value": 900 },
                         { "text": "30m", "value": 1800 },
                         { "text": "1h", "value": 3600 },
-                        { "text": "从不", "value": 0 }
+                        { "text": qsTr("Never"), "value": 0 }
                     ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
@@ -87,16 +87,16 @@ DccObject {
     }
 
     DccObject {
-        name: "enterStandbyGroup"
-        parentName: "powerManage/power"
+        name: "computerSuspendsAfterGroup"
+        parentName: "power/onPower"
         weight: 200
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "saveModeReduceBrightness"
-            parentName: "powerManage/power/enterStandbyGroup"
-            displayName: qsTr("进入待机")
+            name: "computerSuspendsAfter"
+            parentName: "power/onPower/computerSuspendsAfterGroup"
+            displayName: qsTr("Computer suspends after")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -116,7 +116,7 @@ DccObject {
                         { "text": "1h", "value": 3600 },
                         { "text": "2h", "value": 7200 },
                         { "text": "3h", "value": 10800 },
-                        { "text": "从不", "value": 0 }
+                        { "text": qsTr("Never"), "value": 0 }
                     ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
@@ -148,16 +148,16 @@ DccObject {
     }
 
     DccObject {
-        name: "autoLockGroup"
-        parentName: "powerManage/power"
+        name: "lockScreenAfterGroup"
+        parentName: "power/onPower"
         weight: 300
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "saveModeReduceBrightness"
-            parentName: "powerManage/power/autoLockGroup"
-            displayName: qsTr("自动锁屏")
+            name: "lockScreenAfter"
+            parentName: "power/onPower/lockScreenAfterGroup"
+            displayName: qsTr("Lock screen after")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -177,7 +177,7 @@ DccObject {
                         { "text": "1h", "value": 3600 },
                         { "text": "2h", "value": 7200 },
                         { "text": "3h", "value": 10800 },
-                        { "text": "从不", "value": 0 }
+                        { "text": qsTr("Never"), "value": 0 }
                     ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
@@ -210,22 +210,22 @@ DccObject {
 
     DccObject {
         name: "powerButtonGroup"
-        parentName: "powerManage/power"
+        parentName: "power/onPower"
         weight: 400
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "closeTheLid"
-            parentName: "powerManage/power/powerButtonGroup"
-            displayName: qsTr("合盖时")
+            name: "whenTheLidIsClosed"
+            parentName: "power/onPower/powerButtonGroup"
+            displayName: qsTr("When the lid is closed")
+            visible: dccData.model.lidPresent
             weight: 1
             pageType: DccObject.Editor
             page: CustomComboBox {
                 textRole: "text"
-                valueRole: "value"
-                visibleRole: "visible"
                 enableRole: "enable"
+                visibleRole: "visible"
                 width: 100
                 model: dccData.powerLidModel
                 currentIndex: model.indexOfKey(dccData.model.linePowerLidClosedAction)
@@ -236,14 +236,15 @@ DccObject {
             }
         }
         DccObject {
-            name: "pressPowerButton"
-            parentName: "powerManage/power/powerButtonGroup"
-            displayName: qsTr("按下电源键时")
+            name: "whenThePowerButtonIsPressed"
+            parentName: "power/onPower/powerButtonGroup"
+            displayName: qsTr("When the power button is pressed")
             weight: 2
             pageType: DccObject.Editor
             page: CustomComboBox {
                 textRole: "text"
                 enableRole: "enable"
+                visibleRole: "visible"
                 width: 100
                 model: dccData.powerPressModel
                 currentIndex: model.indexOfKey(dccData.model.linePowerPressPowerBtnAction)

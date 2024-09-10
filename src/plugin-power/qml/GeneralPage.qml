@@ -12,7 +12,7 @@ DccObject {
     DccObject {
         name: "powerPlansTitle"
         parentName: "power/general"
-        displayName: qsTr("性能模式")
+        displayName: qsTr("Power Plans")
         weight: 10
         hasBackground: false
         pageType: DccObject.Item
@@ -30,14 +30,14 @@ DccObject {
         parentName: "power/general"
         weight: 100
         pageType: DccObject.Item
-        page: PowerModeListview {
+        page: PowerPlansListview {
         }
     }
 
     DccObject {
         name: "powerSavingSettingsTitle"
         parentName: "power/general"
-        displayName: qsTr("节能设置")
+        displayName: qsTr("Power Saving Settings")
         weight: 200
         hasBackground: false
         pageType: DccObject.Item
@@ -61,8 +61,8 @@ DccObject {
 
         DccObject {
             name: "autoPowerSavingOnLowBattery"
-            parentName: "power/general/autoPowerSavingOnLowBattery"
-            displayName: qsTr("低电量时自动开启节能模式")
+            parentName: "power/general/powerSavingSettingsGroup"
+            displayName: qsTr("Auto power saving on low battery")
             weight: 1
             // visible: dccData.model.haveBettary
             pageType: DccObject.Editor
@@ -76,8 +76,8 @@ DccObject {
 
         DccObject {
             name: "lowPowerThreshold"
-            parentName: "power/general/LowPowerGroup"
-            displayName: qsTr("低电量阈值")
+            parentName: "power/general/powerSavingSettingsGroup"
+            displayName: qsTr("Low battery threshold")
             weight: 2
             // visible: dccData.model.haveBettary
             pageType: DccObject.Editor
@@ -102,9 +102,9 @@ DccObject {
         page: DccGroupView {}
 
         DccObject {
-            name: "batteryAutoSaveMode"
+            name: "autoPowerSavingOnBattery"
             parentName: "power/general/savePowerGroup"
-            displayName: qsTr("使用电池时自动开启节能模式")
+            displayName: qsTr("Auto power saving on battery")
             weight: 1
             // visible: dccData.model.haveBettary
             pageType: DccObject.Editor
@@ -117,9 +117,9 @@ DccObject {
         }
 
         DccObject {
-            name: "saveModeReduceBrightness"
+            name: "decreaseBrightness"
             parentName: "power/general/savePowerGroup"
-            displayName: qsTr("节能模式时降低屏幕亮度")
+            displayName: qsTr("Auto reduce screen brightness during power saving")
             weight: 2
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -146,14 +146,10 @@ DccObject {
                     slider.snapMode: Slider.SnapAlways
                     slider.value: dccData.model.powerSavingModeLowerBrightnessThreshold
                     ticks: [
-                        D.SliderTipItem { text: scrollSlider.tips[0]; highlight: scrollSlider.slider.value === 10
-                        },
-                        D.SliderTipItem { text: scrollSlider.tips[1]; highlight: scrollSlider.slider.value === 20
-                        },
-                        D.SliderTipItem { text: scrollSlider.tips[2]; highlight: scrollSlider.slider.value === 30
-                        },
-                        D.SliderTipItem { text: scrollSlider.tips[3]; highlight: scrollSlider.slider.value === 40
-                        }
+                        D.SliderTipItem { text: scrollSlider.tips[0]; highlight: scrollSlider.slider.value === 10 },
+                        D.SliderTipItem { text: scrollSlider.tips[1]; highlight: scrollSlider.slider.value === 20 },
+                        D.SliderTipItem { text: scrollSlider.tips[2]; highlight: scrollSlider.slider.value === 30 },
+                        D.SliderTipItem { text: scrollSlider.tips[3]; highlight: scrollSlider.slider.value === 40 }
                     ]
 
                     slider.onValueChanged: {
@@ -165,9 +161,9 @@ DccObject {
     }
 
     DccObject {
-        name: "wakeupSetting"
+        name: "wakeupSettingsTitle"
         parentName: "power/general"
-        displayName: qsTr("唤醒设置")
+        displayName: qsTr("Wakeup Settings")
         weight: 500
         hasBackground: false
         pageType: DccObject.Item
@@ -181,16 +177,16 @@ DccObject {
     }
 
     DccObject {
-        name: "wakeUpGroup"
+        name: "wakeupSettingsGroup"
         parentName: "power/general"
         weight: 600
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "StandbyRecNeedPwd"
-            parentName: "power/general/wakeUpGroup"
-            displayName: qsTr("待机恢复时需要密码")
+            name: "passwordIsRequiredToWakeUpTheComputer"
+            parentName: "power/general/wakeupSettingsGroup"
+            displayName: qsTr("Password is required to wake up the computer")
             weight: 1
             visible: dccData.model.canSuspend && dccData.model.isSuspend
             pageType: DccObject.Editor
@@ -204,9 +200,9 @@ DccObject {
         }
 
         DccObject {
-            name: "wakeupDisplyNeedPwd"
-            parentName: "power/general/wakeUpGroup"
-            displayName: qsTr("唤醒显示器时需要密码")
+            name: "passwordIsRequiredToWakeUpTheMonitor"
+            parentName: "power/general/wakeupSettingsGroup"
+            displayName: qsTr("Password is required to wake up the monitor")
             weight: 2
             pageType: DccObject.Editor
             page: D.Switch {
@@ -220,9 +216,9 @@ DccObject {
     }
 
     DccObject {
-        name: "powerSetting"
+        name: "shutdownSettingTitle"
         parentName: "power/general"
-        displayName: qsTr("关机设置")
+        displayName: qsTr("Shutdown Settings")
         weight: 700
         hasBackground: false
         pageType: DccObject.Item
@@ -236,7 +232,7 @@ DccObject {
     }
 
     DccObject {
-        name: "powerGroup"
+        name: "shutdownGroup"
         parentName: "power/general"
         weight: 800
         pageType: DccObject.Item
@@ -244,8 +240,8 @@ DccObject {
 
         DccObject {
             name: "timedPoweroff"
-            parentName: "power/general/powerGroup"
-            displayName: qsTr("定时关机")
+            parentName: "power/general/shutdownGroup"
+            displayName: qsTr("Scheduled Shutdown")
             weight: 1
             pageType: DccObject.Editor
             page: D.Switch {
@@ -254,10 +250,10 @@ DccObject {
         }
 
         DccObject {
-            name: "shutdownTime"
-            parentName: "power/general/powerGroup"
+            name: "poweroffTime"
+            parentName: "power/general/shutdownGroup"
             visible: timedShutdownSwitch.checked
-            displayName: qsTr("时间")
+            displayName: qsTr("Time")
             weight: 2
             pageType: DccObject.Editor
             page: Row {
@@ -294,26 +290,26 @@ DccObject {
 
         DccObject {
             name: "repeatDays"
-            parentName: "power/general/powerGroup"
+            parentName: "power/general/shutdownGroup"
             visible: timedShutdownSwitch.checked
-            displayName: qsTr("重复")
+            displayName: qsTr("Repeat")
             weight: 3
             pageType: DccObject.Editor
             page: D.ComboBox {
                 width: 100
-                model: [ "一次", "每天", "工作日", "自定义" ]
+                model: [ qsTr("Once"), qsTr("Every day"), qsTr("Working days"), qsTr("Custom Time") ]
                 flat: true
             }
         }
         DccObject {
             name: "repeatDaysEdit"
-            parentName: "power/general/powerGroup"
+            parentName: "power/general/shutdownGroup"
             visible: timedShutdownSwitch.checked
             weight: 4
             pageType: DccObject.Editor
             page: RowLayout {
                 Label {
-                    text: "星期一、星期二、星期三、星期四"
+                    text: "Monday, Tuesday, Wednesday, Thursday"
                 }
                 D.ToolButton {
                     icon.name: "action_edit"
@@ -379,13 +375,13 @@ DccObject {
                             Layout.alignment: Qt.AlignHCenter
                             spacing: 10
                             D.Button {
-                                text: "取消"
+                                text: qsTr("Cancel")
                                 onClicked: {
                                     selectDayDialog.close()
                                 }
                             }
                             D.Button {
-                                text: "保存"
+                                text: qsTr("Save")
                                 onClicked: {
                                     selectDayDialog.close()
                                 }

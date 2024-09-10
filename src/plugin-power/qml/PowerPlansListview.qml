@@ -65,7 +65,7 @@ Rectangle {
                         Layout.rightMargin: 10
                         contentItem: D.IconButton {
                             visible: model.mode === dccData.model.powerPlan
-                            icon.name: "selected_checked_indicator"
+                            icon.name: "qrc:/icons/deepin/builtin/actions/checked.png"
                             icon.width: 24
                             icon.height: 24
                             implicitWidth: 36
@@ -98,30 +98,30 @@ Rectangle {
 
         ListElement {
             mode: "performance"
-            title: qsTr("高性能模式")
+            title: qsTr("High Performance")
             icon: "dcc_nav_systeminfo"
-            description: qsTr("性能优先, 会显著提升功耗和发热")
+            description: qsTr("Performance priority will significantly improve power consumption and heat generation")
         }
 
         ListElement {
             mode: "balance_performance"
-            title: qsTr("性能模式")
+            title: qsTr("Balance Performance")
             icon: "dcc_nav_systeminfo"
-            description: qsTr("根据负载积极调整运行频率")
+            description: qsTr("Aggressively adjust CPU operating frequency based on CPU load condition")
         }
 
         ListElement {
             mode: "balance"
-            title: qsTr("平衡模式")
+            title: qsTr("Balanced")
             icon: "dcc_nav_systeminfo"
-            description: qsTr("兼顾性能和续航, 根据使用情况自动调节")
+            description: qsTr("Balancing performance and battery life, automatically adjusting according to usage conditions")
         }
 
         ListElement {
             mode: "powersave"
-            title: qsTr("节能模式")
+            title: qsTr("Power Saver")
             icon: "dcc_nav_systeminfo"
-            description: qsTr("续航优先, 系统会牺牲一些性能表现来降低功耗")
+            description: qsTr("Prioritizing battery life, the system sacrifices some performance to reduce power consumption")
         }
     }
 }

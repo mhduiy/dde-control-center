@@ -19,6 +19,26 @@ PowerInterface::PowerInterface(QObject *parent)
     m_model->setSuspend(!IsServerSystem && true);
     m_model->setHibernate(!IsServerSystem && true);
     m_model->setShutdown(true);
+
+    m_powerLidClosedOperatorModel->setVisible(POT_ShutDown, false);
+    m_batteryLidClosedOperatorModel->setVisible(POT_ShutDown, false);
+
+    connect(m_model, &PowerModel::hibernateChanged, this, [this](bool value){
+        m_powerLidClosedOperatorModel->setVisible(POT_Hibernate, value);
+        m_powerPressedOperatorModel->setVisible(POT_Hibernate, value);
+        m_batteryLidClosedOperatorModel->setVisible(POT_Hibernate, value);
+        m_batteryPressedOperatorModel->setVisible(POT_Hibernate, value);
+    });
+    connect(m_model, &PowerModel::suspendChanged, this, [this](bool value){
+        m_powerLidClosedOperatorModel->setVisible(POT_Suspend, value);
+        m_powerPressedOperatorModel->setVisible(POT_Suspend, value);
+        m_batteryLidClosedOperatorModel->setVisible(POT_Suspend, value);
+        m_batteryPressedOperatorModel->setVisible(POT_Suspend, value);
+    });
+    connect(m_model, &PowerModel::shutdownChanged, this, [this](bool value){
+        m_powerPressedOperatorModel->setVisible(POT_ShutDown, value);
+        m_batteryPressedOperatorModel->setVisible(POT_ShutDown, value);
+    });
 }
 
 int PowerInterface::indexByValueOnModel(QAbstractListModel *model, int targetValue)

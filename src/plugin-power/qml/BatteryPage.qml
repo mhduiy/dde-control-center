@@ -10,9 +10,9 @@ import org.deepin.dtk 1.0 as D
 
 DccObject {
     DccObject {
-        name: "screenAndStandbyOnBattery"
-        parentName: "powerManage/battery"
-        displayName: qsTr("屏幕和待机")
+        name: "screenAndSuspendTitle"
+        parentName: "power/onBattery"
+        displayName: qsTr("Screen and Suspend")
         weight: 10
         hasBackground: false
         pageType: DccObject.Item
@@ -26,16 +26,16 @@ DccObject {
     }
 
     DccObject {
-        name: "turnOffMonitorGroupOnBattery"
-        parentName: "powerManage/battery"
+        name: "turnOffTheMonitorAfterGroup"
+        parentName: "power/onBattery"
         weight: 100
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "turnOffMonitorOnBattery"
-            parentName: "powerManage/battery/turnOffMonitorGroupOnBattery"
-            displayName: qsTr("关闭显示器")
+            name: "turnOffTheMonitorAfter"
+            parentName: "power/onBattery/turnOffTheMonitorAfterGroup"
+            displayName: qsTr("Turn off the monitor after")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -55,7 +55,7 @@ DccObject {
                         { "text": "15m", "value": 900 },
                         { "text": "30m", "value": 1800 },
                         { "text": "1h", "value": 3600 },
-                        { "text": "从不", "value": 0 }
+                        { "text": qsTr("Never"), "value": 0 }
                     ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
@@ -87,16 +87,16 @@ DccObject {
     }
 
     DccObject {
-        name: "autoLockGroupOnBattery"
-        parentName: "powerManage/battery"
+        name: "lockScreenAfterGroup"
+        parentName: "power/onBattery"
         weight: 200
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "autoLockOnBattery"
-            parentName: "powerManage/battery/autoLockGroupOnBattery"
-            displayName: qsTr("自动锁屏")
+            name: "lockScreenAfter"
+            parentName: "power/onBattery/lockScreenAfterGroup"
+            displayName: qsTr("Lock screen after")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -116,7 +116,7 @@ DccObject {
                         { "text": "15m", "value": 900 },
                         { "text": "30m", "value": 1800 },
                         { "text": "1h", "value": 3600 },
-                        { "text": "从不", "value": 0 }
+                        { "text": qsTr("Never"), "value": 0 }
                     ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
@@ -148,16 +148,16 @@ DccObject {
     }
 
     DccObject {
-        name: "enterStandbyGroupOnBattry"
-        parentName: "powerManage/battery"
+        name: "computerSuspendsAfterGroup"
+        parentName: "power/onBattery"
         weight: 300
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "enterStandbyOnBattery"
-            parentName: "powerManage/battery/enterStandbyGroupOnBattry"
-            displayName: qsTr("进入待机")
+            name: "computerSuspendsAfter"
+            parentName: "power/onBattery/computerSuspendsAfterGroup"
+            displayName: qsTr("Computer suspends after")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -177,7 +177,7 @@ DccObject {
                         { "text": "1h", "value": 3600 },
                         { "text": "2h", "value": 7200 },
                         { "text": "3h", "value": 10800 },
-                        { "text": "从不", "value": 0 }
+                        { "text": qsTr("Never"), "value": 0 }
                     ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
@@ -210,20 +210,22 @@ DccObject {
 
     DccObject {
         name: "powerButtonGroup"
-        parentName: "powerManage/battery"
+        parentName: "power/onBattery"
         weight: 400
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "closeTheLid"
-            parentName: "powerManage/battery/powerButtonGroup"
-            displayName: qsTr("合盖时")
+            name: "whenTheLidIsClosed"
+            parentName: "power/onBattery/powerButtonGroup"
+            displayName: qsTr("When the lid is closed")
+            visible: dccData.model.lidPresent
             weight: 1
             pageType: DccObject.Editor
             page: CustomComboBox {
                 textRole: "text"
                 enableRole: "enable"
+                visibleRole: "visible"
                 width: 100
                 model: dccData.batteryLidModel
                 currentIndex: model.indexOfKey(dccData.model.batteryLidClosedAction)
@@ -234,14 +236,15 @@ DccObject {
             }
         }
         DccObject {
-            name: "pressPowerButton"
-            parentName: "powerManage/battery/powerButtonGroup"
-            displayName: qsTr("按下电源键时")
+            name: "whenThePowerButtonIsPressed"
+            parentName: "power/onBattery/powerButtonGroup"
+            displayName: qsTr("When the power button is pressed")
             weight: 2
             pageType: DccObject.Editor
             page: CustomComboBox {
                 textRole: "text"
                 enableRole: "enable"
+                visibleRole: "visible"
                 width: 100
                 model: dccData.batteryPressModel
                 currentIndex: model.indexOfKey(dccData.model.batteryPressPowerBtnAction)
@@ -254,9 +257,9 @@ DccObject {
     }
 
     DccObject {
-        name: "lowPowerTitle"
-        parentName: "powerManage/battery"
-        displayName: qsTr("低电量管理")
+        name: "lowBatteryTitle"
+        parentName: "power/onBattery"
+        displayName: qsTr("Low Battery")
         weight: 500
         hasBackground: false
         pageType: DccObject.Item
@@ -270,16 +273,16 @@ DccObject {
     }
 
     DccObject {
-        name: "lowPowerManageGroup"
-        parentName: "powerManage/battery"
+        name: "lowBatteryNotificationGroup"
+        parentName: "power/onBattery"
         weight: 600
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "lowPowerNotification"
-            parentName: "powerManage/battery/lowPowerManageGroup"
-            displayName: qsTr("低电量通知")
+            name: "lowBatteryNotification"
+            parentName: "power/onBattery/lowBatteryNotificationGroup"
+            displayName: qsTr("Low battery notification")
             weight: 1
             pageType: DccObject.Editor
             page: D.ComboBox {
@@ -303,28 +306,28 @@ DccObject {
     }
 
     DccObject {
-        name: "lowPowerManageGroup2"
-        parentName: "powerManage/battery"
+        name: "lowBatteryOperatorGroup"
+        parentName: "power/onBattery"
         weight: 700
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "lowPowerOperator"
-            parentName: "powerManage/battery/lowPowerManageGroup2"
-            displayName: qsTr("低电量操作")
+            name: "lowBatteryOperator"
+            parentName: "power/onBattery/lowBatteryOperatorGroup"
+            displayName: qsTr("Low battery operation")
             weight: 1
             pageType: DccObject.Editor
             page: D.ComboBox {
                 width: 100
-                model: [ "自动休眠", "自动待机"]
+                model: [ "Auto sleep", qsTr("Auto suspend")]
                 flat: true
             }
         }
         DccObject {
             name: "lowBatteryThreshold"
-            parentName: "powerManage/battery/lowPowerManageGroup2"
-            displayName: qsTr("低电量阈值")
+            parentName: "power/onBattery/lowBatteryOperatorGroup"
+            displayName: qsTr("Low battery threshold")
             weight: 2
             pageType: DccObject.Editor
             page: D.ComboBox {
@@ -347,9 +350,9 @@ DccObject {
     }
 
     DccObject {
-        name: "batteryManagerTitle"
-        parentName: "powerManage/battery"
-        displayName: qsTr("电池管理")
+        name: "batteryManagementTitle"
+        parentName: "power/onBattery"
+        displayName: qsTr("Battery Management")
         weight: 800
         hasBackground: false
         pageType: DccObject.Item
@@ -363,16 +366,16 @@ DccObject {
     }
 
     DccObject {
-        name: "batteryManageGroup"
-        parentName: "powerManage/battery"
+        name: "batteryManagementGroup"
+        parentName: "power/onBattery"
         weight: 900
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
-            name: "displayTime"
-            parentName: "powerManage/battery/batteryManageGroup"
-            displayName: qsTr("显示剩余使用时间及剩余充电时间")
+            name: "displayRemainingUsingAndChargingTime"
+            parentName: "power/onBattery/batteryManagementGroup"
+            displayName: qsTr("Display remaining using and charging time")
             weight: 1
             pageType: DccObject.Editor
             page: D.Switch {
@@ -384,8 +387,8 @@ DccObject {
         }
         DccObject {
             name: "maximumCapacity"
-            parentName: "powerManage/battery/batteryManageGroup"
-            displayName: qsTr("最大容量")
+            parentName: "power/onBattery/batteryManagementGroup"
+            displayName: qsTr("Maximum capacity")
             weight: 2
             pageType: DccObject.Editor
             page: Label {
@@ -395,8 +398,8 @@ DccObject {
 
             DccObject {
                 name: "optimizeChargingTime"
-                parentName: "powerManage/battery/batteryManageGroup"
-                displayName: qsTr("优化电池充电")
+                parentName: "power/onBattery/batteryManagementGroup"
+                displayName: qsTr("Optimize battery charging")
                 weight: 3
                 pageType: DccObject.Editor
                 page: D.Switch {
@@ -405,9 +408,9 @@ DccObject {
             }
             DccObject {
                 name: "maximumChargingCapacity"
-                parentName: "powerManage/battery/batteryManageGroup"
-                displayName: qsTr("最大充电量")
-                description: "不常使用电池时, 可以限制电池最大充电量, 减缓电池老化"
+                parentName: "power/onBattery/batteryManagementGroup"
+                displayName: qsTr("Maximum charging capacity")
+                description: qsTr("When the battery is not frequently used, the maximum charging capacity of the battery can be limited to slow down battery aging")
                 weight: 4
                 pageType: DccObject.Editor
                 page: D.ComboBox {
