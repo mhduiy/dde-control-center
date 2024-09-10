@@ -10,8 +10,8 @@ import org.deepin.dtk 1.0 as D
 
 DccObject {
     DccObject {
-        name: "powerMode"
-        parentName: "powerManage/common"
+        name: "powerPlansTitle"
+        parentName: "power/general"
         displayName: qsTr("性能模式")
         weight: 10
         hasBackground: false
@@ -26,8 +26,8 @@ DccObject {
     }
 
     DccObject {
-        name: "powerModeGroup"
-        parentName: "powerManage/common"
+        name: "powerPlans"
+        parentName: "power/general"
         weight: 100
         pageType: DccObject.Item
         page: PowerModeListview {
@@ -35,8 +35,8 @@ DccObject {
     }
 
     DccObject {
-        name: "powersaverSetting"
-        parentName: "powerManage/common"
+        name: "powerSavingSettingsTitle"
+        parentName: "power/general"
         displayName: qsTr("节能设置")
         weight: 200
         hasBackground: false
@@ -51,8 +51,8 @@ DccObject {
     }
 
     DccObject {
-        name: "LowPowerGroup"
-        parentName: "powerManage/common"
+        name: "powerSavingSettingsGroup"
+        parentName: "power/general"
         weight: 300
         pageType: DccObject.Item
         page: DccGroupView {}
@@ -60,8 +60,8 @@ DccObject {
         // TODO 需要判断电池
 
         DccObject {
-            name: "lowPowerAutoSaveMode"
-            parentName: "powerManage/common/LowPowerGroup"
+            name: "autoPowerSavingOnLowBattery"
+            parentName: "power/general/autoPowerSavingOnLowBattery"
             displayName: qsTr("低电量时自动开启节能模式")
             weight: 1
             // visible: dccData.model.haveBettary
@@ -76,7 +76,7 @@ DccObject {
 
         DccObject {
             name: "lowPowerThreshold"
-            parentName: "powerManage/common/LowPowerGroup"
+            parentName: "power/general/LowPowerGroup"
             displayName: qsTr("低电量阈值")
             weight: 2
             // visible: dccData.model.haveBettary
@@ -96,14 +96,14 @@ DccObject {
 
     DccObject {
         name: "savePowerGroup"
-        parentName: "powerManage/common"
+        parentName: "power/general"
         weight: 400
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
             name: "batteryAutoSaveMode"
-            parentName: "powerManage/common/savePowerGroup"
+            parentName: "power/general/savePowerGroup"
             displayName: qsTr("使用电池时自动开启节能模式")
             weight: 1
             // visible: dccData.model.haveBettary
@@ -118,7 +118,7 @@ DccObject {
 
         DccObject {
             name: "saveModeReduceBrightness"
-            parentName: "powerManage/common/savePowerGroup"
+            parentName: "power/general/savePowerGroup"
             displayName: qsTr("节能模式时降低屏幕亮度")
             weight: 2
             pageType: DccObject.Item
@@ -166,7 +166,7 @@ DccObject {
 
     DccObject {
         name: "wakeupSetting"
-        parentName: "powerManage/common"
+        parentName: "power/general"
         displayName: qsTr("唤醒设置")
         weight: 500
         hasBackground: false
@@ -182,14 +182,14 @@ DccObject {
 
     DccObject {
         name: "wakeUpGroup"
-        parentName: "powerManage/common"
+        parentName: "power/general"
         weight: 600
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
             name: "StandbyRecNeedPwd"
-            parentName: "powerManage/common/wakeUpGroup"
+            parentName: "power/general/wakeUpGroup"
             displayName: qsTr("待机恢复时需要密码")
             weight: 1
             visible: dccData.model.canSuspend && dccData.model.isSuspend
@@ -205,7 +205,7 @@ DccObject {
 
         DccObject {
             name: "wakeupDisplyNeedPwd"
-            parentName: "powerManage/common/wakeUpGroup"
+            parentName: "power/general/wakeUpGroup"
             displayName: qsTr("唤醒显示器时需要密码")
             weight: 2
             pageType: DccObject.Editor
@@ -221,7 +221,7 @@ DccObject {
 
     DccObject {
         name: "powerSetting"
-        parentName: "powerManage/common"
+        parentName: "power/general"
         displayName: qsTr("关机设置")
         weight: 700
         hasBackground: false
@@ -237,14 +237,14 @@ DccObject {
 
     DccObject {
         name: "powerGroup"
-        parentName: "powerManage/common"
+        parentName: "power/general"
         weight: 800
         pageType: DccObject.Item
         page: DccGroupView {}
 
         DccObject {
             name: "timedPoweroff"
-            parentName: "powerManage/common/powerGroup"
+            parentName: "power/general/powerGroup"
             displayName: qsTr("定时关机")
             weight: 1
             pageType: DccObject.Editor
@@ -255,7 +255,7 @@ DccObject {
 
         DccObject {
             name: "shutdownTime"
-            parentName: "powerManage/common/powerGroup"
+            parentName: "power/general/powerGroup"
             visible: timedShutdownSwitch.checked
             displayName: qsTr("时间")
             weight: 2
@@ -294,7 +294,7 @@ DccObject {
 
         DccObject {
             name: "repeatDays"
-            parentName: "powerManage/common/powerGroup"
+            parentName: "power/general/powerGroup"
             visible: timedShutdownSwitch.checked
             displayName: qsTr("重复")
             weight: 3
@@ -307,7 +307,7 @@ DccObject {
         }
         DccObject {
             name: "repeatDaysEdit"
-            parentName: "powerManage/common/powerGroup"
+            parentName: "power/general/powerGroup"
             visible: timedShutdownSwitch.checked
             weight: 4
             pageType: DccObject.Editor

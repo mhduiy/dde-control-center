@@ -9,20 +9,22 @@ import org.deepin.dtk 1.0 as D
 
 DccObject {
     DccObject {
-        name: "common"
-        parentName: "powerManage"
+        name: "general"
+        parentName: "power"
         displayName: qsTr("通用")
+        description: "性能模式切换、节能设置、唤醒设置、关机设置"
         icon: "power"
         weight: 10
         page: DccRightView {
             spacing: 5
         }
-        CommonPage {}
+        GeneralPage {}
     }
     DccObject {
-        name: "power"
-        parentName: "powerManage"
+        name: "onPower"
+        parentName: "power"
         displayName: qsTr("电源")
+        description: "屏幕和待机管理"
         icon: "power"
         weight: 100
         page: DccRightView {
@@ -31,9 +33,10 @@ DccObject {
         PowerPage {}
     }
     DccObject {
-        name: "battery"
-        parentName: "powerManage"
+        name: "onBattery"
+        parentName: "power"
         displayName: qsTr("电池")
+        description: "屏幕和待机管、低电量管理、电池管理"
         icon: "power"
         weight: 200
         // visible: dccData.model.haveBettary
