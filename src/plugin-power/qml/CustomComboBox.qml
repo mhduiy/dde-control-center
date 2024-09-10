@@ -6,7 +6,6 @@ import org.deepin.dtk.style 1.0 as DS
 
 D.ComboBox {
     id: control
-    model: powerOperatorModel
     flat: true
     property string visibleRole
     property string enableRole

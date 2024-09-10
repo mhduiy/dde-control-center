@@ -64,7 +64,8 @@ Rectangle {
                         Layout.alignment: Qt.AlignRight
                         Layout.rightMargin: 10
                         contentItem: D.IconButton {
-                            icon.name: model.mode === dccData.model.powerPlan ? "qrc:/icons/deepin/builtin/actions/checked.png" : "qrc:/icons/deepin/builtin/actions/nocheck.png"
+                            visible: model.mode === dccData.model.powerPlan
+                            icon.name: "selected_checked_indicator"
                             icon.width: 24
                             icon.height: 24
                             implicitWidth: 36

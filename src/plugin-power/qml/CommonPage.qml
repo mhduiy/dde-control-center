@@ -64,7 +64,7 @@ DccObject {
             parentName: "powerManage/common/LowPowerGroup"
             displayName: qsTr("低电量时自动开启节能模式")
             weight: 1
-            visible: /*dccData.model.haveBettary*/ true
+            // visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.Switch {
                 checked: dccData.model.powerSavingModeAutoWhenQuantifyLow
@@ -79,6 +79,7 @@ DccObject {
             parentName: "powerManage/common/LowPowerGroup"
             displayName: qsTr("低电量阈值")
             weight: 2
+            // visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.ComboBox {
                 width: 100
@@ -105,6 +106,7 @@ DccObject {
             parentName: "powerManage/common/savePowerGroup"
             displayName: qsTr("使用电池时自动开启节能模式")
             weight: 1
+            // visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.Switch {
                 checked: dccData.model.autoPowerSaveMode

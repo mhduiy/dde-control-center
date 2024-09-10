@@ -48,30 +48,38 @@ DccObject {
                     Layout.leftMargin: 10
                 }
                 D.TipsSlider {
-                    readonly property var tips: [("1m"), ("5m"), ("10m"), ("15h"), ("30h"), ("1h"), ("从不")]
+                    readonly property var dataMap: [
+                        { "text": "1m", "value": 60 },
+                        { "text": "5m", "value": 300 },
+                        { "text": "10m", "value": 600 },
+                        { "text": "15m", "value": 900 },
+                        { "text": "30m", "value": 1800 },
+                        { "text": "1h", "value": 3600 },
+                        { "text": "从不", "value": 0 }
+                    ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
                     Layout.fillWidth: true
                     slider.handleType: Slider.HandleType.ArrowBottom
-                    slider.from: 1
-                    slider.to: ticks.length
+                    slider.from: 0
+                    slider.to: dataMap.length - 1
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.screenBlackDelayOnPower
+                    slider.value: dccData.indexByValueOnMap(dataMap, dccData.model.screenBlackDelayOnPower)
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 6 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 7 }
-                    ]
+                            D.SliderTipItem { text: parent.parent.dataMap[0].text; highlight: parent.parent.slider.value === 0 },
+                            D.SliderTipItem { text: parent.parent.dataMap[1].text; highlight: parent.parent.slider.value === 1 },
+                            D.SliderTipItem { text: parent.parent.dataMap[2].text; highlight: parent.parent.slider.value === 2 },
+                            D.SliderTipItem { text: parent.parent.dataMap[3].text; highlight: parent.parent.slider.value === 3 },
+                            D.SliderTipItem { text: parent.parent.dataMap[4].text; highlight: parent.parent.slider.value === 4 },
+                            D.SliderTipItem { text: parent.parent.dataMap[5].text; highlight: parent.parent.slider.value === 5 },
+                            D.SliderTipItem { text: parent.parent.dataMap[6].text; highlight: parent.parent.slider.value === 6 }
+                        ]
 
                     slider.onValueChanged: {
-                        dccData.worker.setScreenBlackDelayOnPower(slider.value)
+                        dccData.worker.setScreenBlackDelayOnPower(dataMap[slider.value].value)
                     }
                 }
             }
@@ -101,30 +109,38 @@ DccObject {
                     Layout.leftMargin: 10
                 }
                 D.TipsSlider {
-                    readonly property var tips: [("10m"), ("15m"), ("30m"), ("1h"), ("2h"), ("3h"), ("从不")]
+                    readonly property var dataMap: [
+                        { "text": "10m", "value": 600 },
+                        { "text": "15m", "value": 900 },
+                        { "text": "30m", "value": 1800 },
+                        { "text": "1h", "value": 3600 },
+                        { "text": "2h", "value": 7200 },
+                        { "text": "3h", "value": 10800 },
+                        { "text": "从不", "value": 0 }
+                    ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
                     Layout.fillWidth: true
                     slider.handleType: Slider.HandleType.ArrowBottom
-                    slider.from: 1
-                    slider.to: ticks.length
+                    slider.from: 0
+                    slider.to: dataMap.length - 1
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.sleepDelayOnPower
+                    slider.value: dccData.indexByValueOnMap(dataMap, dccData.model.sleepDelayOnPower)
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 6 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 7 }
+                        D.SliderTipItem { text: parent.parent.dataMap[0].text; highlight: parent.parent.slider.value === 0 },
+                        D.SliderTipItem { text: parent.parent.dataMap[1].text; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.dataMap[2].text; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.dataMap[3].text; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.dataMap[4].text; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.dataMap[5].text; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.dataMap[6].text; highlight: parent.parent.slider.value === 6 }
                     ]
 
                     slider.onValueChanged: {
-                        dccData.worker.setSleepDelayOnPower(slider.value)
+                        dccData.worker.setSleepDelayOnPower(dataMap[slider.value].value)
                     }
                 }
             }
@@ -154,30 +170,38 @@ DccObject {
                     Layout.leftMargin: 10
                 }
                 D.TipsSlider {
-                    readonly property var tips: [("10m"), ("15m"), ("30m"), ("1h"), ("2h"), ("3h"), ("从不")]
+                    readonly property var dataMap: [
+                        { "text": "10m", "value": 600 },
+                        { "text": "15m", "value": 900 },
+                        { "text": "30m", "value": 1800 },
+                        { "text": "1h", "value": 3600 },
+                        { "text": "2h", "value": 7200 },
+                        { "text": "3h", "value": 10800 },
+                        { "text": "从不", "value": 0 }
+                    ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
                     Layout.fillWidth: true
                     slider.handleType: Slider.HandleType.ArrowBottom
-                    slider.from: 1
-                    slider.to: ticks.length
+                    slider.from: 0
+                    slider.to: dataMap.length - 1
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.powerLockScreenDelay
+                    slider.value: dccData.indexByValueOnMap(dataMap, dccData.model.powerLockScreenDelay)
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 6 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 7 }
+                        D.SliderTipItem { text: parent.parent.dataMap[0].text; highlight: parent.parent.slider.value === 0 },
+                        D.SliderTipItem { text: parent.parent.dataMap[1].text; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.dataMap[2].text; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.dataMap[3].text; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.dataMap[4].text; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.dataMap[5].text; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.dataMap[6].text; highlight: parent.parent.slider.value === 6 }
                     ]
 
                     slider.onValueChanged: {
-                        dccData.worker.setLockScreenDelayOnPower(slider.value)
+                        dccData.worker.setLockScreenDelayOnPower(dataMap[slider.value].value)
                     }
                 }
             }

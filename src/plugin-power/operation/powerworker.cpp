@@ -21,7 +21,7 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     : QObject(parent)
     , m_powerModel(model)
     , m_powerDBusProxy(new PowerDBusProxy(this))
-    , cfgDock(DConfig::create("org.deepin.ds.dock", "org.deepin.ds.dock.power", QString(), this))
+    , m_cfgDock(DConfig::create("org.deepin.dde.tray-loader", "org.deepin.dde.dock.plugin.power", QString(), this))
 {
     connect(m_powerDBusProxy, &PowerDBusProxy::noPasswdLoginChanged, m_powerModel, &PowerModel::setNoPasswdLogin);
     connect(m_powerDBusProxy, &PowerDBusProxy::ScreenBlackLockChanged, m_powerModel, &PowerModel::setScreenBlackLock);
@@ -58,9 +58,9 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     connect(m_powerDBusProxy, &PowerDBusProxy::ModeChanged, m_powerModel, &PowerModel::setPowerPlan);
     connect(m_powerDBusProxy, &PowerDBusProxy::BatteryCapacityChanged, m_powerModel, &PowerModel::setBatteryCapacity);
 
-    connect(cfgDock, &DConfig::valueChanged, [this] (const QString &key) {
+    connect(m_cfgDock, &DConfig::valueChanged, [this] (const QString &key) {
         if ("showtimetofull" == key) {
-            m_powerModel->setShowBatteryTimeToFull(cfgDock->value("showtimetofull").toBool());
+            m_powerModel->setShowBatteryTimeToFull(m_cfgDock->value("showtimetofull").toBool());
         }
     });
 
@@ -93,7 +93,7 @@ void PowerWorker::active()
     m_powerModel->setPowerPlan(m_powerDBusProxy->mode());
     m_powerModel->setBatteryCapacity(m_powerDBusProxy->batteryCapacity());
     m_powerModel->setNoPasswdLogin(m_powerDBusProxy->noPasswdLogin());
-    m_powerModel->setShowBatteryTimeToFull(cfgDock->value("showtimetofull").toBool());
+    m_powerModel->setShowBatteryTimeToFull(m_cfgDock->value("showtimetofull").toBool());
 
     m_powerModel->setNoPasswdLogin(m_powerDBusProxy->noPasswdLogin());
 
@@ -166,51 +166,51 @@ void PowerWorker::setSleepOnLidOnPowerClosed(const bool sleep)
 
 void PowerWorker::setSleepDelayOnPower(const int delay)
 {
-    qDebug() << "m_powerDBusProxy->setLinePowerSleepDelay: " << converToDelayDBus(delay);
-    m_powerDBusProxy->setLinePowerSleepDelay(converToDelayDBus(delay));
+    qDebug() << "m_powerDBusProxy->setLinePowerSleepDelay: " << delay;
+    m_powerDBusProxy->setLinePowerSleepDelay(delay);
 }
 
 void PowerWorker::setSleepDelayOnBattery(const int delay)
 {
-    qDebug() << "m_powerDBusProxy->setBatterySleepDelay: " << converToDelayDBus(delay);
-    m_powerDBusProxy->setBatterySleepDelay(converToDelayDBus(delay));
+    qDebug() << "m_powerDBusProxy->setBatterySleepDelay: " << delay;
+    m_powerDBusProxy->setBatterySleepDelay(delay);
 }
 
 void PowerWorker::setScreenBlackDelayOnPower(const int delay)
 {
-    qDebug() << "m_powerDBusProxy->setLinePowerScreenBlackDelay: " << converToDelayDBus(delay);
-    m_powerDBusProxy->setLinePowerScreenBlackDelay(converToDelayDBus(delay));
+    qDebug() << "m_powerDBusProxy->setLinePowerScreenBlackDelay: " << delay;
+    m_powerDBusProxy->setLinePowerScreenBlackDelay(delay);
 }
 
 void PowerWorker::setScreenBlackDelayOnBattery(const int delay)
 {
-    qDebug() << "m_powerDBusProxy->setBatteryScreenBlackDelay: " << converToDelayDBus(delay);
-    m_powerDBusProxy->setBatteryScreenBlackDelay(converToDelayDBus(delay));
+    qDebug() << "m_powerDBusProxy->setBatteryScreenBlackDelay: " << delay;
+    m_powerDBusProxy->setBatteryScreenBlackDelay(delay);
 }
 
 void PowerWorker::setSleepDelayToModelOnPower(const int delay)
 {
-    m_powerModel->setSleepDelayOnPower(converToDelayModel(delay));
+    m_powerModel->setSleepDelayOnPower(delay);
 }
 
 void PowerWorker::setScreenBlackDelayToModelOnPower(const int delay)
 {
-    m_powerModel->setScreenBlackDelayOnPower(converToDelayModel(delay));
+    m_powerModel->setScreenBlackDelayOnPower(delay);
 }
 
 void PowerWorker::setSleepDelayToModelOnBattery(const int delay)
 {
-    m_powerModel->setSleepDelayOnBattery(converToDelayModel(delay));
+    m_powerModel->setSleepDelayOnBattery(delay);
 }
 
 void PowerWorker::setResponseBatteryLockScreenDelay(const int delay)
 {
-    m_powerModel->setBatteryLockScreenDelay(converToDelayModel(delay));
+    m_powerModel->setBatteryLockScreenDelay(delay);
 }
 
 void PowerWorker::setResponsePowerLockScreenDelay(const int delay)
 {
-    m_powerModel->setPowerLockScreenDelay(converToDelayModel(delay));
+    m_powerModel->setPowerLockScreenDelay(delay);
 }
 
 void PowerWorker::setHighPerformanceSupported(bool state)
@@ -300,19 +300,19 @@ bool PowerWorker::getCurCanHibernate()
 
 void PowerWorker::setScreenBlackDelayToModelOnBattery(const int delay)
 {
-    m_powerModel->setScreenBlackDelayOnBattery(converToDelayModel(delay));
+    m_powerModel->setScreenBlackDelayOnBattery(delay);
 }
 
 void PowerWorker::setLockScreenDelayOnBattery(const int delay)
 {
-    qDebug() << "m_powerDBusProxy->setBatteryLockDelay: " << converToDelayDBus(delay);
-    m_powerDBusProxy->setBatteryLockDelay(converToDelayDBus(delay));
+    qDebug() << "m_powerDBusProxy->setBatteryLockDelay: " << delay;
+    m_powerDBusProxy->setBatteryLockDelay(delay);
 }
 
 void PowerWorker::setLockScreenDelayOnPower(const int delay)
 {
-    qDebug() << "m_powerDBusProxy->setLinePowerLockDelay: " << converToDelayDBus(delay);
-    m_powerDBusProxy->setLinePowerLockDelay(converToDelayDBus(delay));
+    qDebug() << "m_powerDBusProxy->setLinePowerLockDelay: " << delay;
+    m_powerDBusProxy->setLinePowerLockDelay(delay);
 }
 
 void PowerWorker::setEnablePowerSave(const bool isEnable)
@@ -325,50 +325,9 @@ int PowerWorker::getMaxBacklightBrightness()
     return m_powerDBusProxy->maxBacklightBrightness();
 }
 
-int PowerWorker::converToDelayModel(int value)
-{
-    if (value == 0) {
-        return 7;
-    }
-
-    if (value <= 60) {
-        return 1;
-    } else if (value <= 300) {
-        return 2;
-    } else if (value <= 600) {
-        return 3;
-    } else if (value <= 900) {
-        return 4;
-    } else if (value <= 1800) {
-        return 5;
-    } else {
-        return 6;
-    }
-}
-
-int PowerWorker::converToDelayDBus(int value)
-{
-    switch (value) {
-    case 1:
-        return 60;
-    case 2:
-        return 300;
-    case 3:
-        return 600;
-    case 4:
-        return 900;
-    case 5:
-        return 1800;
-    case 6:
-        return 3600;
-    case 7:
-        return 0;
-    default:
-        return 900;
-    }
-}
-
 void PowerWorker::setShowBatteryTimeToFull(bool value)
 {
-    cfgDock->setValue("showtimetofull", value);
+    if (m_cfgDock) {
+        m_cfgDock->setValue("showtimetofull", value);
+    }
 }

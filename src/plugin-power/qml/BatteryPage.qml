@@ -48,7 +48,15 @@ DccObject {
                     Layout.leftMargin: 10
                 }
                 D.TipsSlider {
-                    readonly property var tips: [("1m"), ("5m"), ("10m"), ("15h"), ("30h"), ("1h"), ("从不")]
+                    readonly property var dataMap: [
+                        { "text": "1m", "value": 60 },
+                        { "text": "5m", "value": 300 },
+                        { "text": "10m", "value": 600 },
+                        { "text": "15m", "value": 900 },
+                        { "text": "30m", "value": 1800 },
+                        { "text": "1h", "value": 3600 },
+                        { "text": "从不", "value": 0 }
+                    ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
@@ -59,19 +67,19 @@ DccObject {
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.screenBlackDelayOnBattery
+                    slider.value: dccData.indexByValueOnMap(dataMap, dccData.model.screenBlackDelayOnBattery)
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
+                        D.SliderTipItem { text: parent.parent.dataMap[0].text; highlight: parent.parent.slider.value === 0 },
+                        D.SliderTipItem { text: parent.parent.dataMap[1].text; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.dataMap[2].text; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.dataMap[3].text; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.dataMap[4].text; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.dataMap[5].text; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.dataMap[6].text; highlight: parent.parent.slider.value === 6 }
                     ]
 
                     slider.onValueChanged: {
-                        dccData.worker.setScreenBlackDelayOnBattery(slider.value)
+                        dccData.worker.setScreenBlackDelayOnBattery(dataMap[slider.value].value)
                     }
                 }
             }
@@ -101,7 +109,15 @@ DccObject {
                     Layout.leftMargin: 10
                 }
                 D.TipsSlider {
-                    readonly property var tips: [("10m"), ("15m"), ("30m"), ("1h"), ("2h"), ("3h"), ("从不")]
+                    readonly property var dataMap: [
+                        { "text": "1m", "value": 60 },
+                        { "text": "5m", "value": 300 },
+                        { "text": "10m", "value": 600 },
+                        { "text": "15m", "value": 900 },
+                        { "text": "30m", "value": 1800 },
+                        { "text": "1h", "value": 3600 },
+                        { "text": "从不", "value": 0 }
+                    ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
@@ -112,19 +128,19 @@ DccObject {
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.batteryLockScreenDelay
+                    slider.value: dccData.indexByValueOnMap(dataMap, dccData.model.batteryLockScreenDelay)
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
+                        D.SliderTipItem { text: parent.parent.dataMap[0].text; highlight: parent.parent.slider.value === 0 },
+                        D.SliderTipItem { text: parent.parent.dataMap[1].text; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.dataMap[2].text; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.dataMap[3].text; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.dataMap[4].text; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.dataMap[5].text; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.dataMap[6].text; highlight: parent.parent.slider.value === 6 }
                     ]
 
                     slider.onValueChanged: {
-                        dccData.worker.setLockScreenDelayOnBattery(slider.value)
+                        dccData.worker.setLockScreenDelayOnBattery(dataMap[slider.value].value)
                     }
                 }
             }
@@ -154,7 +170,15 @@ DccObject {
                     Layout.leftMargin: 10
                 }
                 D.TipsSlider {
-                    readonly property var tips: [("10m"), ("15m"), ("30m"), ("1h"), ("2h"), ("3h"), ("从不")]
+                    readonly property var dataMap: [
+                        { "text": "10m", "value": 600 },
+                        { "text": "15m", "value": 900 },
+                        { "text": "30m", "value": 1800 },
+                        { "text": "1h", "value": 3600 },
+                        { "text": "2h", "value": 7200 },
+                        { "text": "3h", "value": 10800 },
+                        { "text": "从不", "value": 0 }
+                    ]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
@@ -165,19 +189,19 @@ DccObject {
                     slider.live: true
                     slider.stepSize: 1
                     slider.snapMode: Slider.SnapAlways
-                    slider.value: dccData.model.sleepDelayOnBattery
+                    slider.value: dccData.indexByValueOnMap(dataMap, dccData.model.sleepDelayOnBattery)
                     ticks: [
-                        D.SliderTipItem { text: parent.parent.tips[0]; highlight: parent.parent.slider.value === 0 },
-                        D.SliderTipItem { text: parent.parent.tips[1]; highlight: parent.parent.slider.value === 1 },
-                        D.SliderTipItem { text: parent.parent.tips[2]; highlight: parent.parent.slider.value === 2 },
-                        D.SliderTipItem { text: parent.parent.tips[3]; highlight: parent.parent.slider.value === 3 },
-                        D.SliderTipItem { text: parent.parent.tips[4]; highlight: parent.parent.slider.value === 4 },
-                        D.SliderTipItem { text: parent.parent.tips[5]; highlight: parent.parent.slider.value === 5 },
-                        D.SliderTipItem { text: parent.parent.tips[6]; highlight: parent.parent.slider.value === 6 }
+                        D.SliderTipItem { text: parent.parent.dataMap[0].text; highlight: parent.parent.slider.value === 0 },
+                        D.SliderTipItem { text: parent.parent.dataMap[1].text; highlight: parent.parent.slider.value === 1 },
+                        D.SliderTipItem { text: parent.parent.dataMap[2].text; highlight: parent.parent.slider.value === 2 },
+                        D.SliderTipItem { text: parent.parent.dataMap[3].text; highlight: parent.parent.slider.value === 3 },
+                        D.SliderTipItem { text: parent.parent.dataMap[4].text; highlight: parent.parent.slider.value === 4 },
+                        D.SliderTipItem { text: parent.parent.dataMap[5].text; highlight: parent.parent.slider.value === 5 },
+                        D.SliderTipItem { text: parent.parent.dataMap[6].text; highlight: parent.parent.slider.value === 6 }
                     ]
 
                     slider.onValueChanged: {
-                        dccData.worker.setSleepDelayOnBattery(slider.value)
+                        dccData.worker.setSleepDelayOnBattery(dataMap[slider.value].value)
                     }
                 }
             }
@@ -261,23 +285,18 @@ DccObject {
             page: D.ComboBox {
                 width: 100
                 textRole: "text"
-                valueRole: "value"
                 flat: true
+                currentIndex: dccData.indexByValueOnModel(model, dccData.model.lowPowerNotifyThreshold)
                 model: ListModel {
-                    ListElement { text: "10%"; value: 10}
-                    ListElement { text: "15%"; value: 15}
-                    ListElement { text: "20%"; value: 20}
-                    ListElement { text: "25%"; value: 25}
-                }
-                onCurrentValueChanged: {
-                    dccData.worker.setLowPowerNotifyThreshold(currentValue)
+                    ListElement { text: "10%"; value: 10 }
+                    ListElement { text: "15%"; value: 15 }
+                    ListElement { text: "20%"; value: 20 }
+                    ListElement { text: "25%"; value: 25 }
                 }
 
-                Component.onCompleted: {
-                    currentIndex = indexOfValue(dccData.model.lowPowerNotifyThreshold)
-                    // currentIndex = Qt.binding(function() {
-                    //     return dccData.model.lowPowerNotifyThreshold
-                    // })
+                onCurrentIndexChanged: {
+                    var selectedValue = model.get(currentIndex).value;
+                    dccData.worker.setLowPowerNotifyThreshold(selectedValue)
                 }
             }
         }
@@ -298,7 +317,7 @@ DccObject {
             pageType: DccObject.Editor
             page: D.ComboBox {
                 width: 100
-                model: [ "自动休眠", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
+                model: [ "自动休眠", "自动待机"]
                 flat: true
             }
         }
@@ -309,8 +328,19 @@ DccObject {
             weight: 2
             pageType: DccObject.Editor
             page: D.ComboBox {
+                textRole: "text"
                 width: 100
-                model: [ "5%", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
+                model: ListModel {
+                    ListElement { text: "1%"; value: 1 }
+                    ListElement { text: "2%"; value: 2 }
+                    ListElement { text: "3%"; value: 3 }
+                    ListElement { text: "4%"; value: 4 }
+                    ListElement { text: "5%"; value: 5 }
+                    ListElement { text: "6%"; value: 6 }
+                    ListElement { text: "7%"; value: 7 }
+                    ListElement { text: "8%"; value: 8 }
+                    ListElement { text: "9%"; value: 9 }
+                }
                 flat: true
             }
         }
@@ -382,7 +412,7 @@ DccObject {
                 pageType: DccObject.Editor
                 page: D.ComboBox {
                     width: 100
-                    model: [ "80%", "待机", "休眠", "关闭显示器", "进入关机界面", "无任何操作" ]
+                    model: [ "90%", "85%", "80%" ]
                     flat: true
                 }
             }

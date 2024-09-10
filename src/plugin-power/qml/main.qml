@@ -36,6 +36,7 @@ DccObject {
         displayName: qsTr("电池")
         icon: "power"
         weight: 200
+        // visible: dccData.model.haveBettary
         page: DccRightView {
             spacing: 5
         }
