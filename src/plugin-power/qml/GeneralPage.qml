@@ -57,14 +57,12 @@ DccObject {
         pageType: DccObject.Item
         page: DccGroupView {}
 
-        // TODO 需要判断电池
-
         DccObject {
             name: "autoPowerSavingOnLowBattery"
             parentName: "power/general/powerSavingSettingsGroup"
             displayName: qsTr("Auto power saving on low battery")
             weight: 1
-            // visible: dccData.model.haveBettary
+            visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.Switch {
                 checked: dccData.model.powerSavingModeAutoWhenQuantifyLow
@@ -79,7 +77,7 @@ DccObject {
             parentName: "power/general/powerSavingSettingsGroup"
             displayName: qsTr("Low battery threshold")
             weight: 2
-            // visible: dccData.model.haveBettary
+            visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.ComboBox {
                 width: 100
@@ -106,7 +104,7 @@ DccObject {
             parentName: "power/general/savePowerGroup"
             displayName: qsTr("Auto power saving on battery")
             weight: 1
-            // visible: dccData.model.haveBettary
+            visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.Switch {
                 checked: dccData.model.autoPowerSaveMode

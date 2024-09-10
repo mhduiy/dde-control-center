@@ -39,7 +39,7 @@ DccObject {
         description: qsTr("Screen and standby management, low battery management, battery management")
         icon: "power"
         weight: 200
-        // visible: dccData.model.haveBettary
+        visible: dccData.model.haveBettary
         page: DccRightView {
             spacing: 5
         }
