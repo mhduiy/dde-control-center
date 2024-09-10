@@ -59,8 +59,8 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     connect(m_powerDBusProxy, &PowerDBusProxy::BatteryCapacityChanged, m_powerModel, &PowerModel::setBatteryCapacity);
 
     connect(m_cfgDock, &DConfig::valueChanged, [this] (const QString &key) {
-        if ("showtimetofull" == key) {
-            m_powerModel->setShowBatteryTimeToFull(m_cfgDock->value("showtimetofull").toBool());
+        if ("showTimeToFull" == key) {
+            m_powerModel->setShowBatteryTimeToFull(m_cfgDock->value("showTimeToFull").toBool());
         }
     });
 
@@ -93,7 +93,7 @@ void PowerWorker::active()
     m_powerModel->setPowerPlan(m_powerDBusProxy->mode());
     m_powerModel->setBatteryCapacity(m_powerDBusProxy->batteryCapacity());
     m_powerModel->setNoPasswdLogin(m_powerDBusProxy->noPasswdLogin());
-    m_powerModel->setShowBatteryTimeToFull(m_cfgDock->value("showtimetofull").toBool());
+    m_powerModel->setShowBatteryTimeToFull(m_cfgDock->value("showTimeToFull").toBool());
 
     m_powerModel->setNoPasswdLogin(m_powerDBusProxy->noPasswdLogin());
 
@@ -328,6 +328,6 @@ int PowerWorker::getMaxBacklightBrightness()
 void PowerWorker::setShowBatteryTimeToFull(bool value)
 {
     if (m_cfgDock) {
-        m_cfgDock->setValue("showtimetofull", value);
+        m_cfgDock->setValue("showTimeToFull", value);
     }
 }
