@@ -4,6 +4,7 @@
 #include "powerworker.h"
 #include "powermodel.h"
 #include "utils.h"
+#include <qcontainerfwd.h>
 
 #include <QProcessEnvironment>
 #include <QFutureWatcher>
@@ -11,6 +12,13 @@
 
 #define POWER_CAN_SLEEP "POWER_CAN_SLEEP"
 #define POWER_CAN_HIBERNATE "POWER_CAN_HIBERNATE"
+
+#define BATTERYLOCKDELAYNAME "batteryLockDelay"
+#define BATTERYSLEEPDELAYNAME "batterySleepDelay"
+#define BATTERYSBDELAYNAME "batteryScreenBlackDelay"
+#define LINEPOWERLOCKDELAYNAME "linePowerLockDelay"
+#define LINEPOWERSLEEPDELAYNAME "linePowerSleepDelay"
+#define LINEPOWERSBDELAYNAME "linePowerScreenBlackDelay"
 
 static const QStringList DCC_CONFIG_FILES {
     "/etc/deepin/dde-control-center.conf",
@@ -22,6 +30,7 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     , m_powerModel(model)
     , m_powerDBusProxy(new PowerDBusProxy(this))
     , m_cfgDock(DConfig::create("org.deepin.dde.tray-loader", "org.deepin.dde.dock.plugin.power", QString(), this))
+    , m_cfgPower(DConfig::create("org.deepin.dde.control-center", "org.deepin.dde.control-center.power", QString(), this))
 {
     connect(m_powerDBusProxy, &PowerDBusProxy::noPasswdLoginChanged, m_powerModel, &PowerModel::setNoPasswdLogin);
     connect(m_powerDBusProxy, &PowerDBusProxy::ScreenBlackLockChanged, m_powerModel, &PowerModel::setScreenBlackLock);
@@ -68,6 +77,34 @@ PowerWorker::PowerWorker(PowerModel *model, QObject *parent)
     m_powerModel->setHaveBettary(m_powerDBusProxy->hasBattery());
 
     active();
+}
+
+QVariantList PowerWorker::converToDataMap(const QStringList& conf)
+{
+    QVariantList dataMap;
+    for(const QString& numStr : conf) {
+        int num;
+        if (numStr.isEmpty()) {
+            qWarning() << "Convert to num failed, config is empty";
+            num = 0;
+        }
+        bool ok;
+        num = numStr.mid(0, numStr.length() - 1).toInt(&ok);
+        if (!ok) {
+            qWarning() << "Convert to num failed, can't change num to int";
+            num = 0;
+        }
+        if (numStr.contains("m")) {
+            num = num * 60;
+        } else if (numStr.contains("h")) {
+            num = num * 3600;
+        }
+        QVariantMap map;
+        map["text"] = numStr;
+        map["value"] = num;
+        dataMap.push_back(map);
+    }
+    return dataMap;
 }
 
 void PowerWorker::active()
@@ -142,6 +179,36 @@ void PowerWorker::active()
     canHibernateWatcher->setFuture(QtConcurrent::run([=] {
         return m_powerDBusProxy->login1ManagerCanHibernate();
     }));
+
+    auto infoList = getConfigList();
+    auto dataMap = converToDataMap(infoList);
+
+    auto btyLockDelayConfig = m_cfgPower->value("batteryLockDelay").toStringList();
+    auto btySleepDelayConfig = m_cfgPower->value("batterySleepDelay").toStringList();
+    auto btyScreenBalckDelayConfig = m_cfgPower->value("batteryScreenBlackDelay").toStringList();
+    auto linePowerLockDelayConfig = m_cfgPower->value("linePowerLockDelay").toStringList();
+    auto linePowerSleepDelayConfig =  m_cfgPower->value("linePowerSleepDelay").toStringList();
+    auto linePowerScreenBlackDelayConfig =  m_cfgPower->value("linePowerScreenBlackDelay").toStringList();
+
+    auto btyLockDelayDataMap = converToDataMap(btyLockDelayConfig);
+    auto btySleepDelayDataMap = converToDataMap(btySleepDelayConfig);
+    auto btyScreenBlackDelayDataMap = converToDataMap(btyScreenBalckDelayConfig);
+    auto linePowerLockDelayDataMap = converToDataMap(linePowerLockDelayConfig);
+    auto linePowerSleepDelayDataMap = converToDataMap(linePowerSleepDelayConfig);
+    auto linePowerScreenBlackDelayDataMap = converToDataMap(linePowerScreenBlackDelayConfig);
+
+    m_powerModel->setBatteryLockDelayModel(btyLockDelayDataMap);
+    m_powerModel->setBatterySleepDelayModel(btySleepDelayDataMap);
+    m_powerModel->setBatteryScreenBlackDelayModel(btyScreenBlackDelayDataMap);
+    m_powerModel->setLinePowerLockDelayModel(linePowerLockDelayDataMap);
+    m_powerModel->setLinePowerSleepDelayModel(linePowerSleepDelayDataMap);
+    m_powerModel->setLinePowerScreenBlackDelayModel(linePowerScreenBlackDelayDataMap);
+}
+
+void PowerWorker::readDelayConfig(DelayControlType type)
+{
+    // 判断是否合法
+
 }
 
 void PowerWorker::deactive()

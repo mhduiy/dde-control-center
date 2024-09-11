@@ -5,8 +5,18 @@
 #define POWERWORKER_H
 
 #include "powerdbusproxy.h"
+#include <qcontainerfwd.h>
 #include <QObject>
 #include <DConfig>
+
+enum DelayControlType {
+    DCT_BatteryLockDelay = 0,
+    DCT_BatterySleepDelay,
+    DCT_BatteryScreenBlackDelay,
+    DCT_LinePowerLockDelay,
+    DCT_LinePowerSleepDelay,
+    DCT_LinePowerScreenBlackDelay
+};
 
 class PowerModel;
 class PowerWorker : public QObject
@@ -60,11 +70,20 @@ public Q_SLOTS:
 
     int getMaxBacklightBrightness();
 
+    QStringList getConfigList() {
+        return {"1m", "10m", "30m", "4m", "5m", "6m", "6h"};
+    }
+
+private:
+    void readDelayConfig(DelayControlType type);
+    QVariantList converToDataMap(const QStringList& conf);
+
 private:
     PowerModel *m_powerModel;
     PowerDBusProxy *m_powerDBusProxy;
 
     Dtk::Core::DConfig *m_cfgDock;
+    Dtk::Core::DConfig *m_cfgPower;
 };
 
 #endif // POWERWORKER_H
