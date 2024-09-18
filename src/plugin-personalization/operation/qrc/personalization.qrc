@@ -10,4 +10,6 @@
         <file>texts/round_low_16px.svg</file>
         <file>texts/help_16px.svg</file>
     </qresource>
+    <qresource prefix="/dsg">
+    </qresource>
 </RCC>

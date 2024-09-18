@@ -1,0 +1,111 @@
+// SPDX-FileCopyrightText: 2024 - 2027 UnionTech Software Technology Co., Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later
+import QtQuick 2.15
+import QtQuick.Controls 2.0
+import QtQuick.Layouts 1.15
+
+import org.deepin.dtk 1.0 as D
+import org.deepin.dcc 1.0
+
+Rectangle {
+    id: root
+    property alias model: repeater.model
+    property bool backgroundVisible: true
+    signal clicked(int index, bool checked)
+
+    color: "transparent"
+    implicitHeight: layoutView.height
+    Layout.fillWidth: true
+
+    ColumnLayout {
+        id: layoutView
+        width: parent.width
+        clip: true
+        spacing: 0
+        Repeater {
+            id: repeater
+            model: listModel
+            delegate: D.ItemDelegate {
+                Layout.fillWidth: true
+                leftPadding: 10
+                rightPadding: 10
+                cascadeSelected: true
+                checkable: false
+                contentFlow: true
+                corners: getCornersForBackground(index, powerModeModel.count)
+                icon.name: model.icon
+                content: RowLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        DccLabel {
+                            Layout.fillWidth: true
+                            text: model.title
+                        }
+                        DccLabel {
+                            Layout.fillWidth: true
+                            visible: text !== ""
+                            font: D.DTK.fontManager.t8
+                            text: model.description
+                            opacity: 0.5
+                        }
+                    }
+                    Control {
+                        Layout.alignment: Qt.AlignRight
+                        Layout.rightMargin: 10
+                        contentItem: D.IconButton {
+                            visible: model.mode === dccData.model.powerPlan
+                            icon.name: "qrc:/icons/deepin/builtin/actions/checked.png"
+                            icon.width: 24
+                            icon.height: 24
+                            implicitWidth: 36
+                            implicitHeight: 36
+                            background: Rectangle {
+                                color: "transparent"
+                                border.color: "transparent"
+                                border.width: 0
+                            }
+                        }
+                    }
+                }
+                background: DccListViewBackground {
+                    separatorVisible: true
+                    highlightEnable: false
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        // dccData.worker.setPowerPlan(model.mode)
+                    }
+                }
+            }
+        }
+    }
+
+    ListModel {
+        id: listModel
+
+        ListElement {
+            mode: "performance"
+            title: qsTr("最佳性能")
+            icon: "high_performance"
+            description: qsTr("关闭所有界面和窗口特效，保障系统高效运行")
+        }
+
+        ListElement {
+            mode: "balance_performance"
+            title: qsTr("均衡")
+            icon: "balance_performance"
+            description: qsTr("限制部分窗口特效，保障出色的视觉效果，同时维持整体流畅运行")
+        }
+
+        ListElement {
+            mode: "balance"
+            title: qsTr("最佳视觉")
+            icon: "balanced"
+            description: qsTr("开启所有界面和窗口特效，体验最佳视觉效果")
+        }
+    }
+}
