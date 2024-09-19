@@ -10,7 +10,7 @@ import org.deepin.dtk 1.0 as D
 
 DccObject {
     DccObject {
-        name: "activeColorTitle"
+        name: "accentColorTitle"
         parentName: "personalization/colorAndIcons"
         displayName: qsTr("活动用色")
         weight: 1
@@ -23,14 +23,14 @@ DccObject {
     }
 
     DccObject {
-        name: "roundedEffect"
+        name: "accentColor"
         parentName: "personalization/colorAndIcons"
         weight: 100
         pageType: DccObject.Item
         hasBackground: true
         page: ListView {
             id: listview
-            property var colors: ["red", "red", "red", "red", "red", "red", "red", "red", "red", "red", "red"]
+            property var colors: ["#D8316C", "#FF5D00", "#F8CB00", "#89C32B", "#00C433", "#00A49E", "#1F6EE7", "#5624DA", "#7C1AC2", "#E564C9", "#4D4D4D", "CUSTOM"]
             implicitWidth: 300
             implicitHeight: 80
             leftMargin: 10
@@ -40,12 +40,23 @@ DccObject {
             layoutDirection: Qt.LeftToRight
             spacing: 12
 
-            delegate: Rectangle {
+            delegate: Item {
                 anchors.verticalCenter: parent.verticalCenter
-                width: 28
-                height: 28
-                color: listview.colors[index]
-                radius: width / 2
+                width: 30
+                height: 30
+                Rectangle {
+                    anchors.fill: parent
+                    border.width: 2
+                    border.color: listview.colors[index]
+                    radius: width / 2
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: 4
+                    color: listview.colors[index]
+                    radius: width / 2
+                }
             }
         }
     }
