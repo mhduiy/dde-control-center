@@ -8,6 +8,7 @@
 #include "navigationmodel.h"
 #include "pluginmanager.h"
 #include "searchmodel.h"
+#include <qqmllist.h>
 
 #include <QCoreApplication>
 #include <QDBusConnection>
@@ -34,6 +35,8 @@ const QString DisableConfig = QStringLiteral("disableModule");
 const QString ControlCenterIcon = QStringLiteral("preferences-system");
 const QString ControlCenterGroupName = "com.deepin.dde-grand-search.group.dde-control-center-setting";
 
+// static DccManager* instance = nullptr;
+
 DccManager::DccManager(QObject *parent)
     : DccApp(parent)
     , m_root(new DccObject(this))
@@ -48,6 +51,7 @@ DccManager::DccManager(QObject *parent)
     , m_navModel(new NavigationModel(this))
     , m_searchModel(new SearchModel(this))
 {
+    // instance = this;
     m_hideObjects->setName("_hide");
     m_noAddObjects->setName("_noAdd");
     m_noParentObjects->setName("_noParent");
@@ -70,6 +74,11 @@ DccManager::~DccManager()
     delete m_plugins;
     qCDebug(dccLog()) << "delete dccManger end";
 }
+
+ QQmlEngine *DccManager::getEngin()
+ {
+    return static_cast<DccManager*>(instance())->m_engine;
+ }
 
 bool DccManager::installTranslator(const QString &name)
 {

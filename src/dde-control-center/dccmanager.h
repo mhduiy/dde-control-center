@@ -5,6 +5,7 @@
 #define DCCMANAGER_H
 #include "dccapp.h"
 #include "dccobject.h"
+#include <qqmllist.h>
 
 #include <DConfig>
 
@@ -44,6 +45,8 @@ public:
     inline const QVector<DccObject *> &currentObjects() const { return m_currentObjects; }
 
     inline const QSet<QString> &hideModule() const { return m_hideModule; }
+
+    static  QQmlEngine *getEngin();
 
 public Q_SLOTS:
     DccObject *object(const QString &name) override;
