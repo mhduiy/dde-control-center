@@ -68,7 +68,7 @@ DccObject {
             parentName: "personalization/themeGroup"
             displayName: qsTr("外观")
             description: qsTr("外观决定了主题显示浅色还是深色，或者自动切换")
-            weight: 10
+            weight: 2
             pageType: DccObject.Editor
             icon: "personalization"
             page: D.ComboBox {
@@ -84,7 +84,7 @@ DccObject {
         displayName: qsTr("桌面和任务栏")
         description: qsTr("设置桌面上图标的显示以及图标大小等")
         icon: "personalization"
-        weight: 21
+        weight: 20
     }
     DccObject {
         name: "windowEffect"
@@ -92,7 +92,7 @@ DccObject {
         displayName: qsTr("窗口效果")
         description: qsTr("设置界面效果以及图标大小等")
         icon: "personalization"
-        weight: 21
+        weight: 30
         page: DccRightView {
             spacing: 5
         }
@@ -104,7 +104,7 @@ DccObject {
         displayName: qsTr("壁纸和屏保")
         description: qsTr("个性化您的壁纸与屏保")
         icon: "personalization"
-        weight: 31
+        weight: 40
     }
     DccObject {
         name: "colorAndIcons"
@@ -112,9 +112,9 @@ DccObject {
         displayName: qsTr("颜色和图标")
         description: qsTr("调整喜好的活动用色和主题图标")
         icon: "personalization"
-        weight: 51
+        weight: 50
         page: DccRightView {
-            spacing: 10
+            spacing: 5
         }
         ColorAndIcons {}
     }
@@ -124,7 +124,11 @@ DccObject {
         displayName: qsTr("字体和字号")
         description: qsTr("修改系统字体与字号")
         icon: "personalization"
-        weight: 51
+        weight: 60
+        page: DccRightView {
+            spacing: 5
+        }
+        FontSizePage {}
     }
     DccObject {
         name: "lock"
@@ -132,6 +136,6 @@ DccObject {
         displayName: qsTr("锁屏")
         description: qsTr("锁屏自定义")
         icon: "personalization"
-        weight: 51
+        weight: 70
     }
 }

@@ -176,6 +176,7 @@ DccObject {
             }
         }
     }
+
     DccObject {
         name: "scrollBar"
         parentName: "personalization/windowEffect"
