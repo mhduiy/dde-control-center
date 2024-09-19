@@ -51,6 +51,7 @@ ListView {
             delegate: Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                color: "transparent"
                 ColumnLayout {
                     width: listview.itemWidth
                     height: listview.itemHeight
