@@ -465,7 +465,7 @@ QQuickItem *DccObject::getSectionItem(QObject *parent)
         return p_ptr->m_sectionItem.get();
     }
     if (p_ptr->m_page) {
-        QQmlContext *creationContext = p_ptr->m_page->creationContext();
+        QQmlContext *creationContext = qmlContext(p_ptr->m_page);//->creationContext();
         QQmlContext *context = new QQmlContext(creationContext);
         context->setContextProperty("dccObj", this);
 #if 1

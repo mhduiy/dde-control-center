@@ -4,6 +4,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.15
+import QtQuick.Dialogs
 
 import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
@@ -47,15 +48,69 @@ DccObject {
                 Rectangle {
                     anchors.fill: parent
                     border.width: 2
-                    border.color: listview.colors[index]
+                    border.color: listview.colors[index] === "CUSTOM" ? "#008c8c" : listview.colors[index]
                     radius: width / 2
                 }
 
                 Rectangle {
                     anchors.fill: parent
                     anchors.margins: 4
-                    color: listview.colors[index]
                     radius: width / 2
+                    color: listview.colors[index] === "CUSTOM" ? "transparent" : listview.colors[index]
+                    anchors.centerIn: parent
+
+                    Canvas {
+                        anchors.fill: parent
+                        visible: listview.colors[index] === "CUSTOM"
+                        onPaint: {
+                            var ctx = getContext("2d");
+                            ctx.clearRect(0, 0, width, height);
+
+                            var centerX = width / 2;
+                            var centerY = height / 2;
+                            var radius = Math.min(width, height) / 2;
+
+                            var gradient = ctx.createConicalGradient(centerX, centerY, 0, centerX, centerY, radius);
+
+                            gradient.addColorStop(0.0, "red");
+                            gradient.addColorStop(0.167, "yellow");
+                            gradient.addColorStop(0.333, "green");
+                            gradient.addColorStop(0.5, "cyan");
+                            gradient.addColorStop(0.667, "blue");
+                            gradient.addColorStop(0.833, "magenta");
+                            gradient.addColorStop(1.0, "red");
+
+                            ctx.fillStyle = gradient;
+                            ctx.beginPath();
+                            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                            ctx.closePath();
+                            ctx.fill();
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            colorDialog.show()
+                        }
+                    }
+
+                    // 颜色选择对话框
+                    // Window {
+                    //     D.DWindow.enabled: true
+                    //     color: "transparent"
+                    //     id: colorDialog
+                    //     width: 500
+                    //     height: 500
+                    //     ColorDialog {
+                    //         visible: true
+                    //         title: "选择颜色"
+                    //     }
+                    //     D.StyledBehindWindowBlur {
+                    //         control: parent
+                    //         anchors.fill: parent
+                    //     }
+                    // }
                 }
             }
         }
@@ -82,6 +137,20 @@ DccObject {
         description: qsTr("自定义您的主题图标")
         icon: "personalization"
         weight: 300
+        pageType: DccObject.Menu
+        page: DccRightView {
+            spacing: 5
+        }
+        DccObject {
+            DccObject {
+                name: "iconThemeSelect"
+                parentName: "personalization/colorAndIcons/iconTheme"
+                weight: 1
+                hasBackground: false
+                pageType: DccObject.Item
+                page: IconThemeGridView{}
+            }
+        }
     }
     DccObject {
         name: "cursorTheme"
@@ -90,5 +159,18 @@ DccObject {
         description: qsTr("自定义您的主题光标")
         icon: "personalization"
         weight: 400
+        page: DccRightView {
+            spacing: 5
+        }
+        DccObject {
+            DccObject {
+                name: "cursorThemeSelect"
+                parentName: "personalization/colorAndIcons/cursorTheme"
+                weight: 1
+                hasBackground: false
+                pageType: DccObject.Item
+                page: IconThemeGridView{}
+            }
+        }
     }
 }

@@ -13,7 +13,6 @@ add_library(${Personalization_Name} MODULE
 set(Personalization_Libraries
     ${DTK_NS}::Gui
     ${QT_NS}::DBus
-    ${QT_NS}::Concurrent
 )
 
 target_link_libraries(${Personalization_Name} PRIVATE

@@ -77,6 +77,7 @@ set(Control_Center_Libraries
     Qt::DBus
     Qt::Concurrent
     Qt::Quick
+    Qt::Widgets
 )
 
 target_link_libraries(${Control_Center_Name} PRIVATE

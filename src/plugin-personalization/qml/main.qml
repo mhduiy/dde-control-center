@@ -114,7 +114,7 @@ DccObject {
         icon: "personalization"
         weight: 51
         page: DccRightView {
-            spacing: 5
+            spacing: 10
         }
         ColorAndIcons {}
     }

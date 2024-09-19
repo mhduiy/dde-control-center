@@ -20,6 +20,7 @@
 #include <QScreen>
 #include <QStringList>
 #include <QWindow>
+#include <QApplication>
 
 DGUI_USE_NAMESPACE
 DCORE_USE_NAMESPACE
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
     DGuiApplicationHelper::setAttribute(DGuiApplicationHelper::DontSaveApplicationTheme, true);
     DGuiApplicationHelper::setAttribute(DGuiApplicationHelper::UseInactiveColorGroup, false);
 
-    QGuiApplication *app = new QGuiApplication(argc, argv);
+    QApplication *app = new QApplication(argc, argv);
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif // (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
