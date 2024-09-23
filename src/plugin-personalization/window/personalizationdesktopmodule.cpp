@@ -103,9 +103,9 @@ QWidget *PersonalizationDesktopModule::initTransparentEffect(ModuleObject *modul
     slider->setPageStep(1);
     auto onOpacityChanged = [transparentSlider](std::pair<int, double> value) {
         transparentSlider->slider()->blockSignals(true);
-        transparentSlider->slider()->setValue(value.first);
+        transparentSlider->slider()->setValue(value);
         transparentSlider->slider()->blockSignals(false);
-        transparentSlider->setValueLiteral(QString("%1").arg(value.first));
+        transparentSlider->setValueLiteral(QString("%1").arg(value));
     };
     onOpacityChanged(m_model->opacity());
     connect(m_model, &PersonalizationModel::onOpacityChanged, transparentSlider, onOpacityChanged);

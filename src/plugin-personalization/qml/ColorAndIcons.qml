@@ -135,20 +135,26 @@ DccObject {
         parentName: "personalization/colorAndIcons"
         displayName: qsTr("图标主题")
         description: qsTr("自定义您的主题图标")
-        icon: "personalization"
+        icon: "theme_icon"
         weight: 300
-        pageType: DccObject.Menu
-        page: DccRightView {
-            spacing: 5
+        hasBackground: true
+        pageType: DccObject.MenuEditor
+        page: Label {
+            text: "bloom"
         }
+
         DccObject {
+            name: "iconThemeSelect"
+            parentName: "personalization/colorAndIcons/iconTheme"
+            weight: 1
+            hasBackground: false
             DccObject {
-                name: "iconThemeSelect"
-                parentName: "personalization/colorAndIcons/iconTheme"
+                name: "cursorThemeSelect"
+                parentName: "personalization/colorAndIcons/iconTheme/iconThemeSelect"
                 weight: 1
                 hasBackground: false
                 pageType: DccObject.Item
-                page: IconThemeGridView{}
+                page: IconThemeGridView {}
             }
         }
     }
@@ -157,19 +163,26 @@ DccObject {
         parentName: "personalization/colorAndIcons"
         displayName: qsTr("光标主题")
         description: qsTr("自定义您的主题光标")
-        icon: "personalization"
+        icon: "topic_cursor"
         weight: 400
-        page: DccRightView {
-            spacing: 5
+        hasBackground: true
+        pageType: DccObject.MenuEditor
+        page: Label {
+            text: "bloom"
         }
+
         DccObject {
+            name: "cursorThemeSelect"
+            parentName: "personalization/colorAndIcons/cursorTheme"
+            weight: 1
+            hasBackground: false
             DccObject {
                 name: "cursorThemeSelect"
-                parentName: "personalization/colorAndIcons/cursorTheme"
+                parentName: "personalization/colorAndIcons/cursorTheme/cursorThemeSelect"
                 weight: 1
                 hasBackground: false
                 pageType: DccObject.Item
-                page: IconThemeGridView{}
+                page: IconThemeGridView {}
             }
         }
     }

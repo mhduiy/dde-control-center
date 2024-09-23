@@ -75,18 +75,44 @@ DccObject {
                     Layout.margins: 10
                     clip: true
                     property var tips: ["无", "小", "中", "大"]
+                    property var icons: ["corner_none", "corner_small", "corner_middle", "corner_big"]
+
                     model: tips.length
                     orientation: ListView.Horizontal
                     layoutDirection: Qt.LeftToRight
                     spacing: 12
                     delegate: ColumnLayout {
-                        width: 108
-                        height: 100
-                        Rectangle {
+                        id: layout
+                        property bool checked : dccData.model.windowRadius === 6 * index
+                        width: 112
+                        height: 104
+                        Item {
                             Layout.preferredHeight: 77
                             Layout.fillWidth: true
-                            color: "lightGray"
-                            radius: 7
+                            Rectangle {
+                                anchors.fill: parent
+                                radius: 7
+                                color: "transparent"
+                                visible: layout.checked
+                                border.width: 2
+                                border.color: D.DTK.platformTheme.activeColor
+                            }
+                            Rectangle {
+                                anchors.fill: parent
+                                anchors.margins: 4
+                                color: Qt.rgba(0, 0, 0, 0.05)
+                                radius: 7
+                                D.DciIcon{
+                                    sourceSize: Qt.size(parent.width, parent.height)
+                                    name: listview.icons[index]
+                                }
+                            }
+                            MouseArea {
+                                anchors.fill: parent
+                                onClicked: {
+                                    dccData.worker.setWindowRadius(6 * index)
+                                }
+                            }
                         }
                         Text {
                             Layout.fillWidth: true
@@ -94,6 +120,7 @@ DccObject {
                             text: listview.tips[index]
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter
+                            color: layout.checked ? D.DTK.platformTheme.activeColor : this.palette.windowText
                         }
                     }
                 }
@@ -105,7 +132,6 @@ DccObject {
             parentName: "personalization/windowEffect/windowSettingsGroup"
             displayName: qsTr("窗口移动时启用透明特效")
             weight: 2
-            visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.Switch {
                 onCheckedChanged: {
@@ -119,11 +145,14 @@ DccObject {
             parentName: "personalization/windowEffect/windowSettingsGroup"
             displayName: qsTr("最小化时效果")
             weight: 3
-            visible: dccData.model.haveBettary
             pageType: DccObject.Editor
             page: D.ComboBox {
                 flat: true
-                model: [qsTr("缩小"), qsTr("魔灯")]
+                currentIndex: dccData.model.miniEffect
+                model: [qsTr("Scale"), qsTr("Magic Lamp")]
+                onCurrentIndexChanged: {
+                    dccData.worker.setMiniEffect(currentIndex)
+                }
             }
         }
 
@@ -146,15 +175,14 @@ DccObject {
             }
 
             D.TipsSlider {
-                id: doubleClickSlider
                 readonly property var tips: [qsTr("低"), (""), qsTr("高")]
                 Layout.alignment: Qt.AlignCenter
                 Layout.margins: 10
                 Layout.fillWidth: true
                 tickDirection: D.TipsSlider.TickDirection.Back
                 slider.handleType: Slider.HandleType.ArrowBottom
-                slider.value: dccData.doubleSpeed
-                slider.from: 0
+                slider.value: dccData.model.opacity * 100
+                slider.from: 20
                 slider.to: 100
                 slider.live: true
                 slider.stepSize: 1
@@ -171,7 +199,7 @@ DccObject {
                     }
                 ]
                 slider.onValueChanged: {
-
+                    dccData.worker.setOpacity(slider.value)
                 }
             }
         }

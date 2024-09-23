@@ -52,6 +52,7 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::compositingAllowSwitchChanged, this, &PersonalizationWorker::onCompositingAllowSwitch);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::compositingEnabledChanged, this, &PersonalizationWorker::onWindowWM);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::WindowRadiusChanged, this, &PersonalizationWorker::onWindowRadiusChanged);
+    connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::DTKSizeModeChanged, this, &PersonalizationWorker::onCompactDisplayChanged);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::Changed, this, [this](const QString &propertyName, const QString &value) {
         qCDebug(DdcPersonalWorker) << "ChangeProperty is " << propertyName << "; value is" << value;
         if (propertyName == "globaltheme") {
@@ -189,6 +190,7 @@ void PersonalizationWorker::onWindowWM(bool value)
 
 void PersonalizationWorker::onMiniEffectChanged(bool value)
 {
+    qWarning() << "++++++++++++" << value;
     m_model->setMiniEffect(value ? 1 : 0);
 }
 
@@ -200,6 +202,11 @@ void PersonalizationWorker::onWindowRadiusChanged(int value)
 void PersonalizationWorker::onCompositingAllowSwitch(bool value)
 {
     m_model->setCompositingAllowSwitch(value);
+}
+
+void PersonalizationWorker::onCompactDisplayChanged(int value)
+{
+    m_model->setCompactDisplay(value);
 }
 
 void PersonalizationWorker::setFontList(FontModel *model, const QString &type, const QString &list)
@@ -259,9 +266,8 @@ bool PersonalizationWorker::allowSwitchWM()
 
 void PersonalizationWorker::refreshOpacity(double opacity)
 {
-    int slider{ static_cast<int>(opacity * 100) };
-    qCDebug(DdcPersonalWorker) << QString("opacity: %1, slider: %2").arg(opacity).arg(slider);
-    m_model->setOpacity(std::pair<int, double>(slider, opacity));
+    qCDebug(DdcPersonalWorker) << QString("opacity: %1").arg(opacity);
+    m_model->setOpacity(opacity);
 }
 
 const int RENDER_DPI = 72;
@@ -366,6 +372,11 @@ void PersonalizationWorker::setActiveColor(const QString &hexColor)
 void PersonalizationWorker::setWindowRadius(int radius)
 {
     m_personalizationDBusProxy->setWindowRadius(radius);
+}
+
+void PersonalizationWorker::setCompactDisplay(bool value)
+{
+    m_personalizationDBusProxy->setDTKSizeMode(int(value));
 }
 
 template<typename T>

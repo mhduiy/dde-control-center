@@ -70,10 +70,26 @@ DccObject {
             description: qsTr("外观决定了主题显示浅色还是深色，或者自动切换")
             weight: 2
             pageType: DccObject.Editor
-            icon: "personalization"
+            icon: "appearance"
             page: D.ComboBox {
                 flat: true
-                model: [qsTr("自动"), qsTr("深色"), qsTr("浅色")]
+                textRole: "text"
+                model: dccData.appearanceSwitchModel
+                currentIndex: {
+                    for (var i = 0; i < model.length; ++i) {
+                        if (model[i].value === dccData.currentAppearance) {
+                            console.warn("+++++===++++", i)
+                            return i;
+                        }
+                    }
+                    return 0
+                }
+
+                enabled: model.length > 1
+                onCurrentIndexChanged: {
+                    console.warn("++current++", model[currentIndex].value)
+                    dccData.requestSetAppearanceTheme(model[currentIndex].value)
+                }
             }
         }
     }
@@ -83,7 +99,7 @@ DccObject {
         parentName: "personalization"
         displayName: qsTr("桌面和任务栏")
         description: qsTr("设置桌面上图标的显示以及图标大小等")
-        icon: "personalization"
+        icon: "taskbar"
         weight: 20
     }
     DccObject {
@@ -91,11 +107,8 @@ DccObject {
         parentName: "personalization"
         displayName: qsTr("窗口效果")
         description: qsTr("设置界面效果以及图标大小等")
-        icon: "personalization"
+        icon: "window_effect"
         weight: 30
-        page: DccRightView {
-            spacing: 5
-        }
         WindowEffectPage {}
     }
     DccObject {
@@ -103,7 +116,7 @@ DccObject {
         parentName: "personalization"
         displayName: qsTr("壁纸和屏保")
         description: qsTr("个性化您的壁纸与屏保")
-        icon: "personalization"
+        icon: "wallpaper"
         weight: 40
     }
     DccObject {
@@ -111,11 +124,8 @@ DccObject {
         parentName: "personalization"
         displayName: qsTr("颜色和图标")
         description: qsTr("调整喜好的活动用色和主题图标")
-        icon: "personalization"
+        icon: "icon_cursor"
         weight: 50
-        page: DccRightView {
-            spacing: 5
-        }
         ColorAndIcons {}
     }
     DccObject {
@@ -123,11 +133,8 @@ DccObject {
         parentName: "personalization"
         displayName: qsTr("字体和字号")
         description: qsTr("修改系统字体与字号")
-        icon: "personalization"
+        icon: "font_size"
         weight: 60
-        page: DccRightView {
-            spacing: 5
-        }
         FontSizePage {}
     }
     DccObject {

@@ -15,6 +15,10 @@ class PersonalizationModel : public QObject
     Q_OBJECT
     friend class MouseWorker;
 
+    Q_PROPERTY(int miniEffect READ miniEffect WRITE setMiniEffect NOTIFY onMiniEffectChanged)
+    Q_PROPERTY(double opacity READ opacity WRITE setOpacity NOTIFY onOpacityChanged)
+    Q_PROPERTY(int windowRadius READ windowRadius WRITE setWindowRadius NOTIFY onWindowRadiusChanged)
+
 public:
     explicit PersonalizationModel(QObject *parent = nullptr);
     ~PersonalizationModel();
@@ -31,8 +35,8 @@ public:
     void setWindowRadius(int radius);
     int windowRadius();
 
-    inline std::pair<int, double> opacity() const { return m_opacity; }
-    void setOpacity(std::pair<int, double> opacity);
+    inline double opacity() const { return m_opacity; }
+    void setOpacity(double opacity);
 
     inline int miniEffect() const { return m_miniEffect; }
     void setMiniEffect(const int &effect);
@@ -43,14 +47,18 @@ public:
     inline bool getAllowSwitch() { return m_allowSwitch; }
     void setCompositingAllowSwitch(bool value);
 
+    inline bool getCompactDisplay() { return m_compactDisplay; }
+    void setCompactDisplay(bool value);
+
 Q_SIGNALS:
     void wmChanged(const bool is3d);
-    void onOpacityChanged(std::pair<int, double> opacity);
+    void onOpacityChanged(double opacity);
     void onMiniEffectChanged(int effect);
     void onActiveColorChanged(const QString &color);
     void onCompositingAllowSwitch(bool value);
     void onWindowRadiusChanged(int radius);
     void onSaveWindowRadiusChanged(int radius);
+    void compactDisplayChanged(bool value);
 
 private:
     ThemeModel *m_windowModel;
@@ -61,10 +69,11 @@ private:
     FontModel *m_monoFontModel;
     FontSizeModel *m_fontSizeModel;
     bool m_is3DWm;
-    std::pair<int, double> m_opacity;
+    double m_opacity;
     int m_miniEffect;
     QString m_activeColor;
     bool m_allowSwitch;
     int m_windowRadius;
+    bool m_compactDisplay;
 };
 #endif // PERSONALIZATIONMODEL_H
