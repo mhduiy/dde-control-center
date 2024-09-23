@@ -42,6 +42,9 @@ PowerModel::PowerModel(QObject *parent)
     , m_powerPlan("")
     , m_isHighPerformanceSupported(false)
     , m_isBalancePerformanceSupported(false)
+    , m_shutdownTime("19:00")
+    , m_shutdownRepetition(ShutdownRepetition::Once)
+    , m_weekBegin(0)
 {
 }
 
@@ -439,4 +442,78 @@ void PowerModel::setLinePowerSleepDelayModel(const QVariantList &value)
 
         Q_EMIT linePowerSleepDelayModelChanged(value);
     }
+}
+
+void PowerModel::sortWeekdays(QByteArray &weekdays)
+{
+    auto sortFilter = [] (int a, int b, int weekBegin)->bool {
+        if ((a >= weekBegin && b >= weekBegin) || (a < weekBegin && b < weekBegin)) {
+            return a < b;
+        } else {
+            return a >= weekBegin;
+        }
+    };
+    // 按一周首日排序
+    int weekBegin = m_weekBegin;
+    if (weekBegin >= 0 && weekBegin <= 5) {
+        weekBegin = weekBegin + 1;
+    }
+    if (weekBegin == 6) {
+        weekBegin = 0;
+    }
+    std::sort(weekdays.begin(), weekdays.end());
+    std::rotate(weekdays.begin(), std::min_element(weekdays.begin(), weekdays.end(), [sortFilter, weekBegin] (int a, int b) {
+        return sortFilter(a, b, weekBegin);
+    }), weekdays.end());
+}
+
+void PowerModel::setSelectedWeekDays(QByteArray weekdays)
+{
+    if (m_weekDaysSelected != weekdays) {
+        sortWeekdays(weekdays);
+        m_weekDaysSelected = weekdays;
+        Q_EMIT weekDaysSelectedChanged(m_weekDaysSelected);
+    }
+}
+
+void PowerModel::setShutdownTime(const QString &time)
+{
+    if (m_shutdownTime != time) {
+        m_shutdownTime = time;
+        Q_EMIT shutdownTimeChanged(m_shutdownTime);
+    }
+}
+
+void PowerModel::setShutdownRepetition(const ShutdownRepetition repetiton)
+{
+    if (m_shutdownRepetition != repetiton) {
+        m_shutdownRepetition = repetiton;
+        Q_EMIT shutdownRepetitionChanged(m_shutdownRepetition);
+    }
+}
+
+void PowerModel::setScheduledShutdownState(bool state)
+{
+    if (m_scheduledShutdownState != state) {
+        m_scheduledShutdownState = state;
+        Q_EMIT scheduledShutdownStateChanged(m_scheduledShutdownState);
+    }
+}
+
+void PowerModel::setWeekBegin(int begin)
+{
+    if (begin != m_weekBegin) {
+        m_weekBegin = begin;
+        sortWeekdays(m_weekDaysSelected);
+        Q_EMIT weekDaysSelectedChanged(m_weekDaysSelected);
+        Q_EMIT weekBeginChanged(begin);
+    }
+}
+
+const QMap<int, QString> PowerModel::WeekDays()
+{
+    return QMap<int, QString> {
+        {0, tr("Sunday")}, {1, tr("Monday")}, {2, tr("Tuesday")}, {3, tr("Wednesday")},
+        {4, tr("Thursday")}, {5, tr("Friday")}, {6, tr("Saturday")}
+    };
 }

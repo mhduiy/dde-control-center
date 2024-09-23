@@ -27,7 +27,6 @@ class PowerModel : public QObject
     Q_PROPERTY(bool haveBettary READ haveBettary WRITE setHaveBettary NOTIFY haveBettaryChanged)
     Q_PROPERTY(int batteryLockScreenDelay READ getBatteryLockScreenDelay WRITE setBatteryLockScreenDelay NOTIFY batteryLockScreenDelayChanged)
     Q_PROPERTY(int powerLockScreenDelay READ getPowerLockScreenDelay WRITE setPowerLockScreenDelay NOTIFY powerLockScreenDelayChanged)
-    Q_PROPERTY(double batteryPercentage WRITE setBatteryPercentage NOTIFY batteryPercentageChanged) // 没有getter
     Q_PROPERTY(bool powerSavingModeAutoWhenQuantifyLow READ powerSavingModeAutoWhenQuantifyLow WRITE setPowerSavingModeAutoWhenQuantifyLow NOTIFY powerSavingModeAutoWhenQuantifyLowChanged)
     Q_PROPERTY(bool powerSavingModeAuto READ powerSavingModeAuto WRITE setPowerSavingModeAuto NOTIFY powerSavingModeAutoChanged)
     Q_PROPERTY(uint powerSavingModeLowerBrightnessThreshold READ powerSavingModeLowerBrightnessThreshold WRITE setPowerSavingModeLowerBrightnessThreshold NOTIFY powerSavingModeLowerBrightnessThresholdChanged)
@@ -59,6 +58,14 @@ class PowerModel : public QObject
     friend class PowerWorker;
 
 public:
+
+    enum ShutdownRepetition {
+        Once,
+        Everyday,
+        Workday,
+        Custom
+    };
+
     explicit PowerModel(QObject *parent = 0);
 
     inline bool screenBlackLock() const { return m_screenBlackLock; }
@@ -103,10 +110,7 @@ public:
     inline bool powerSaveMode() const { return m_powerSaveMode; }
     void setPowerSaveMode(bool powerSaveMode);
 
-    inline bool haveBettary() const
-    {
-        return m_haveBettary;
-    }
+    inline bool haveBettary() const { return m_haveBettary; }
     void setHaveBettary(bool haveBettary);
     void setBatteryPercentage(double batteryPercentage);
 
@@ -196,6 +200,25 @@ public:
     inline QVariantList linePowerSleepDelayModel() const { return m_linePowerSleepDelayModel; };
     void setLinePowerSleepDelayModel(const QVariantList &value);
 
+    static const QMap<int, QString> WeekDays();
+
+    void sortWeekdays(QByteArray &weekdays);
+
+    inline QByteArray weekDaysSelected() const { return m_weekDaysSelected; }
+    void setSelectedWeekDays(QByteArray weekdays);
+
+    inline QString shutdownTime() const { return m_shutdownTime; }
+    void setShutdownTime(const QString &shutdownTime);
+
+    inline ShutdownRepetition shutdownRepetition() const { return m_shutdownRepetition; }
+    void setShutdownRepetition(const ShutdownRepetition repetition);
+
+    inline bool scheduledShutdownState() { return m_scheduledShutdownState; }
+    void setScheduledShutdownState(bool state);
+
+    inline int weekBegin() { return m_weekBegin;  }
+    void setWeekBegin(int begin);
+
 Q_SIGNALS:
     void sleepLockChanged(const bool sleepLock);
     void canSleepChanged(const bool canSleep);
@@ -248,6 +271,13 @@ Q_SIGNALS:
     void linePowerLockDelayModelChanged(const QVariantList &value);
     void linePowerScreenBlackDelayModelChanged(const QVariantList &value);
     void linePowerSleepDelayModelChanged(const QVariantList &value);
+
+    void weekDaysSelectedChanged(const QByteArray &weekdays);
+    void shutdownTimeChanged(const QString &time);
+    void shutdownRepetitionChanged(int repetition);
+    void scheduledShutdownStateChanged(bool state);
+    void updateShutdownRepetition();
+    void weekBeginChanged(int begin);
 
 private:
     bool m_lidPresent; //以此判断是否为笔记本
@@ -302,6 +332,12 @@ private:
     QVariantList m_linePowerLockDelayModel;
     QVariantList m_linePowerScreenBlackDelayModel;
     QVariantList m_linePowerSleepDelayModel;
+
+    QByteArray m_weekDaysSelected;
+    QString m_shutdownTime;
+    ShutdownRepetition m_shutdownRepetition;
+    bool m_scheduledShutdownState;
+    int m_weekBegin;
 };
 
 #endif // POWERMODEL_H

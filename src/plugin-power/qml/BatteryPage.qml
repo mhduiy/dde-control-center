@@ -201,6 +201,7 @@ DccObject {
         }
     }
 
+    // TODO needTest
     DccObject {
         name: "lowBatteryNotificationGroup"
         parentName: "power/onBattery"
@@ -218,9 +219,9 @@ DccObject {
                 width: 100
                 textRole: "text"
                 flat: true
-                currentIndex: dccData.indexByValueOnModel(model, dccData.model.lowPowerNotifyThreshold)
+                currentIndex: dccData.model.lowPowerNotifyEnabled ? ccData.indexByValueOnModel(model, dccData.model.lowPowerNotifyThreshold) : 0
                 model: ListModel {
-                    ListElement { text: qsTr("Disbale"); value: 10 }
+                    ListElement { text: qsTr("Disbale"); value: 0 }
                     ListElement { text: "10%"; value: 10 }
                     ListElement { text: "15%"; value: 15 }
                     ListElement { text: "20%"; value: 20 }
@@ -229,7 +230,11 @@ DccObject {
 
                 onCurrentIndexChanged: {
                     var selectedValue = model.get(currentIndex).value;
-                    dccData.worker.setLowPowerNotifyThreshold(selectedValue)
+                    if (selectedValue === 0) {
+                        dccData.worker.setLowPowerNotifyEnable(false)
+                    } else {
+                        dccData.worker.setLowPowerNotifyThreshold(selectedValue)
+                    }
                 }
             }
         }

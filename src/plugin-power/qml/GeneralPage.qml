@@ -305,6 +305,9 @@ DccObject {
                     id: selectDayDialog
                     width: 330
                     height: 400
+
+                    property var selectedDays: [1, 2]
+
                     ColumnLayout {
                         implicitWidth: parent.width
                         clip: true
@@ -323,16 +326,17 @@ DccObject {
                                 corners: getCornersForBackground(index, 7)
                                 cascadeSelected: true
                                 text: modelData
-                                content: D.IconButton {
-                                    icon.name: model.isChecked ? "qrc:/icons/deepin/builtin/actions/checked.png" : "qrc:/icons/deepin/builtin/actions/nocheck.png"
-                                    icon.width: 24
-                                    icon.height: 24
-                                    implicitWidth: 36
-                                    implicitHeight: 36
-                                    background: Rectangle {
-                                        color: "transparent"
-                                        border.color: "transparent"
-                                        border.width: 0
+                                content: DccCheckIcon {
+                                    checked: selectDayDialog.selectedDays.indexOf(index) !== -1
+                                    onClicked: {
+                                        if (selectDayDialog.selectedDays.indexOf(index) === -1) {
+                                            selectDayDialog.selectedDays.push(index);
+                                            console.warn("--------", selectDayDialog.selectedDays)
+                                        } else {
+                                            selectDayDialog.selectedDays.splice(selectDayDialog.selectedDays.indexOf(index), 1);
+                                            console.warn("--------", selectDayDialog.selectedDays)
+                                        }
+                                        selectDayDialog.selectedDays = selectDayDialog.selectedDays.slice();
                                     }
                                 }
                                 background: DccListViewBackground {
@@ -356,6 +360,8 @@ DccObject {
                             D.Button {
                                 text: qsTr("Save")
                                 onClicked: {
+                                    // Output selected indices
+                                    console.log("Selected days: " + selectDayDialog.selectedDays);
                                     selectDayDialog.close()
                                 }
                             }
