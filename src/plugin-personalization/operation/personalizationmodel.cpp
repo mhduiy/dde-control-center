@@ -9,7 +9,6 @@
 
 PersonalizationModel::PersonalizationModel(QObject *parent)
     : QObject(parent)
-    , m_opacity(std::pair<int, double>(2, 0.4f))
     , m_allowSwitch(false)
 {
     m_windowModel    = new ThemeModel(this);
@@ -54,17 +53,20 @@ int PersonalizationModel::windowRadius()
     return m_windowRadius;
 }
 
-void PersonalizationModel::setOpacity(std::pair<int, double> opacity)
+void PersonalizationModel::setOpacity(double opacity)
 {
+    qWarning() << "*******************" << m_opacity << opacity;
     if (m_opacity == opacity) return;
 
     m_opacity = opacity;
+
 
     Q_EMIT onOpacityChanged(opacity);
 }
 
 void PersonalizationModel::setMiniEffect(const int &effect)
 {
+    qWarning() << "*******************" << effect;
     if(m_miniEffect == effect) return;
 
     m_miniEffect=effect;
@@ -89,4 +91,13 @@ void PersonalizationModel::setCompositingAllowSwitch(bool value)
     m_allowSwitch = value;
 
     Q_EMIT onCompositingAllowSwitch(value);
+}
+
+void PersonalizationModel::setCompactDisplay(bool value)
+{
+    if (m_compactDisplay == value)
+        return;
+    m_compactDisplay = value;
+
+    Q_EMIT compactDisplayChanged(value);
 }

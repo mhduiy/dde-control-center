@@ -15,12 +15,12 @@ ListView {
     readonly property int itemHeight: 107
     readonly property int itemBorderWidth: 2
     readonly property int itemSpacing: 50
-    readonly property int imageRectH: 86
+    readonly property int imageRectH: 78 // 84
     readonly property int imageRectW: itemWidth
 
     readonly property int gridMaxColumns: Math.floor(listview.width / (itemWidth + itemSpacing))
     readonly property int gridMaxRows: 2
-    model: Math.ceil(listViewModel.count / (2 * gridMaxColumns))
+    model: Math.ceil(dccData.globalThemeModel.rowCount() / (2 * gridMaxColumns))
     spacing: 0
     clip: true
     orientation: ListView.Horizontal
@@ -29,13 +29,12 @@ ListView {
     boundsBehavior: Flickable.StopAtBounds
     highlightRangeMode: ListView.StrictlyEnforceRange
     highlightMoveDuration: 400
-
     delegate: Item {
         width: listview.width
         height: listview.height
         D.SortFilterModel {
             id: sortedModel
-            model: listViewModel
+            model: dccData.globalThemeModel
             property int pageIndex: index
             property int maxCount: listview.gridMaxColumns * listview.gridMaxRows
             lessThan: function(left, right) {
@@ -52,6 +51,9 @@ ListView {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 color: "transparent"
+                ToolTip.visible: mouseArea.containsMouse && model.toolTip !== ""
+                ToolTip.text: model.toolTip
+                ToolTip.delay: 300
                 ColumnLayout {
                     width: listview.itemWidth
                     height: listview.itemHeight
@@ -63,8 +65,9 @@ ListView {
 
                         Rectangle {
                             anchors.fill: parent
-                            // visible: isCurrentItem
-                            border.width: listview.itemBorderWidth
+                            visible: model.checked
+                            color: "transparent"
+                            border.width: 2
                             border.color: D.DTK.platformTheme.activeColor
                             radius: 7
                         }
@@ -72,8 +75,14 @@ ListView {
                         Rectangle {
                             anchors.fill: parent
                             anchors.margins: listview.itemBorderWidth + 1
-                            color: "lightGray"
+                            color: "transparent"
                             radius: 7
+
+                            D.DciIcon {
+                                anchors.fill: parent
+                                sourceSize: Qt.size(parent.width, parent.height)
+                                name: model.pic
+                            }
                         }
                     }
 
@@ -85,10 +94,18 @@ ListView {
                     Text {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        text: "主题" + index
+                        text: model.id
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        color: D.DTK.platformTheme.activeColor
+                        color: model.checked ? D.DTK.platformTheme.activeColor : this.palette.windowText
+                    }
+                }
+                MouseArea {
+                    id: mouseArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    onClicked: {
+                        dccData.requestSetGlobalTheme(model.id)
                     }
                 }
             }
@@ -106,29 +123,5 @@ ListView {
                 model: sortedModel
             }
         }
-    }
-    ListModel {
-        id: listViewModel
-        ListElement { color: "red"; text: "主题1" }
-        ListElement { color: "blue"; text: "主题2" }
-        ListElement { color: "yelow"; text: "主题3" }
-        ListElement { color: "red"; text: "主题4" }
-        ListElement { color: "blue"; text: "主题5" }
-        ListElement { color: "yelow"; text: "主题6" }
-        ListElement { color: "red"; text: "主题7" }
-        ListElement { color: "blue"; text: "主题8" }
-        ListElement { color: "yelow"; text: "主题9" }
-        ListElement { color: "red"; text: "主题10" }
-        ListElement { color: "blue"; text: "主题11" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
-        ListElement { color: "yelow"; text: "主题12" }
     }
 }

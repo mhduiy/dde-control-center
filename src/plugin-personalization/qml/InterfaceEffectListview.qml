@@ -38,6 +38,7 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     ColumnLayout {
+                        Layout.leftMargin: 5
                         Layout.fillWidth: true
                         DccLabel {
                             Layout.fillWidth: true
@@ -54,19 +55,7 @@ Rectangle {
                     Control {
                         Layout.alignment: Qt.AlignRight
                         Layout.rightMargin: 10
-                        contentItem: D.IconButton {
-                            visible: model.mode === dccData.model.powerPlan
-                            icon.name: "qrc:/icons/deepin/builtin/actions/checked.png"
-                            icon.width: 24
-                            icon.height: 24
-                            implicitWidth: 36
-                            implicitHeight: 36
-                            background: Rectangle {
-                                color: "transparent"
-                                border.color: "transparent"
-                                border.width: 0
-                            }
-                        }
+                        contentItem: DccCheckIcon {}
                     }
                 }
                 background: DccListViewBackground {
@@ -88,23 +77,23 @@ Rectangle {
         id: listModel
 
         ListElement {
-            mode: "performance"
+            mode: "optimum_performance"
             title: qsTr("最佳性能")
-            icon: "high_performance"
+            icon: "optimum_performance"
             description: qsTr("关闭所有界面和窗口特效，保障系统高效运行")
         }
 
         ListElement {
             mode: "balance_performance"
             title: qsTr("均衡")
-            icon: "balance_performance"
+            icon: "balance"
             description: qsTr("限制部分窗口特效，保障出色的视觉效果，同时维持整体流畅运行")
         }
 
         ListElement {
             mode: "balance"
             title: qsTr("最佳视觉")
-            icon: "balanced"
+            icon: "best_vision"
             description: qsTr("开启所有界面和窗口特效，体验最佳视觉效果")
         }
     }
