@@ -13,6 +13,15 @@ Rectangle {
     property bool backgroundVisible: true
     signal clicked(int index, bool checked)
 
+    enum WindowEffectType {
+        Default = 0,
+        Best,
+        Better,
+        Good,
+        Normal,
+        Compatible
+    }
+
     color: "transparent"
     implicitHeight: layoutView.height
     Layout.fillWidth: true
@@ -55,7 +64,9 @@ Rectangle {
                     Control {
                         Layout.alignment: Qt.AlignRight
                         Layout.rightMargin: 10
-                        contentItem: DccCheckIcon {}
+                        contentItem: DccCheckIcon {
+                            visible: model.value === dccData.model.windowEffectType
+                        }
                     }
                 }
                 background: DccListViewBackground {
@@ -66,7 +77,8 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
-                        // dccData.worker.setPowerPlan(model.mode)
+                        console.warn("-------", model.value)
+                        dccData.worker.setWindowEffect(model.value)
                     }
                 }
             }
@@ -77,21 +89,21 @@ Rectangle {
         id: listModel
 
         ListElement {
-            mode: "optimum_performance"
+            value: InterfaceEffectListview.WindowEffectType.Normal
             title: qsTr("最佳性能")
             icon: "optimum_performance"
             description: qsTr("关闭所有界面和窗口特效，保障系统高效运行")
         }
 
         ListElement {
-            mode: "balance_performance"
+            value: InterfaceEffectListview.WindowEffectType.Better
             title: qsTr("均衡")
             icon: "balance"
             description: qsTr("限制部分窗口特效，保障出色的视觉效果，同时维持整体流畅运行")
         }
 
         ListElement {
-            mode: "balance"
+            value: InterfaceEffectListview.WindowEffectType.Best
             title: qsTr("最佳视觉")
             icon: "best_vision"
             description: qsTr("开启所有界面和窗口特效，体验最佳视觉效果")

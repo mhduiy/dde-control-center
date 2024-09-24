@@ -27,16 +27,16 @@ DccObject {
             }
             D.TipsSlider {
                 id: scrollSlider
-                readonly property var tips: [("11"), ("12"), ("13"), ("14"), ("15"), ("16"), ("17"), ("18"), ("19"), ("20")]
+                readonly property var tips: [("11"), ("12"), ("13"), ("14"), ("15"), ("16"), ("18"), ("20")]
                 Layout.preferredHeight: 90
                 Layout.alignment: Qt.AlignCenter
                 Layout.margins: 10
                 Layout.fillWidth: true
                 tickDirection: D.TipsSlider.TickDirection.Back
                 slider.handleType: Slider.HandleType.ArrowBottom
-                slider.value: dccData.scrollSpeed
-                slider.from: 11
-                slider.to: ticks.length + 10
+                slider.value: dccData.model.fontSizeModel.size
+                slider.from: 0
+                slider.to: ticks.length -1
                 slider.live: true
                 slider.stepSize: 1
                 slider.snapMode: Slider.SnapAlways
@@ -67,23 +67,16 @@ DccObject {
                     },
                     D.SliderTipItem {
                         text: scrollSlider.tips[6]
-                        highlight: scrollSlider.slider.value === 17
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[7]
                         highlight: scrollSlider.slider.value === 18
                     },
                     D.SliderTipItem {
-                        text: scrollSlider.tips[8]
-                        highlight: scrollSlider.slider.value === 19
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[9]
+                        text: scrollSlider.tips[7]
                         highlight: scrollSlider.slider.value === 20
                     }
                 ]
                 slider.onValueChanged: {
-                    
+                    console.warn("---------", slider.value)
+                    dccData.worker.setFontSize(slider.value)
                 }
             }
         }

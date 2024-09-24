@@ -63,6 +63,7 @@ DccObject {
                 }
             }
         }
+
         DccObject {
             name: "appearance"
             parentName: "personalization/themeGroup"
@@ -78,7 +79,6 @@ DccObject {
                 currentIndex: {
                     for (var i = 0; i < model.length; ++i) {
                         if (model[i].value === dccData.currentAppearance) {
-                            console.warn("+++++===++++", i)
                             return i;
                         }
                     }
@@ -87,7 +87,6 @@ DccObject {
 
                 enabled: model.length > 1
                 onCurrentIndexChanged: {
-                    console.warn("++current++", model[currentIndex].value)
                     dccData.requestSetAppearanceTheme(model[currentIndex].value)
                 }
             }

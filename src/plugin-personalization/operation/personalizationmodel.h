@@ -15,9 +15,17 @@ class PersonalizationModel : public QObject
     Q_OBJECT
     friend class MouseWorker;
 
-    Q_PROPERTY(int miniEffect READ miniEffect WRITE setMiniEffect NOTIFY onMiniEffectChanged)
-    Q_PROPERTY(double opacity READ opacity WRITE setOpacity NOTIFY onOpacityChanged)
-    Q_PROPERTY(int windowRadius READ windowRadius WRITE setWindowRadius NOTIFY onWindowRadiusChanged)
+    Q_PROPERTY(int miniEffect READ miniEffect WRITE setMiniEffect NOTIFY miniEffectChanged)
+    Q_PROPERTY(double opacity READ opacity WRITE setOpacity NOTIFY opacityChanged)
+    Q_PROPERTY(int windowRadius READ windowRadius WRITE setWindowRadius NOTIFY windowRadiusChanged)
+    Q_PROPERTY(bool compactDisplay READ getCompactDisplay WRITE setCompactDisplay NOTIFY compactDisplayChanged)
+    Q_PROPERTY(int scrollBarPolicy READ getScrollBarPolicy WRITE setScrollBarPolicy NOTIFY scrollBarPolicyChanged)
+    Q_PROPERTY(int titleBarHeight READ getTitleBarHeight WRITE setTitleBarHeight NOTIFY titleBarHeightChanged)
+    Q_PROPERTY(bool isMoveWindow READ getIsMoveWindow WRITE setIsMoveWindow NOTIFY moveWindowChanged)
+    Q_PROPERTY(int windowEffectType READ windowEffectType WRITE setWindowEffectType NOTIFY windowEffectTypeChanged)
+    Q_PROPERTY(QString activeColor READ getActiveColor WRITE setActiveColor NOTIFY onActiveColorChanged)
+
+    Q_PROPERTY(FontSizeModel *fontSizeModel MEMBER m_fontSizeModel CONSTANT)
 
 public:
     explicit PersonalizationModel(QObject *parent = nullptr);
@@ -35,6 +43,9 @@ public:
     void setWindowRadius(int radius);
     int windowRadius();
 
+    void setWindowEffectType(int windowEffectType);
+    inline int windowEffectType() const { return m_windowEffectType; }
+
     inline double opacity() const { return m_opacity; }
     void setOpacity(double opacity);
 
@@ -50,15 +61,31 @@ public:
     inline bool getCompactDisplay() { return m_compactDisplay; }
     void setCompactDisplay(bool value);
 
+    inline int getScrollBarPolicy() const { return m_scrollBarPolicy;}
+    void setScrollBarPolicy(int policy);
+
+    inline int getTitleBarHeight() const { return m_titleBarHeight; }
+    void setTitleBarHeight(int titleBarHeight);
+
+    inline int getTitleBarDefaultHeight() const { return m_titleBarDefaultHeight; }
+    void setTitleBarDefaultHeight(int titleBarDefaultHeight);
+
+    void setIsMoveWindow(const bool isMoveWindow);
+    bool getIsMoveWindow() const { return m_isMoveWindow; };
+
 Q_SIGNALS:
     void wmChanged(const bool is3d);
-    void onOpacityChanged(double opacity);
-    void onMiniEffectChanged(int effect);
+    void opacityChanged(double opacity);
+    void miniEffectChanged(int effect);
     void onActiveColorChanged(const QString &color);
     void onCompositingAllowSwitch(bool value);
-    void onWindowRadiusChanged(int radius);
+    void windowRadiusChanged(int radius);
     void onSaveWindowRadiusChanged(int radius);
     void compactDisplayChanged(bool value);
+    void scrollBarPolicyChanged(int policy);
+    void titleBarHeightChanged(int titleBarHeight);
+    void moveWindowChanged(const bool isMoveWindow);
+    void windowEffectTypeChanged(int windowEffectType);
 
 private:
     ThemeModel *m_windowModel;
@@ -69,11 +96,16 @@ private:
     FontModel *m_monoFontModel;
     FontSizeModel *m_fontSizeModel;
     bool m_is3DWm;
+    bool m_isMoveWindow;
     double m_opacity;
     int m_miniEffect;
     QString m_activeColor;
     bool m_allowSwitch;
     int m_windowRadius;
     bool m_compactDisplay;
+    int m_scrollBarPolicy;
+    int m_titleBarHeight;
+    int m_titleBarDefaultHeight;
+    int m_windowEffectType;
 };
 #endif // PERSONALIZATIONMODEL_H
