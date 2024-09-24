@@ -2,10 +2,14 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "personalizationworker.h"
+#include "operation/personalizationmodel.h"
 #include "personalizationdbusproxy.h"
 #include "model/thememodel.h"
 #include "model/fontmodel.h"
 #include "model/fontsizemodel.h"
+#include <dconfig.h>
+#include <qlogging.h>
+#include <qt5/QtCore/qthread.h>
 
 #include <QGuiApplication>
 #include <QScreen>
@@ -15,8 +19,13 @@
 #include <QJsonDocument>
 #include <QDBusError>
 #include <QLoggingCategory>
+#include <QTimer>
+#include <QDBusPendingCallWatcher>
+#include <QDBusReply>
 
 #include <DConfig>
+
+#include <QThread>
 
 DCORE_USE_NAMESPACE
 Q_LOGGING_CATEGORY(DdcPersonalWorker, "dcc-personal-workder")
@@ -25,11 +34,23 @@ static const std::vector<int> OPACITY_SLIDER{ 0, 25, 40, 55, 70, 85, 100 };
 
 const QList<int> FontSizeList{ 11, 12, 13, 14, 15, 16, 18, 20 };
 
+const QString ORG_KDE_KWIN_DECORATION = QStringLiteral("org.kde.kwin.decoration");
+const QString ORG_KDE_KWIN_DECORATION_TITLEBAR = QStringLiteral("org.kde.kwin.decoration.titlebar");
+const QString TITLE_BAR_HEIGHT_KEY = QStringLiteral("titlebarHeight");
+const QString ORG_KDE_KWIN_COMPOSITING = QStringLiteral("org.kde.kwin.compositing");
+const QString ORG_KDE_KWIN = QStringLiteral("org.kde.kwin");
+const QString WINDOW_EFFECT_TYPE_KEY = QStringLiteral("user_type");
+const QString TITLE_BAR_DEFAULT_HEIGHT_KEY = QStringLiteral("defaultTitlebarHeight");
+const QString EffectMoveWindowArg = "kwin4_effect_translucency";
+
 PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObject *parent)
     : QObject(parent)
     , m_model(model)
     , m_personalizationDBusProxy(new PersonalizationDBusProxy(this))
+    , m_kwinTitleBarConfig(DConfig::create(ORG_KDE_KWIN_DECORATION, ORG_KDE_KWIN_DECORATION_TITLEBAR, "", this))
+    , m_kwinCompositingConfig(DConfig::create(ORG_KDE_KWIN, ORG_KDE_KWIN_COMPOSITING, "", this))
 {
+    qDebug() << "***********" << QThread::currentThread()  << m_kwinTitleBarConfig->thread()->currentThread();
     ThemeModel *cursorTheme = m_model->getMouseModel();
     ThemeModel *windowTheme = m_model->getWindowModel();
     ThemeModel *iconTheme = m_model->getIconModel();
@@ -59,6 +80,16 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
             refreshTheme();
         }
     });
+
+    bool isConnected = connect(m_kwinTitleBarConfig, &DConfig::valueChanged, this, [](const QString &key){
+        qWarning() << "-------------"<< key;
+    });
+
+    qWarning() << "================================---" <<  isConnected;
+
+    connect(m_kwinTitleBarConfig, &DConfig::valueChanged, this, &PersonalizationWorker::onKWinTitleBarConfigChanged);
+    connect(m_kwinCompositingConfig, &DConfig::valueChanged, this, &PersonalizationWorker::onKWinCompositingConfigChanged);
+
     m_personalizationDBusProxy->isEffectLoaded("magiclamp", this, SLOT(onMiniEffectChanged(bool)));
 
     m_themeModels["gtk"] = windowTheme;
@@ -85,6 +116,15 @@ void PersonalizationWorker::active()
     m_model->getMonoFontModel()->setFontName(m_personalizationDBusProxy->monospaceFont());
     m_model->getStandFontModel()->setFontName(m_personalizationDBusProxy->standardFont());
     m_model->setWindowRadius(m_personalizationDBusProxy->windowRadius());
+
+    m_model->getFontSizeModel()->setFontSize(sizeToSliderValue(m_personalizationDBusProxy->fontSize()));
+
+    int titleBarHight = m_kwinTitleBarConfig->value(TITLE_BAR_HEIGHT_KEY).toInt();
+    m_model->setTitleBarHeight(titleBarHight);
+    int titleBarDefHight = m_kwinTitleBarConfig->value(TITLE_BAR_DEFAULT_HEIGHT_KEY).toInt();
+    m_model->setTitleBarDefaultHeight(titleBarDefHight);
+    int windowEffectType = m_kwinCompositingConfig->value(WINDOW_EFFECT_TYPE_KEY).toInt();
+    m_model->setWindowEffectType(windowEffectType);
 }
 
 void PersonalizationWorker::deactive()
@@ -141,6 +181,8 @@ void PersonalizationWorker::addList(ThemeModel *model, const QString &type, cons
 void PersonalizationWorker::refreshWMState()
 {
     m_personalizationDBusProxy->CurrentWM(this, SLOT(onToggleWM(const QString &)));
+    m_model->setIsMoveWindow(m_personalizationDBusProxy->isEffectLoaded(EffectMoveWindowArg));
+    qWarning() << "-------------"  << m_personalizationDBusProxy->isEffectLoaded(EffectMoveWindowArg);
 }
 
 void PersonalizationWorker::FontSizeChanged(const double value) const
@@ -190,7 +232,6 @@ void PersonalizationWorker::onWindowWM(bool value)
 
 void PersonalizationWorker::onMiniEffectChanged(bool value)
 {
-    qWarning() << "++++++++++++" << value;
     m_model->setMiniEffect(value ? 1 : 0);
 }
 
@@ -209,6 +250,11 @@ void PersonalizationWorker::onCompactDisplayChanged(int value)
     m_model->setCompactDisplay(value);
 }
 
+void PersonalizationWorker::onWindowEffectChanged(int value)
+{
+    m_model->setWindowEffectType(value);
+}
+
 void PersonalizationWorker::setFontList(FontModel *model, const QString &type, const QString &list)
 {
     QJsonArray array = QJsonDocument::fromJson(list.toLocal8Bit().data()).array();
@@ -222,6 +268,12 @@ void PersonalizationWorker::setFontList(FontModel *model, const QString &type, c
     watcher->setProperty("type", type);
     watcher->setProperty("FontModel", QVariant::fromValue(static_cast<void *>(model)));
     m_personalizationDBusProxy->Show(type, l, watcher, SLOT(onShow(const QString &)));
+}
+
+void PersonalizationWorker::setTitleBarHeight(int value)
+{
+    qWarning() << "setTitleBarHeight: " << value;
+    m_kwinTitleBarConfig->setValue(TITLE_BAR_HEIGHT_KEY, value);
 }
 
 void PersonalizationWorker::refreshTheme()
@@ -341,6 +393,29 @@ void PersonalizationWorker::windowSwitchWM(bool value)
     m_personalizationDBusProxy->setCompositingEnabled(value);
 }
 
+void PersonalizationWorker::setWindowEffect(int value)
+{
+    qCWarning(DdcPersonalWorker) << "windowSwitchWM switch to: " << value;
+    m_kwinCompositingConfig->setValue(WINDOW_EFFECT_TYPE_KEY, value);
+}
+
+void PersonalizationWorker::movedWindowSwitchWM(bool value)
+{
+    if (value) {
+        m_personalizationDBusProxy->loadEffect(EffectMoveWindowArg);
+    } else {
+        m_personalizationDBusProxy->unloadEffect(EffectMoveWindowArg);
+    }
+
+    //设置kwin接口后, 等待50ms给kwin反应，根据isEffectLoaded返回值确定真实状态
+    QTimer::singleShot(50, [this] {
+        bool isLoaded =  m_personalizationDBusProxy->isEffectLoaded(EffectMoveWindowArg);
+        qCDebug(DdcPersonalWorker) << "Moved window switch WM, load effect translucency: " << isLoaded;
+        m_model->setIsMoveWindow(isLoaded);
+        // m_model->setIsMoveWindowDconfig(value);
+    });
+}
+
 void PersonalizationWorker::setOpacity(int opacity)
 {
     m_personalizationDBusProxy->setOpacity(sliderValutToOpacity(opacity));
@@ -376,7 +451,15 @@ void PersonalizationWorker::setWindowRadius(int radius)
 
 void PersonalizationWorker::setCompactDisplay(bool value)
 {
+    // TODO
+    qWarning() << "###setCompactDisplay not implemented" << value;
     m_personalizationDBusProxy->setDTKSizeMode(int(value));
+}
+
+
+void PersonalizationWorker::setScrollBarPolicy(int policy)
+{
+    m_personalizationDBusProxy->setProperty("QtScrollBarPolicy", policy);
 }
 
 template<typename T>
@@ -389,6 +472,28 @@ T PersonalizationWorker::toSliderValue(std::vector<T> list, T value)
     }
 
     return list.end() - list.begin();
+}
+
+void PersonalizationWorker::onKWinTitleBarConfigChanged(const QString &key)
+{
+    qWarning() << "++++++++" << key;
+    if (key == TITLE_BAR_HEIGHT_KEY) {
+        int value = m_kwinTitleBarConfig->value(key).toInt();
+        m_model->setTitleBarHeight(value);
+    } else if (key == WINDOW_EFFECT_TYPE_KEY) {
+        int value = m_kwinTitleBarConfig->value(key).toInt();
+        m_model->setWindowEffectType(value);
+    }
+}
+
+void PersonalizationWorker::onKWinCompositingConfigChanged(const QString &key)
+{
+    qWarning() << "-------" << key;
+    if (key == WINDOW_EFFECT_TYPE_KEY) {
+        int windowEffectType = m_kwinCompositingConfig->value(WINDOW_EFFECT_TYPE_KEY).toInt();
+        qWarning() << windowEffectType;
+        m_model->setWindowEffectType(windowEffectType);
+    }
 }
 
 PersonalizationWatcher::PersonalizationWatcher(PersonalizationWorker *work)

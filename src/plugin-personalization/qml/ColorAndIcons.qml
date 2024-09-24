@@ -32,8 +32,8 @@ DccObject {
         page: ListView {
             id: listview
             property var colors: ["#D8316C", "#FF5D00", "#F8CB00", "#89C32B", "#00C433", "#00A49E", "#1F6EE7", "#5624DA", "#7C1AC2", "#E564C9", "#4D4D4D", "CUSTOM"]
-            implicitWidth: 300
-            implicitHeight: 80
+            // implicitWidth: 300
+            implicitHeight: 60
             leftMargin: 10
             clip: true
             model: colors.length
@@ -43,12 +43,15 @@ DccObject {
 
             delegate: Item {
                 anchors.verticalCenter: parent.verticalCenter
+                property string activeColor: dccData.model.activeColor
+                property string currentColor: listview.colors[index]
                 width: 30
                 height: 30
                 Rectangle {
                     anchors.fill: parent
                     border.width: 2
-                    border.color: listview.colors[index] === "CUSTOM" ? "#008c8c" : listview.colors[index]
+                    visible: activeColor === currentColor || (currentColor == "CUSTOM" && listview.colors.indexOf(activeColor) === -1)
+                    border.color: currentColor == "CUSTOM" ? activeColor : currentColor
                     radius: width / 2
                 }
 
@@ -91,7 +94,9 @@ DccObject {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            colorDialog.show()
+                            dccData.worker.setActiveColor(listview.colors[index])
+                            // console.warn("------", dccData.)
+                            // colorDialog.show()
                         }
                     }
 

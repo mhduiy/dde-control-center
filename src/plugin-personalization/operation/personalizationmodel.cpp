@@ -5,6 +5,8 @@
 #include "model/thememodel.h"
 #include "model/fontmodel.h"
 #include "model/fontsizemodel.h"
+#include <qlogging.h>
+#include <qtmetamacros.h>
 
 
 PersonalizationModel::PersonalizationModel(QObject *parent)
@@ -45,7 +47,7 @@ void PersonalizationModel::setWindowRadius(int radius)
     if (m_windowRadius != radius)
         m_windowRadius = radius;
 
-    Q_EMIT  onWindowRadiusChanged(radius);
+    Q_EMIT  windowRadiusChanged(radius);
 }
 
 int PersonalizationModel::windowRadius()
@@ -61,7 +63,7 @@ void PersonalizationModel::setOpacity(double opacity)
     m_opacity = opacity;
 
 
-    Q_EMIT onOpacityChanged(opacity);
+    Q_EMIT opacityChanged(opacity);
 }
 
 void PersonalizationModel::setMiniEffect(const int &effect)
@@ -71,7 +73,7 @@ void PersonalizationModel::setMiniEffect(const int &effect)
 
     m_miniEffect=effect;
 
-    Q_EMIT onMiniEffectChanged(effect);
+    Q_EMIT miniEffectChanged(effect);
 }
 
 void PersonalizationModel::setActiveColor(const QString &color)
@@ -100,4 +102,42 @@ void PersonalizationModel::setCompactDisplay(bool value)
     m_compactDisplay = value;
 
     Q_EMIT compactDisplayChanged(value);
+}
+
+
+void PersonalizationModel::setScrollBarPolicy(int policy)
+{
+    if (m_scrollBarPolicy != policy) {
+        m_scrollBarPolicy = policy;
+        Q_EMIT scrollBarPolicyChanged(m_scrollBarPolicy);
+    }
+}
+
+void PersonalizationModel::setTitleBarHeight(int titleBarHeight)
+{
+    if (m_titleBarHeight == titleBarHeight)
+        return;
+    m_titleBarHeight = titleBarHeight;
+    Q_EMIT titleBarHeightChanged(titleBarHeight);
+}
+
+void PersonalizationModel::setTitleBarDefaultHeight(int titleBarDefaultHeight)
+{
+    m_titleBarDefaultHeight = titleBarDefaultHeight;
+}
+
+void PersonalizationModel::setIsMoveWindow(bool value)
+{
+    if (m_isMoveWindow != value) {
+        m_isMoveWindow = value;
+        Q_EMIT moveWindowChanged(value);
+    }
+}
+
+void PersonalizationModel::setWindowEffectType(int windowEffectType)
+{
+    if (m_windowEffectType == windowEffectType)
+        return;
+    m_windowEffectType = windowEffectType;
+    Q_EMIT  windowEffectTypeChanged(windowEffectType);
 }

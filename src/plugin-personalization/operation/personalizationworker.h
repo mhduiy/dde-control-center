@@ -5,12 +5,16 @@
 #define PERSONALIZATIONWORKER_H
 
 #include "personalizationmodel.h"
+#include <dconfig.h>
 #include <QObject>
 #include <QDebug>
 #include <QStringList>
 #include <QMap>
 #include <QString>
 #include <QJsonObject>
+
+
+// using Effects=org::kde::kwin::Effects;
 
 class PersonalizationDBusProxy;
 class ThemeModel;
@@ -31,11 +35,15 @@ public Q_SLOTS:
     void setFontSize(const int value);
     void switchWM();
     void windowSwitchWM(bool value);
+    void movedWindowSwitchWM(bool value);
     void setOpacity(int opcaity);
+    void setWindowEffect(int value);
     void setMiniEffect(int effect);
     void setActiveColor(const QString &hexColor);
     void setWindowRadius(int radius);
     void setCompactDisplay(bool value);
+    void setScrollBarPolicy(int policy);
+    void setTitleBarHeight(int value);
 
 private Q_SLOTS:
     void FontSizeChanged(const double value) const;
@@ -51,6 +59,7 @@ private Q_SLOTS:
     void onMiniEffectChanged(bool value);
     void onWindowRadiusChanged(int value);
     void onCompactDisplayChanged(int value);
+    void onWindowEffectChanged(int value);
 
 private:
     int sizeToSliderValue(const double value) const;
@@ -64,6 +73,8 @@ private:
     void refreshOpacity(double opacity);
     void refreshActiveColor(const QString &color);
     bool allowSwitchWM();
+    void onKWinTitleBarConfigChanged(const QString &key);
+    void onKWinCompositingConfigChanged(const QString &key);
 
     template<typename T>
     T toSliderValue(std::vector<T> list, T value);
@@ -71,6 +82,8 @@ private:
 private:
     PersonalizationModel *m_model;
     PersonalizationDBusProxy *m_personalizationDBusProxy;
+    Dtk::Core::DConfig *m_kwinTitleBarConfig;
+    Dtk::Core::DConfig *m_kwinCompositingConfig;
 
     QMap<QString, ThemeModel *> m_themeModels;
     QMap<QString, FontModel *> m_fontModels;

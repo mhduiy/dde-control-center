@@ -5,14 +5,17 @@
 #define FONTSIZEMODEL_H
 
 #include <QObject>
+#include <QDebug>
 
 class FontSizeModel : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int size READ getFontSize WRITE setFontSize NOTIFY sizeChanged)
 public:
     explicit FontSizeModel(QObject *parent = 0);
+public Q_SLOTS:
     void setFontSize(const int size);
-    inline int getFontSize() const {return m_size;}
+    Q_INVOKABLE inline int getFontSize() const { qWarning() << "##############" << m_size; return m_size;}
 
 Q_SIGNALS:
     void sizeChanged(int size);
