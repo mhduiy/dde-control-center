@@ -145,7 +145,7 @@ DccObject {
         hasBackground: true
         pageType: DccObject.MenuEditor
         page: Label {
-            text: "bloom"
+            text: dccData.model.iconModel.currentTheme
         }
 
         DccObject {
@@ -159,7 +159,12 @@ DccObject {
                 weight: 1
                 hasBackground: false
                 pageType: DccObject.Item
-                page: IconThemeGridView {}
+                page: IconThemeGridView {
+                    model: dccData.iconThemeViewModel
+                    onRequsetSetTheme: (id)=> {
+                        dccData.requestSetIconTheme(id)
+                    }
+                }
             }
         }
     }
@@ -173,7 +178,7 @@ DccObject {
         hasBackground: true
         pageType: DccObject.MenuEditor
         page: Label {
-            text: "bloom"
+            text: dccData.model.cursorModel.currentTheme
         }
 
         DccObject {
@@ -187,7 +192,12 @@ DccObject {
                 weight: 1
                 hasBackground: false
                 pageType: DccObject.Item
-                page: IconThemeGridView {}
+                page: IconThemeGridView {
+                    model: dccData.cursorThemeViewModel
+                    onRequsetSetTheme: (id)=> {
+                        dccData.requestSetCursorTheme(id)
+                    }
+                }
             }
         }
     }

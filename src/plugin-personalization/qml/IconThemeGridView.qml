@@ -9,14 +9,19 @@ import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
 
 GridLayout {
+    id: root
+    property alias model: repeater.model
+    signal requsetSetTheme(string id)
+
     Layout.fillHeight: true
     Layout.margins: 10
     columns: width / 250
     rowSpacing: 10
+    columnSpacing: 10
     Repeater {
-        model: 17
+        id: repeater
         Item {
-            Layout.preferredHeight: 97
+            Layout.preferredHeight: /*97*/110
             Layout.fillWidth: true
             Rectangle {
                 anchors.fill: parent
@@ -26,40 +31,52 @@ GridLayout {
                 id: rect
                 anchors.centerIn: parent
                 width: 245
-                height: 97
+                height: /*97*/110
                 radius: 8
                 ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 10
                     RowLayout {
-                        Layout.preferredHeight: 30
+                        Layout.preferredHeight: 20
                         Layout.fillWidth: true
                         Text {
-                            text: "bloom"
+                            text: model.id
                         }
 
                         Item {
                             Layout.fillWidth: true
                         }
 
-                        Rectangle {
-                            width: 28
-                            height: 28
-                            color: "green"
+                        DccCheckIcon {
+                            visible: model.checked
                         }
                     }
 
                     Rectangle {
                         Layout.preferredHeight: 2
                         Layout.fillWidth: true
-                        color: palette.window
+                        color: this.palette.window
                     }
 
                     Rectangle {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
-                        radius: 8
-                        border.color: "gray"
+                        color: "transparent"
+                        // radius: 8
+                        // border.color: "red"
+                        D.DciIcon {
+                            anchors.fill: parent
+                            sourceSize: Qt.size(parent.width, parent.height)
+                            name: model.pic
+                        }
+                    }
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    if (!model.checked) {
+                        root.requsetSetTheme(model.id)
                     }
                 }
             }

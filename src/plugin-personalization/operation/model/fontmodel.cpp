@@ -17,6 +17,7 @@ void FontModel::setFontList(const QList<QJsonObject> &list)
 }
 void FontModel::setFontName(const QString &name)
 {
+        qWarning() << "*******" << name;
     if (m_fontName != name) {
         m_fontName = name;
         Q_EMIT defaultFontChanged(name);

@@ -89,9 +89,25 @@ DccObject {
         weight: 100
         hasBackground: true
         pageType: DccObject.Editor
-        page: D.ComboBox {
+        page: FontCombobox {
             flat: true
-            model: [qsTr("Noto Sans"), qsTr("始终显示")]
+            model: dccData.model.standardFontModel.fontList
+            textRole: "Name"
+            fontRole: textRole
+            valueRole: "Id"
+            currentIndex: indexOfValue(dccData.model.standardFontModel.fontName)
+            onCurrentIndexChanged: {
+                dccData.worker.setDefault(model[currentIndex]);
+            }
+
+            function indexOfValue(value) {
+                for (var i = 0; i < model.length; i++) {
+                    if (model[i][valueRole] === value) {
+                        return i
+                    }
+                }
+                return -1
+            }
         }
     }
 
@@ -102,9 +118,25 @@ DccObject {
         weight: 200
         hasBackground: true
         pageType: DccObject.Editor
-        page: D.ComboBox {
+        page: FontCombobox {
             flat: true
-            model: [qsTr("Noto Mono"), qsTr("始终显示")]
+            model: dccData.model.monoFontModel.fontList
+            textRole: "Name"
+            fontRole: textRole
+            valueRole: "Id"
+            currentIndex: indexOfValue(dccData.model.monoFontModel.fontName)
+            onCurrentIndexChanged: {
+                dccData.worker.setDefault(model[currentIndex]);
+            }
+
+            function indexOfValue(value) {
+                for (var i = 0; i < model.length; i++) {
+                    if (model[i][valueRole] === value) {
+                        return i
+                    }
+                }
+                return -1
+            }
         }
     }
 }
