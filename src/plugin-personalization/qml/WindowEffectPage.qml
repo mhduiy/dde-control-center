@@ -56,6 +56,7 @@ DccObject {
             name: "roundedEffect"
             parentName: "personalization/windowEffect/windowSettingsGroup"
             displayName: qsTr("窗口圆角")
+            visible: dccData.model.windowEffectType < InterfaceEffectListview.WindowEffectType.Normal
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -131,6 +132,7 @@ DccObject {
             name: "enableTransparentWhenMoveWindow"
             parentName: "personalization/windowEffect/windowSettingsGroup"
             displayName: qsTr("窗口移动时启用透明特效")
+            visible: dccData.model.windowEffectType < InterfaceEffectListview.WindowEffectType.Normal
             weight: 2
             pageType: DccObject.Editor
             page: D.Switch {
@@ -145,6 +147,7 @@ DccObject {
             name: "minimizeEffect"
             parentName: "personalization/windowEffect/windowSettingsGroup"
             displayName: qsTr("最小化时效果")
+            visible: dccData.model.windowEffectType <= InterfaceEffectListview.WindowEffectType.Best
             weight: 3
             pageType: DccObject.Editor
             page: D.ComboBox {
@@ -164,6 +167,7 @@ DccObject {
         parentName: "personalization/windowEffect"
         displayName: qsTr("不透明度调节")
         weight: 600
+        visible: dccData.model.windowEffectType < InterfaceEffectListview.WindowEffectType.Normal
         pageType: DccObject.Item
         hasBackground: true
         page: ColumnLayout {

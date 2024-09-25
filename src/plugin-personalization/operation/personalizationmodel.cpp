@@ -141,3 +141,11 @@ void PersonalizationModel::setWindowEffectType(int windowEffectType)
     m_windowEffectType = windowEffectType;
     Q_EMIT  windowEffectTypeChanged(windowEffectType);
 }
+
+void PersonalizationModel::setScrollBarPolicyConfig(const QString &value)
+{
+    if (m_scrollBarPolicyConfig == value)
+        return;
+    m_scrollBarPolicyConfig = value;
+    Q_EMIT scrollBarPolicyConfigChanged(value);
+}
