@@ -113,14 +113,18 @@ PersonalizationInterface::PersonalizationInterface(QObject *parent)
 : QObject(parent)
 , m_model(new PersonalizationModel(this))
 , m_work(new PersonalizationWorker(m_model, this))
-, m_globalThemeModel(new ThemeVieweModel(this))
+, m_globalThemeViewModel(new ThemeVieweModel(this))
+, m_iconThemeViewModel(new ThemeVieweModel(this))
+, m_cursorThemeViewModel(new ThemeVieweModel(this))
 {
-    m_globalThemeModel->setThemeModel(m_model->getGlobalThemeModel());
-
+    m_globalThemeViewModel->setThemeModel(m_model->getGlobalThemeModel());
+    m_iconThemeViewModel->setThemeModel(m_model->getIconModel());
+    m_cursorThemeViewModel->setThemeModel(m_model->getMouseModel());
 
     // after do
     m_work->active(); // refresh data
     m_work->refreshTheme();
+    m_work->refreshFont();
 
     initAppearanceSwitchModel();
 }
@@ -194,6 +198,24 @@ void PersonalizationInterface::initAppearanceSwitchModel()
     connect(globalTheme, &ThemeModel::itemRemoved, updateDefault);
 }
 
+void PersonalizationInterface::requestSetIconTheme(const QString &id)
+{
+    for (auto &object : m_model->getIconModel()->getList()) {
+        if (object.value("Id").toString() == id) {
+            m_work->setDefault(object);
+            return;
+        }
+    }
+}
+void PersonalizationInterface::requestSetCursorTheme(const QString &id)
+{
+    for (auto &object : m_model->getMouseModel()->getList()) {
+        if (object.value("Id").toString() == id) {
+            m_work->setDefault(object);
+            return;
+        }
+    }
+}
 
 DCC_FACTORY_CLASS(PersonalizationInterface)
 

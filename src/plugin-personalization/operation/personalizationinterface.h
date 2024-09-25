@@ -9,6 +9,7 @@
 #include "personalizationmodel.h"
 #include "personalizationworker.h"
 #include <qtmetamacros.h>
+#include <qtypes.h>
 
 class ThemeVieweModel : public QAbstractItemModel
 {
@@ -44,7 +45,9 @@ private:
 class PersonalizationInterface : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(ThemeVieweModel *globalThemeModel MEMBER m_globalThemeModel CONSTANT)
+    Q_PROPERTY(ThemeVieweModel *globalThemeModel MEMBER m_globalThemeViewModel CONSTANT)
+    Q_PROPERTY(ThemeVieweModel *iconThemeViewModel MEMBER m_iconThemeViewModel CONSTANT)
+    Q_PROPERTY(ThemeVieweModel *cursorThemeViewModel MEMBER m_cursorThemeViewModel CONSTANT)
     Q_PROPERTY(PersonalizationModel *model MEMBER m_model CONSTANT)
     Q_PROPERTY(PersonalizationWorker *worker MEMBER m_work CONSTANT)
     Q_PROPERTY(QVariantList appearanceSwitchModel MEMBER m_appearanceSwitchModel NOTIFY appearanceSwitchModelChanged)
@@ -58,6 +61,8 @@ public:
 
     Q_INVOKABLE void requestSetGlobalTheme(const QString &themeId);
     Q_INVOKABLE void requestSetAppearanceTheme(const QString &id);
+    Q_INVOKABLE void requestSetIconTheme(const QString &id);
+    Q_INVOKABLE void requestSetCursorTheme(const QString &id);
 
 private:
     QString getGlobalThemeId(const QString &themeId, QString &mode);
@@ -70,7 +75,9 @@ signals:
 private:
     PersonalizationModel *m_model;
     PersonalizationWorker *m_work;
-    ThemeVieweModel *m_globalThemeModel;
+    ThemeVieweModel *m_globalThemeViewModel;
+    ThemeVieweModel *m_iconThemeViewModel;
+    ThemeVieweModel *m_cursorThemeViewModel;
 
     QVariantList m_appearanceSwitchModel;
     QString m_currentAppearance;

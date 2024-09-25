@@ -26,6 +26,10 @@ class PersonalizationModel : public QObject
     Q_PROPERTY(QString activeColor READ getActiveColor WRITE setActiveColor NOTIFY onActiveColorChanged)
 
     Q_PROPERTY(FontSizeModel *fontSizeModel MEMBER m_fontSizeModel CONSTANT)
+    Q_PROPERTY(FontModel *standardFontModel MEMBER m_standFontModel CONSTANT)
+    Q_PROPERTY(FontModel *monoFontModel MEMBER m_monoFontModel CONSTANT)
+    Q_PROPERTY(ThemeModel *iconModel MEMBER m_iconModel CONSTANT)
+    Q_PROPERTY(ThemeModel *cursorModel MEMBER m_mouseModel CONSTANT)
 
 public:
     explicit PersonalizationModel(QObject *parent = nullptr);
