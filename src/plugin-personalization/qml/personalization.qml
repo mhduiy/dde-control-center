@@ -5,7 +5,7 @@ import org.deepin.dcc 1.0
 DccObject {
     name: "personalization"
     parentName: "root"
-    displayName: qsTr("个性化")
+    displayName: qsTr("Personalization")
     icon: "personalization"
     weight: 30
 }

@@ -12,7 +12,7 @@ DccObject {
     DccObject {
         name: "interfaceAndEffectTitle"
         parentName: "personalization/windowEffect"
-        displayName: qsTr("界面和效果")
+        displayName: qsTr("Interface and Effects")
         weight: 10
         hasBackground: false
         pageType: DccObject.Item
@@ -35,7 +35,7 @@ DccObject {
     DccObject {
         name: "windowSettingsTitle"
         parentName: "personalization/windowEffect"
-        displayName: qsTr("窗口设置")
+        displayName: qsTr("Window Settings")
         weight: 200
         hasBackground: false
         pageType: DccObject.Item
@@ -55,7 +55,7 @@ DccObject {
         DccObject {
             name: "roundedEffect"
             parentName: "personalization/windowEffect/windowSettingsGroup"
-            displayName: qsTr("窗口圆角")
+            displayName: qsTr("Window rounded corners")
             visible: dccData.model.windowEffectType < InterfaceEffectListview.WindowEffectType.Normal
             weight: 1
             pageType: DccObject.Item
@@ -75,7 +75,7 @@ DccObject {
                     Layout.preferredHeight: 100
                     Layout.margins: 10
                     clip: true
-                    property var tips: ["无", "小", "中", "大"]
+                    property var tips: ["None", "Small", "Medium", "Large"]
                     property var icons: ["corner_none", "corner_small", "corner_middle", "corner_big"]
 
                     model: tips.length
@@ -131,7 +131,7 @@ DccObject {
         DccObject {
             name: "enableTransparentWhenMoveWindow"
             parentName: "personalization/windowEffect/windowSettingsGroup"
-            displayName: qsTr("窗口移动时启用透明特效")
+            displayName: qsTr("Enable transparent effects when moving windows")
             visible: dccData.model.windowEffectType < InterfaceEffectListview.WindowEffectType.Normal
             weight: 2
             pageType: DccObject.Editor
@@ -146,7 +146,7 @@ DccObject {
         DccObject {
             name: "minimizeEffect"
             parentName: "personalization/windowEffect/windowSettingsGroup"
-            displayName: qsTr("最小化时效果")
+            displayName: qsTr("Window Minimize Effect")
             visible: dccData.model.windowEffectType <= InterfaceEffectListview.WindowEffectType.Best
             weight: 3
             pageType: DccObject.Editor
@@ -165,7 +165,7 @@ DccObject {
     DccObject {
         name: "computerSuspendsAfter"
         parentName: "personalization/windowEffect"
-        displayName: qsTr("不透明度调节")
+        displayName: qsTr("Opacity")
         weight: 600
         visible: dccData.model.windowEffectType < InterfaceEffectListview.WindowEffectType.Normal
         pageType: DccObject.Item
@@ -180,8 +180,6 @@ DccObject {
             }
 
             D.TipsSlider {
-                id: slider
-                readonly property var tips: [qsTr("低"), (""), qsTr("高")]
                 Layout.alignment: Qt.AlignCenter
                 Layout.margins: 10
                 Layout.fillWidth: true
@@ -195,13 +193,13 @@ DccObject {
                 slider.snapMode: Slider.SnapAlways
                 ticks: [
                     D.SliderTipItem {
-                        text: slider.tips[0]
+                        text: qsTr("Low")
                     },
                     D.SliderTipItem {
-                        text: slider.tips[1]
+                        text: ""
                     },
                     D.SliderTipItem {
-                        text: slider.tips[2]
+                        text: qsTr("High")
                     }
                 ]
                 slider.onValueChanged: {
@@ -214,13 +212,15 @@ DccObject {
     DccObject {
         name: "scrollBar"
         parentName: "personalization/windowEffect"
-        displayName: qsTr("滚动条")
+        displayName: qsTr("Scroll Bars")
+        visible: dccData.model.scrollBarPolicyConfig !== "Hidden"
         weight: 700
         hasBackground: true
         pageType: DccObject.Editor
         page: D.ComboBox {
             flat: true
-            model: [qsTr("滚动时显示"), qsTr("一直显示")]
+            enabled: dccData.model.scrollBarPolicyConfig !== "Disabled"
+            model: [qsTr("Show on scrolling"), qsTr("Keep shown")]
             currentIndex: {
                 let policy = dccData.model.scrollBarPolicy
                 if (policy === Qt.ScrollBarAsNeeded) {
@@ -243,12 +243,14 @@ DccObject {
     DccObject {
         name: "scrollBar"
         parentName: "personalization/windowEffect"
-        displayName: qsTr("紧凑模式")
-        description: qsTr("开启后，窗口将显示更多内容")
+        displayName: qsTr("Compact Display")
+        description: qsTr("If enabled, more content is displayed in the window.")
+        visible: dccData.model.compactDisplayConfig !== "Hidden"
         weight: 700
         hasBackground: true
         pageType: DccObject.Editor
         page: D.Switch {
+            enabled: dccData.model.compactDisplayConfig !== "Disabled"
             checked: dccData.model.compactDisplay
             onCheckedChanged: {
                 dccData.worker.setCompactDisplay(checked)
@@ -259,8 +261,8 @@ DccObject {
     DccObject {
         name: "scrollBar"
         parentName: "personalization/windowEffect"
-        displayName: qsTr("标题栏高度")
-        description: qsTr("仅适用于窗口管理器绘制的应用标题栏")
+        displayName: qsTr("Title Bar Height")
+        description: qsTr("Only suitable for application window title bars drawn by the window manager.")
         weight: 700
         hasBackground: true
         pageType: DccObject.Editor
@@ -268,10 +270,10 @@ DccObject {
             flat: true
             currentIndex: indexOfValue(dccData.model.titleBarHeight)
             model: [
-                { text: qsTr("极小"), value: 24 },
-                { text: qsTr("小"), value: 32 },
-                { text: qsTr("中"), value: 40 },
-                { text: qsTr("大"), value: 50 }
+                { text: qsTr("Extremely small"), value: 24 },
+                { text: qsTr("Small"), value: 32 },
+                { text: qsTr("Medium"), value: 40 },
+                { text: qsTr("Large"), value: 50 }
             ]
 
             textRole: "text"
@@ -279,6 +281,7 @@ DccObject {
 
             onCurrentIndexChanged: {
                 var selectedValue = model[currentIndex][valueRole]
+                dccData.worker.setDiabledCompactToTitleHeight()
                 dccData.worker.setTitleBarHeight(selectedValue)
             }
 
@@ -293,4 +296,3 @@ DccObject {
         }
     }
 }
-

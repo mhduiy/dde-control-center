@@ -90,23 +90,23 @@ Rectangle {
 
         ListElement {
             value: InterfaceEffectListview.WindowEffectType.Normal
-            title: qsTr("最佳性能")
+            title: qsTr("Optimal performance")
             icon: "optimum_performance"
-            description: qsTr("关闭所有界面和窗口特效，保障系统高效运行")
+            description: qsTr("Disable all interface and window effects for efficient system performance.")
         }
 
         ListElement {
             value: InterfaceEffectListview.WindowEffectType.Better
-            title: qsTr("均衡")
+            title: qsTr("Balance")
             icon: "balance"
-            description: qsTr("限制部分窗口特效，保障出色的视觉效果，同时维持整体流畅运行")
+            description: qsTr("Limit some window effects for excellent visuals while maintaining smooth system performance.")
         }
 
         ListElement {
             value: InterfaceEffectListview.WindowEffectType.Best
-            title: qsTr("最佳视觉")
+            title: qsTr("Best Visuals")
             icon: "best_vision"
-            description: qsTr("开启所有界面和窗口特效，体验最佳视觉效果")
+            description: qsTr("Enable all interface and window effects for the best visual experience.")
         }
     }
 }

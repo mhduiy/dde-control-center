@@ -24,7 +24,8 @@ class PersonalizationModel : public QObject
     Q_PROPERTY(bool isMoveWindow READ getIsMoveWindow WRITE setIsMoveWindow NOTIFY moveWindowChanged)
     Q_PROPERTY(int windowEffectType READ windowEffectType WRITE setWindowEffectType NOTIFY windowEffectTypeChanged)
     Q_PROPERTY(QString activeColor READ getActiveColor WRITE setActiveColor NOTIFY onActiveColorChanged)
-    Q_PROPERTY(QString scrollBarPolicyConfig READ getScrollBarPolicyConfig WRITE setScrollBarPolicyConfig NOTIFY onScrollBarPolicyConfigChanged)
+    Q_PROPERTY(QString scrollBarPolicyConfig READ getScrollBarPolicyConfig WRITE setScrollBarPolicyConfig NOTIFY scrollBarPolicyConfigChanged)
+    Q_PROPERTY(QString compactDisplayConfig READ getCompactDisplayConfig WRITE setCompactDisplayConfig NOTIFY compactDisplayConfigChanged)
 
     Q_PROPERTY(FontSizeModel *fontSizeModel MEMBER m_fontSizeModel CONSTANT)
     Q_PROPERTY(FontModel *standardFontModel MEMBER m_standFontModel CONSTANT)
@@ -81,6 +82,9 @@ public:
     inline QString getScrollBarPolicyConfig() { return m_scrollBarPolicyConfig; }
     void setScrollBarPolicyConfig(const QString &config);
 
+    inline QString getCompactDisplayConfig() { return m_compactDisplayConfig; }
+    void setCompactDisplayConfig(const QString &config);
+
 Q_SIGNALS:
     void wmChanged(const bool is3d);
     void opacityChanged(double opacity);
@@ -94,7 +98,8 @@ Q_SIGNALS:
     void titleBarHeightChanged(int titleBarHeight);
     void moveWindowChanged(const bool isMoveWindow);
     void windowEffectTypeChanged(int windowEffectType);
-    void setScrollBarPolicyConfigChanged(const QString &config);
+    void scrollBarPolicyConfigChanged(const QString &config);
+    void compactDisplayConfigChanged(const QString &config);
 
 private:
     ThemeModel *m_windowModel;
@@ -118,5 +123,6 @@ private:
     int m_windowEffectType;
 
     QString m_scrollBarPolicyConfig;
+    QString m_compactDisplayConfig;
 };
 #endif // PERSONALIZATIONMODEL_H

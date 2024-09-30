@@ -13,9 +13,9 @@ DccObject {
     DccObject {
         name: "fontSize"
         parentName: "personalization/font"
-        displayName: qsTr("字号")
+        displayName: qsTr("Size")
         hasBackground: true
-        weight: 20
+        weight: 10
         pageType: DccObject.Item
         page: ColumnLayout {
             Layout.fillHeight: true
@@ -26,57 +26,30 @@ DccObject {
                 Layout.leftMargin: 10
             }
             D.TipsSlider {
-                id: scrollSlider
-                readonly property var tips: [("11"), ("12"), ("13"), ("14"), ("15"), ("16"), ("18"), ("20")]
+                id: fontSizeSlider
+                readonly property var fontSizeModel: dccData.model.compactDisplay ? [10, 11, 12, 13, 14, 15, 16] : [11, 12, 13, 14, 15, 16, 18, 20]
                 Layout.preferredHeight: 90
                 Layout.alignment: Qt.AlignCenter
                 Layout.margins: 10
                 Layout.fillWidth: true
                 tickDirection: D.TipsSlider.TickDirection.Back
                 slider.handleType: Slider.HandleType.ArrowBottom
-                slider.value: dccData.model.fontSizeModel.size
+                slider.value: fontSizeModel.indexOf(dccData.model.fontSizeModel.size)
                 slider.from: 0
-                slider.to: ticks.length -1
+                slider.to: fontSizeModel.length - 1
                 slider.live: true
                 slider.stepSize: 1
                 slider.snapMode: Slider.SnapAlways
-                ticks: [
+                ticks: Repeater {
+                    model: fontSizeSlider.fontSizeModel.length
                     D.SliderTipItem {
-                        text: scrollSlider.tips[0]
-                        highlight: scrollSlider.slider.value === 11
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[1]
-                        highlight: scrollSlider.slider.value === 12
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[2]
-                        highlight: scrollSlider.slider.value === 13
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[3]
-                        highlight: scrollSlider.slider.value === 14
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[4]
-                        highlight: scrollSlider.slider.value === 15
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[5]
-                        highlight: scrollSlider.slider.value === 16
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[6]
-                        highlight: scrollSlider.slider.value === 18
-                    },
-                    D.SliderTipItem {
-                        text: scrollSlider.tips[7]
-                        highlight: scrollSlider.slider.value === 20
+                        text: fontSizeSlider.fontSizeModel[index]
+                        highlight: fontSizeSlider.slider.value === index
                     }
-                ]
+
+                }
                 slider.onValueChanged: {
-                    console.warn("---------", slider.value)
-                    dccData.worker.setFontSize(slider.value)
+                    dccData.worker.setFontSize(fontSizeSlider.fontSizeModel[fontSizeSlider.slider.value])
                 }
             }
         }
@@ -85,7 +58,7 @@ DccObject {
     DccObject {
         name: "scrollBar"
         parentName: "personalization/font"
-        displayName: qsTr("标准字体")
+        displayName: qsTr("Standard Font")
         weight: 100
         hasBackground: true
         pageType: DccObject.Editor
@@ -114,7 +87,7 @@ DccObject {
     DccObject {
         name: "scrollBar"
         parentName: "personalization/font"
-        displayName: qsTr("等宽字体")
+        displayName: qsTr("Monospaced Font")
         weight: 200
         hasBackground: true
         pageType: DccObject.Editor

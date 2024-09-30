@@ -18,7 +18,7 @@ DccObject {
         DccObject {
             name: "themeTitle"
             parentName: "personalization/themeGroup"
-            displayName: qsTr("主题")
+            displayName: qsTr("Theme")
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
@@ -67,8 +67,8 @@ DccObject {
         DccObject {
             name: "appearance"
             parentName: "personalization/themeGroup"
-            displayName: qsTr("外观")
-            description: qsTr("外观决定了主题显示浅色还是深色，或者自动切换")
+            displayName: qsTr("Appearance")
+            description: qsTr("The appearance determines whether the theme displays light or dark colors, or automatically switches")
             weight: 2
             pageType: DccObject.Editor
             icon: "appearance"
@@ -96,52 +96,44 @@ DccObject {
     DccObject {
         name: "wallpaper"
         parentName: "personalization"
-        displayName: qsTr("桌面和任务栏")
-        description: qsTr("设置桌面上图标的显示以及图标大小等")
+        displayName: qsTr("Desktop and taskbar")
+        description: qsTr("Set the display and size of icons on the desktop")
         icon: "taskbar"
-        weight: 20
+        weight: 100
     }
     DccObject {
         name: "windowEffect"
         parentName: "personalization"
-        displayName: qsTr("窗口效果")
-        description: qsTr("设置界面效果以及图标大小等")
+        displayName: qsTr("Window effect")
+        description: qsTr("Set interface effects and icon sizes")
         icon: "window_effect"
-        weight: 30
+        weight: 200
         WindowEffectPage {}
     }
     DccObject {
         name: "screensaver"
         parentName: "personalization"
-        displayName: qsTr("壁纸和屏保")
-        description: qsTr("个性化您的壁纸与屏保")
+        displayName: qsTr("Wallpaper and screensaver")
+        description: qsTr("Personalize your wallpaper and screensaver")
         icon: "wallpaper"
-        weight: 40
+        weight: 300
     }
     DccObject {
         name: "colorAndIcons"
         parentName: "personalization"
-        displayName: qsTr("颜色和图标")
-        description: qsTr("调整喜好的活动用色和主题图标")
+        displayName: qsTr("Colors and icons")
+        description: qsTr("Adjust preferred activity colors and theme icons")
         icon: "icon_cursor"
-        weight: 50
+        weight: 400
         ColorAndIcons {}
     }
     DccObject {
         name: "font"
         parentName: "personalization"
-        displayName: qsTr("字体和字号")
-        description: qsTr("修改系统字体与字号")
+        displayName: qsTr("Font and font size")
+        description: qsTr("Modify the system font and font size")
         icon: "font_size"
-        weight: 60
+        weight: 500
         FontSizePage {}
-    }
-    DccObject {
-        name: "lock"
-        parentName: "personalization"
-        displayName: qsTr("锁屏")
-        description: qsTr("锁屏自定义")
-        icon: "personalization"
-        weight: 70
     }
 }

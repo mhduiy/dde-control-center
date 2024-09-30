@@ -112,8 +112,9 @@ ListView {
         }
         GridLayout {
             anchors.left: parent.left
-            width: repeater.count < columns ? repeater.count * (itemWidth + itemSpacing) : parent.width
-            height: repeater.count <= columns ? parent.height / 2 : parent.height
+            property int contentCount: repeater.count
+            width: contentCount < columns ? contentCount * (itemWidth + itemSpacing) : parent.width
+            height: contentCount <= columns ? parent.height / 2 : parent.height
             rowSpacing: 0
             columnSpacing: 0
             rows: listview.gridMaxRows

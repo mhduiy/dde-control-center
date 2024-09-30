@@ -13,8 +13,8 @@ DccObject {
     DccObject {
         name: "accentColorTitle"
         parentName: "personalization/colorAndIcons"
-        displayName: qsTr("活动用色")
-        weight: 1
+        displayName: qsTr("Accent Color")
+        weight: 10
         hasBackground: false
         pageType: DccObject.Item
         page: Label {
@@ -94,28 +94,17 @@ DccObject {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            dccData.worker.setActiveColor(listview.colors[index])
-                            // console.warn("------", dccData.)
-                            // colorDialog.show()
+                            colorDialog.open()
                         }
                     }
 
-                    // 颜色选择对话框
-                    // Window {
-                    //     D.DWindow.enabled: true
-                    //     color: "transparent"
-                    //     id: colorDialog
-                    //     width: 500
-                    //     height: 500
-                    //     ColorDialog {
-                    //         visible: true
-                    //         title: "选择颜色"
-                    //     }
-                    //     D.StyledBehindWindowBlur {
-                    //         control: parent
-                    //         anchors.fill: parent
-                    //     }
-                    // }
+                    ColorDialog {
+                        id: colorDialog
+                        title: qsTr("select color")
+                        onAccepted: {
+                            dccData.worker.setActiveColor(colorDialog.selectedColor)
+                        }
+                    }
                 }
             }
         }
@@ -125,7 +114,7 @@ DccObject {
     DccObject {
         name: "iconSettingsTitle"
         parentName: "personalization/colorAndIcons"
-        displayName: qsTr("图标设置")
+        displayName: qsTr("Icon Settings")
         weight: 200
         hasBackground: false
         pageType: DccObject.Item
@@ -138,8 +127,8 @@ DccObject {
     DccObject {
         name: "iconTheme"
         parentName: "personalization/colorAndIcons"
-        displayName: qsTr("图标主题")
-        description: qsTr("自定义您的主题图标")
+        displayName: qsTr("Icon Theme")
+        description: qsTr("Customize your theme icon")
         icon: "theme_icon"
         weight: 300
         hasBackground: true
@@ -162,8 +151,8 @@ DccObject {
                 page: IconThemeGridView {
                     model: dccData.iconThemeViewModel
                     onRequsetSetTheme: (id)=> {
-                        dccData.requestSetIconTheme(id)
-                    }
+                                           dccData.requestSetIconTheme(id)
+                                       }
                 }
             }
         }
@@ -171,8 +160,8 @@ DccObject {
     DccObject {
         name: "cursorTheme"
         parentName: "personalization/colorAndIcons"
-        displayName: qsTr("光标主题")
-        description: qsTr("自定义您的主题光标")
+        displayName: qsTr("Cursor Theme")
+        description: qsTr("Customize your theme cursor")
         icon: "topic_cursor"
         weight: 400
         hasBackground: true
@@ -195,8 +184,8 @@ DccObject {
                 page: IconThemeGridView {
                     model: dccData.cursorThemeViewModel
                     onRequsetSetTheme: (id)=> {
-                        dccData.requestSetCursorTheme(id)
-                    }
+                                           dccData.requestSetCursorTheme(id)
+                                       }
                 }
             }
         }

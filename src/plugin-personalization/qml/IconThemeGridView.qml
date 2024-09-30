@@ -62,8 +62,6 @@ GridLayout {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         color: "transparent"
-                        // radius: 8
-                        // border.color: "red"
                         D.DciIcon {
                             anchors.fill: parent
                             sourceSize: Qt.size(parent.width, parent.height)

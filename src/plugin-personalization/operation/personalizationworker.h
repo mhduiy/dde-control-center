@@ -44,6 +44,7 @@ public Q_SLOTS:
     void setCompactDisplay(bool value);
     void setScrollBarPolicy(int policy);
     void setTitleBarHeight(int value);
+    void setDiabledCompactToTitleHeight();
 
 private Q_SLOTS:
     void FontSizeChanged(const double value) const;
@@ -62,8 +63,6 @@ private Q_SLOTS:
     void onWindowEffectChanged(int value);
 
 private:
-    int sizeToSliderValue(const double value) const;
-    double sliderValueToSize(const int value) const;
     double sliderValutToOpacity(const int value) const;
     QList<QJsonObject> converToList(const QString &type, const QJsonArray &array);
     void addList(ThemeModel *model, const QString &type, const QJsonArray &array);
@@ -75,6 +74,7 @@ private:
     bool allowSwitchWM();
     void onKWinTitleBarConfigChanged(const QString &key);
     void onKWinCompositingConfigChanged(const QString &key);
+    void onPersonalizationConfigChanged(const QString &key);
 
     template<typename T>
     T toSliderValue(std::vector<T> list, T value);
@@ -84,6 +84,7 @@ private:
     PersonalizationDBusProxy *m_personalizationDBusProxy;
     Dtk::Core::DConfig *m_kwinTitleBarConfig;
     Dtk::Core::DConfig *m_kwinCompositingConfig;
+    Dtk::Core::DConfig *m_personalizationConfig;
 
     QMap<QString, ThemeModel *> m_themeModels;
     QMap<QString, FontModel *> m_fontModels;

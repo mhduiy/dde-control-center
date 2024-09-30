@@ -149,3 +149,11 @@ void PersonalizationModel::setScrollBarPolicyConfig(const QString &value)
     m_scrollBarPolicyConfig = value;
     Q_EMIT scrollBarPolicyConfigChanged(value);
 }
+
+void PersonalizationModel::setCompactDisplayConfig(const QString &value)
+{
+    if (m_compactDisplayConfig == value)
+        return;
+    m_compactDisplayConfig = value;
+    Q_EMIT compactDisplayConfigChanged(value);
+}
