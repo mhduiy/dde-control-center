@@ -10,17 +10,11 @@ import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
 
 DccObject {
-    DccObject {
+    DccTitleObject {
         name: "accentColorTitle"
+        weight: 10
         parentName: "personalization/colorAndIcons"
         displayName: qsTr("Accent Color")
-        weight: 10
-        hasBackground: false
-        pageType: DccObject.Item
-        page: Label {
-            font: DccUtils.copyFont(D.DTK.fontManager.t4, { "bold": true })
-            text: dccObj.displayName
-        }
     }
 
     DccObject {
@@ -110,18 +104,11 @@ DccObject {
         }
     }
 
-
-    DccObject {
+    DccTitleObject {
         name: "iconSettingsTitle"
         parentName: "personalization/colorAndIcons"
         displayName: qsTr("Icon Settings")
         weight: 200
-        hasBackground: false
-        pageType: DccObject.Item
-        page: Label {
-            font: DccUtils.copyFont(D.DTK.fontManager.t4, { "bold": true })
-            text: dccObj.displayName
-        }
     }
 
     DccObject {

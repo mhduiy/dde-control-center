@@ -15,6 +15,7 @@ DccObject {
         weight: 10
         pageType: DccObject.Item
         page: DccGroupView {}
+
         DccObject {
             name: "themeTitle"
             parentName: "personalization/themeGroup"
