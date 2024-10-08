@@ -95,6 +95,7 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::compositingEnabledChanged, this, &PersonalizationWorker::onWindowWM);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::WindowRadiusChanged, this, &PersonalizationWorker::onWindowRadiusChanged);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::DTKSizeModeChanged, this, &PersonalizationWorker::onCompactDisplayChanged);
+    connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::scrollBarPolicyChanged, this, &PersonalizationWorker::setScrollBarPolicy);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::Changed, this, [this](const QString &propertyName, const QString &value) {
         qCDebug(DdcPersonalWorker) << "ChangeProperty is " << propertyName << "; value is" << value;
         if (propertyName == "globaltheme") {
@@ -132,9 +133,9 @@ void PersonalizationWorker::active()
     m_model->getMonoFontModel()->setFontName(m_personalizationDBusProxy->monospaceFont());
     m_model->getStandFontModel()->setFontName(m_personalizationDBusProxy->standardFont());
     m_model->setWindowRadius(m_personalizationDBusProxy->windowRadius());
-
     m_model->getFontSizeModel()->setFontSize(ptToPx(m_personalizationDBusProxy->fontSize()));
     m_model->setCompactDisplay(m_personalizationDBusProxy->getDTKSizeMode());
+    m_model->setScrollBarPolicy(m_personalizationDBusProxy->getScrollBarPolicy());
 
     int titleBarHight = m_kwinTitleBarConfig->value(TITLE_BAR_HEIGHT_KEY).toInt();
     m_model->setTitleBarHeight(titleBarHight);
@@ -462,7 +463,7 @@ void PersonalizationWorker::setCompactDisplay(bool value)
 
 void PersonalizationWorker::setScrollBarPolicy(int policy)
 {
-    m_personalizationDBusProxy->setProperty("QtScrollBarPolicy", policy);
+    m_personalizationDBusProxy->setScrollBarPolicy( policy);
 }
 
 template<typename T>

@@ -56,7 +56,7 @@ DccObject {
     }
 
     DccObject {
-        name: "scrollBar"
+        name: "standardFont"
         parentName: "personalization/font"
         displayName: qsTr("Standard Font")
         weight: 100
@@ -66,7 +66,6 @@ DccObject {
             flat: true
             model: dccData.model.standardFontModel.fontList
             textRole: "Name"
-            fontRole: textRole
             valueRole: "Id"
             currentIndex: indexOfValue(dccData.model.standardFontModel.fontName)
             onCurrentIndexChanged: {
@@ -85,7 +84,7 @@ DccObject {
     }
 
     DccObject {
-        name: "scrollBar"
+        name: "monoFont"
         parentName: "personalization/font"
         displayName: qsTr("Monospaced Font")
         weight: 200
@@ -95,7 +94,6 @@ DccObject {
             flat: true
             model: dccData.model.monoFontModel.fontList
             textRole: "Name"
-            fontRole: textRole
             valueRole: "Id"
             currentIndex: indexOfValue(dccData.model.monoFontModel.fontName)
             onCurrentIndexChanged: {

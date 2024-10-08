@@ -8,7 +8,6 @@ D.ComboBox {
     id: control
     flat: true
     property string visibleRole
-    property string fontRole
 
     delegate: D.MenuItem {
         id: menuItem

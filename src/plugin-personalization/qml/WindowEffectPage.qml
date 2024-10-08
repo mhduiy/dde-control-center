@@ -21,9 +21,7 @@ DccObject {
         parentName: "personalization/windowEffect"
         weight: 100
         pageType: DccObject.Item
-        page: InterfaceEffectListview {
-
-        }
+        page: InterfaceEffectListview { }
     }
 
     DccTitleObject {
@@ -48,7 +46,7 @@ DccObject {
             weight: 1
             pageType: DccObject.Item
             page: ColumnLayout {
-                Layout.fillHeight: true
+                anchors.fill: parent
                 Label {
                     id: speedText
                     Layout.topMargin: 10
@@ -63,7 +61,7 @@ DccObject {
                     Layout.preferredHeight: 100
                     Layout.margins: 10
                     clip: true
-                    property var tips: ["None", "Small", "Medium", "Large"]
+                    property var tips: [qsTr("None"), qsTr("Small"), qsTr("Medium"), qsTr("Large")]
                     property var icons: ["corner_none", "corner_small", "corner_middle", "corner_big"]
 
                     model: tips.length
@@ -91,7 +89,7 @@ DccObject {
                                 anchors.margins: 4
                                 color: Qt.rgba(0, 0, 0, 0.05)
                                 radius: 7
-                                D.DciIcon{
+                                D.DciIcon {
                                     sourceSize: Qt.size(parent.width, parent.height)
                                     name: listview.icons[index]
                                 }
@@ -103,6 +101,7 @@ DccObject {
                                 }
                             }
                         }
+
                         Text {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
@@ -198,7 +197,9 @@ DccObject {
     }
 
     DccObject {
+        id: scrollBarObject
         name: "scrollBar"
+        property bool hasDBusProperty: false
         parentName: "personalization/windowEffect"
         displayName: qsTr("Scroll Bars")
         visible: dccData.model.scrollBarPolicyConfig !== "Hidden"
@@ -226,14 +227,27 @@ DccObject {
                 }
             }
         }
+
+        DccDBusInterface {
+            service: "org.deepin.dde.Appearance1"
+            path: "/org/deepin/dde/Appearance1"
+            inter: "org.deepin.dde.Appearance1"
+            connection: DccDBusInterface.SessionBus
+            monitorProperties: ["QtScrollBarPolicy"]
+            onPropertyChanged: function (properties) {
+                if (properties.hasOwnProperty("QtScrollBarPolicy")) {
+                    scrollBarObject.hasDBusProperty = true
+                }
+            }
+        }
     }
 
     DccObject {
-        name: "scrollBar"
+        name: "compact"
         parentName: "personalization/windowEffect"
         displayName: qsTr("Compact Display")
         description: qsTr("If enabled, more content is displayed in the window.")
-        visible: dccData.model.compactDisplayConfig !== "Hidden"
+        visible: dccData.model.compactDisplayConfig !== "Hidden" && hasDBusProperty
         weight: 700
         hasBackground: true
         pageType: DccObject.Editor
@@ -247,7 +261,7 @@ DccObject {
     }
 
     DccObject {
-        name: "scrollBar"
+        name: "titleBarHeight"
         parentName: "personalization/windowEffect"
         displayName: qsTr("Title Bar Height")
         description: qsTr("Only suitable for application window title bars drawn by the window manager.")

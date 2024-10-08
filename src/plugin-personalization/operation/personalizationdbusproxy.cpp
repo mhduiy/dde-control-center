@@ -197,6 +197,14 @@ void PersonalizationDBusProxy::setDTKSizeMode(int value)
 {
     m_AppearanceInter->setProperty("DTKSizeMode", QVariant::fromValue(value));
 }
+int PersonalizationDBusProxy::getScrollBarPolicy()
+{
+    return qvariant_cast<int>(m_AppearanceInter->property("QtScrollBarPolicy"));
+}
+void PersonalizationDBusProxy::setScrollBarPolicy(int value)
+{
+    m_AppearanceInter->setProperty("QtScrollBarPolicy", QVariant::fromValue(value));
+}
 // WMSwitcher
 bool PersonalizationDBusProxy::AllowSwitch()
 {

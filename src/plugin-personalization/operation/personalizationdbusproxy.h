@@ -74,6 +74,10 @@ public:
     int getDTKSizeMode();
     void setDTKSizeMode(int value);
 
+    Q_PROPERTY(int scrollBarPolicy READ getScrollBarPolicy WRITE setScrollBarPolicy NOTIFY scrollBarPolicyChanged)
+    int getScrollBarPolicy();
+    void setScrollBarPolicy(int value);
+
 signals:
     // Appearance
     void Changed(const QString &in0, const QString &in1);
@@ -102,6 +106,7 @@ signals:
     //    void CursorThemeChanged(const QString & value) const;
     void ZoneEnabledChanged(bool value) const;
     void DTKSizeModeChanged(int value) const;
+    void scrollBarPolicyChanged(int value) const;
 
 public slots:
     // Appearance

@@ -88,7 +88,11 @@ DccObject {
                     MouseArea {
                         anchors.fill: parent
                         onClicked: {
-                            colorDialog.open()
+                            if (listview.colors[index] == "CUSTOM") {
+                                colorDialog.open()
+                            } else {
+                                dccData.worker.setActiveColor(listview.colors[index])
+                            }
                         }
                     }
 
