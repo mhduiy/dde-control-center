@@ -251,9 +251,61 @@ DccObject {
             pageType: DccObject.Editor
             page: D.Button {
                 text: "设置"
+                onClicked: {
+                    screenSaverDialog.show()
+                }
+
+                D.DialogWindow {
+                    id: screenSaverDialog
+                    minimumWidth: 400
+                    minimumHeight: 220
+                    title: "照片设置"
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.topMargin: 10
+                        GridLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            rows:3
+                            columns: 2
+                            Label {
+                                text: "来源:"
+                            }
+
+                            D.TextField {
+                                Layout.fillWidth: true
+                            }
+                            Label {
+                                text: "来源:"
+                            }
+
+                            D.TextField {
+                                Layout.fillWidth: true
+                            }
+                            Item {}
+                            D.CheckBox {
+                                text: "随机排列图片的顺序"
+                            }
+                        }
+
+                        D.DialogButtonBox {
+                            Layout.fillWidth: true
+                            alignment: Qt.AlignCenter
+                            standardButtons: DialogButtonBox.NoButton
+                            Button {
+                                text: qsTr("Cancel")
+                                DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
+                            }
+                            Button {
+                                text: qsTr("Save")
+                                highlighted: true
+                                DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
+                            }
+                        }
+                    }
+                }
             }
-
-
         }
         DccObject {
             name: "whenTheLidIsClosed"
