@@ -8,6 +8,7 @@ import Qt5Compat.GraphicalEffects
 
 import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
+import org.deepin.dtk.private as P
 
 ColumnLayout {
     id: root
@@ -16,6 +17,9 @@ ColumnLayout {
     readonly property int imageRectW: 180
     readonly property int imageSpacing: 10
     property bool isExpand: false
+    property var currentItem
+
+    signal wallpaperSelected(var url)
 
     onIsExpandChanged: {
         sortedModel.update()
@@ -34,7 +38,7 @@ ColumnLayout {
             Layout.fillWidth: true
         }
         D.ToolButton {
-            text: isExpand ? "收起" : `显示全部-${model}张`
+            text: isExpand ? "收起" : `显示全部-${model.rowCount()}张`
             font: D.DTK.fontManager.t6
             flat: true
             onClicked: {
@@ -75,26 +79,79 @@ ColumnLayout {
                 sortedModel.update()
             }
 
-            delegate: Rectangle {
+            delegate: Control {
+                id: control
                 width: root.imageRectW
                 height: root.imageRectH
-                color: "transparent"
+                hoverEnabled: true
 
-                Image {
-                    anchors.fill: parent
-                    id: image
-                    source: "file:///home/zhangnkun/Pictures/b15415ced7bb11b63e9bee2d0e06f19b.jpg"
-                    visible: false
-                    fillMode: Image.PreserveAspectCrop
-                }
+                contentItem: Item {
+                    readonly property int imageMargin: 3
+                    Image {
+                        anchors.fill: parent
+                        anchors.margins: parent.imageMargin
+                        id: image
+                        source: model.url
+                        sourceSize: Qt.size(image.width, image.height)
+                        visible: false
+                        fillMode: Image.PreserveAspectCrop
+                        asynchronous: true
+                    }
 
-                OpacityMask {
-                    anchors.fill: parent
-                    source: image
-                    maskSource: Rectangle {
-                        implicitWidth: image.width
-                        implicitHeight: image.height
-                        radius: 8
+                    Rectangle {
+                        anchors.fill: parent
+                        visible: model.url === root.currentItem && model.url !== undefined
+                        color: "transparent"
+                        border.width: 2
+                        border.color: D.DTK.platformTheme.activeColor
+                        radius: 9
+                    }
+
+                    OpacityMask {
+                        anchors.fill: parent
+                        anchors.margins: parent.imageMargin
+                        source: image
+                        maskSource: Rectangle {
+                            implicitWidth: image.width
+                            implicitHeight: image.height
+                            radius: 8
+                        }
+                    }
+                    Control {
+                        implicitHeight: 24
+                        implicitWidth: 24
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: - height / 2 + parent.imageMargin
+                        anchors.rightMargin: - width / 2 + parent.imageMargin
+                        hoverEnabled: true
+                        contentItem: D.IconButton {
+                            icon.name: "close"
+                            visible: control.hovered || parent.hovered
+                            background: P.ButtonPanel {
+                                implicitWidth: DS.Style.iconButton.backgroundSize
+                                implicitHeight: DS.Style.iconButton.backgroundSize
+                                radius: width / 2
+                                button: control
+                            }
+                            scale: visible ? 1 : 0
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: 300
+                                    easing.type: Easing.OutExpo
+                                }
+                            }
+                        }
+                    }
+
+
+
+                    MouseArea {
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            root.wallpaperSelected(model.url)
+                        }
                     }
                 }
             }

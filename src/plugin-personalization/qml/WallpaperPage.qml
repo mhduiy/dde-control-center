@@ -36,11 +36,13 @@ DccObject {
                 height: 180
 
                 Image {
-                    anchors.fill: parent
                     id: image
-                    source: "file:///home/zhangnkun/Pictures/29a64aea80f80518b50c1fed914a6fc2.jpg"
+                    anchors.fill: parent
+                    source: dccData.model.wallpaperMap[dccData.model.currentSelectScreen]
+                    sourceSize: Qt.size(image.width, image.height)
                     visible: false
                     fillMode: Image.PreserveAspectCrop
+                    asynchronous: true
                 }
 
                 OpacityMask {
@@ -77,9 +79,12 @@ DccObject {
                 weight: 10
                 pageType: DccObject.Editor
                 page: D.ComboBox {
-                    width: 100
                     flat: true
-                    model: ["eDP(main Screen)"]
+                    textRole: "name"
+                    model: Qt.application.screens
+                    onCurrentTextChanged: {
+                        dccData.model.currentSelectScreen = currentText
+                    }
                 }
             }
             DccObject {
@@ -147,12 +152,17 @@ DccObject {
     DccObject {
         name: "screenAndSuspendTitle"
         parentName: "personalization/wallpaper"
-        displayName: qsTr("你的图片")
+        // displayName: qsTr("你的图片")
+        displayName: qsTr("系统壁纸")
         weight: 300
         hasBackground: true
         pageType: DccObject.Item
         page: WallpaperSelectView {
-            model: 3
+            model: dccData.model.wallpaperModel
+            currentItem: dccData.model.wallpaperMap[dccData.model.currentSelectScreen]
+            onWallpaperSelected: (url) => {
+                dccData.worker.setBackgroundForMonitor(dccData.model.currentSelectScreen, url)
+            }
         }
     }
 
@@ -161,6 +171,7 @@ DccObject {
         parentName: "personalization/wallpaper"
         displayName: qsTr("每周推荐")
         weight: 300
+        visible: false
         hasBackground: true
         pageType: DccObject.Item
         page: WallpaperSelectView {
@@ -173,6 +184,7 @@ DccObject {
         parentName: "personalization/wallpaper"
         displayName: qsTr("炫彩")
         weight: 300
+        visible: false
         hasBackground: true
         pageType: DccObject.Item
         page: WallpaperSelectView {
