@@ -7,7 +7,7 @@
 #include <QAbstractItemModel>
 
 #include "personalizationmodel.h"
-#include "personalizationworker.h"
+#include "treelandworker.h"
 
 class ThemeVieweModel : public QAbstractItemModel
 {

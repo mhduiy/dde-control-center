@@ -123,7 +123,7 @@ void PersonalizationWorker::active()
     refreshOpacity(m_personalizationDBusProxy->opacity());
     refreshActiveColor(m_personalizationDBusProxy->qtActiveColor());
     onCompositingAllowSwitch(m_personalizationDBusProxy->compositingAllowSwitch());
-    onWallpaperUrlsChanged({});
+    onWallpaperUrlsChanged();
 
     m_model->setCurrentSelectScreen(qApp->primaryScreen()->name());
     m_model->getWindowModel()->setDefault(m_personalizationDBusProxy->gtkTheme());
@@ -277,10 +277,9 @@ void PersonalizationWorker::onWindowEffectChanged(int value)
     m_model->setWindowEffectType(value);
 }
 
-void PersonalizationWorker::onWallpaperUrlsChanged(const QString &value)
+void PersonalizationWorker::onWallpaperUrlsChanged()
 {
     // wallpaperUrls 存储着每个工作区和每个屏幕的壁纸, 若其改变, 需要刷新当前屏幕壁纸
-    Q_UNUSED(value)
     QVariantMap wallpaperMap;
     for (auto &screen : qApp->screens()) {
         QString url = m_personalizationDBusProxy->getCurrentWorkSpaceBackgroundForMonitor(screen->name());

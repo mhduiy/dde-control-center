@@ -7,7 +7,9 @@
 #include "personalizationinterface.h"
 #include "dccfactory.h"
 #include "model/thememodel.h"
+#include "operation/treelandworker.h"
 #include "utils.hpp"
+#include <dtk5/DGui/dguiapplicationhelper.h>
 
 ThemeVieweModel::ThemeVieweModel(QObject *parent)
     : QAbstractItemModel(parent)
@@ -110,7 +112,7 @@ QHash<int, QByteArray> ThemeVieweModel::roleNames() const
 PersonalizationInterface::PersonalizationInterface(QObject *parent) 
 : QObject(parent)
 , m_model(new PersonalizationModel(this))
-, m_work(new PersonalizationWorker(m_model, this))
+, m_work(Dtk::Gui::DGuiApplicationHelper::testAttribute(Dtk::Gui::DGuiApplicationHelper::IsTreelandPlatform) ? new TreeLandWorker(m_model, this) : new TreeLandWorker(m_model, this))
 , m_globalThemeViewModel(new ThemeVieweModel(this))
 , m_iconThemeViewModel(new ThemeVieweModel(this))
 , m_cursorThemeViewModel(new ThemeVieweModel(this))

@@ -23,7 +23,7 @@ class PersonalizationWorker : public QObject
     Q_OBJECT
 public:
     PersonalizationWorker(PersonalizationModel *model, QObject *parent = nullptr);
-    void active();
+    virtual void active();
     void deactive();
     void onGetList();
     void refreshTheme();
@@ -46,13 +46,13 @@ public Q_SLOTS:
     void setTitleBarHeight(int value);
     void setDiabledCompactToTitleHeight();
     void setGlobalTheme(const QString &themeId);
-    void setAppearanceTheme(const QString &id);
-    void setIconTheme(const QString &id);
-    void setCursorTheme(const QString &id);
+    virtual void setAppearanceTheme(const QString &id);
+    virtual void setIconTheme(const QString &id);
+    virtual void setCursorTheme(const QString &id);
 
     // wallpaper
-    void setBackgroundForMonitor(const QString &screenName, const QString &url);
-    QString getBackgroundForMonitor(const QString &screenName);
+    virtual void setBackgroundForMonitor(const QString &screenName, const QString &url);
+    virtual QString getBackgroundForMonitor(const QString &screenName);
 
 signals:
     void personalizationChanged(const QString &propertyName, const QString &value);
@@ -72,7 +72,9 @@ private Q_SLOTS:
     void onWindowRadiusChanged(int value);
     void onCompactDisplayChanged(int value);
     void onWindowEffectChanged(int value);
-    void onWallpaperUrlsChanged(const QString &value);
+
+protected:
+    virtual void onWallpaperUrlsChanged();
 
 private:
     double sliderValutToOpacity(const int value) const;
@@ -91,8 +93,10 @@ private:
     template<typename T>
     T toSliderValue(std::vector<T> list, T value);
 
-private:
+protected:
     PersonalizationModel *m_model;
+
+private:
     PersonalizationDBusProxy *m_personalizationDBusProxy;
     WallpaperWorker *m_wallpaperWorker;
     Dtk::Core::DConfig *m_kwinTitleBarConfig;
