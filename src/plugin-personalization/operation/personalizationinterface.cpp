@@ -8,6 +8,7 @@
 #include "dccfactory.h"
 #include "model/thememodel.h"
 #include "operation/treelandworker.h"
+#include "operation/x11worker.h"
 #include "utils.hpp"
 #include <dtk5/DGui/dguiapplicationhelper.h>
 
@@ -112,11 +113,16 @@ QHash<int, QByteArray> ThemeVieweModel::roleNames() const
 PersonalizationInterface::PersonalizationInterface(QObject *parent) 
 : QObject(parent)
 , m_model(new PersonalizationModel(this))
-, m_work(Dtk::Gui::DGuiApplicationHelper::testAttribute(Dtk::Gui::DGuiApplicationHelper::IsTreelandPlatform) ? new TreeLandWorker(m_model, this) : new TreeLandWorker(m_model, this))
 , m_globalThemeViewModel(new ThemeVieweModel(this))
 , m_iconThemeViewModel(new ThemeVieweModel(this))
 , m_cursorThemeViewModel(new ThemeVieweModel(this))
 {
+    if (Dtk::Gui::DGuiApplicationHelper::testAttribute(Dtk::Gui::DGuiApplicationHelper::IsTreelandPlatform)) {
+        m_work = new TreeLandWorker(m_model, this);
+    } else {
+        m_work = new X11Worker(m_model, this);
+    }
+
     m_globalThemeViewModel->setThemeModel(m_model->getGlobalThemeModel());
     m_iconThemeViewModel->setThemeModel(m_model->getIconModel());
     m_cursorThemeViewModel->setThemeModel(m_model->getMouseModel());

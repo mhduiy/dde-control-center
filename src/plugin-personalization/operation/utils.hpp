@@ -6,6 +6,9 @@
 
 #include <QObject>
 
+const int RENDER_DPI = 72;
+const double DPI = 96;
+
 inline QString getGlobalThemeId(const QString &themeId, QString &mode)
 {
     QString id = themeId;
@@ -18,6 +21,18 @@ inline QString getGlobalThemeId(const QString &themeId, QString &mode)
         mode = ".dark";
     }
     return id;
+}
+
+inline double ptToPx(double pt)
+{
+    double px = pt / RENDER_DPI * DPI + 0.5;
+    return px;
+}
+
+inline double pxToPt(double px)
+{
+    double pt = px * RENDER_DPI / DPI;
+    return pt;
 }
 
 #endif // UTILS_H

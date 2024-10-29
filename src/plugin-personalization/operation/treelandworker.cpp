@@ -86,24 +86,78 @@ QString TreeLandWorker::getBackgroundForMonitor(const QString &monitorName)
     return QString();
 }
 
+void TreeLandWorker::setDefault(const QJsonObject &value)
+{
+    const QString key = value.value("type").toString();
+    const QString id = value.value("Id").toString();
+    if (key == "standardfont") {
+        setFontName(id);
+    } else if (key == "monospacefont") {
+        setMonoFontName(id);
+    }
+    PersonalizationWorker::setDefault(value);
+}
+
 void TreeLandWorker::setAppearanceTheme(const QString &id)
 {
     qWarning() << "设置外观主题" << id;
+    m_appearanceTheme = id;
     PersonalizationWorker::setAppearanceTheme(id);
+}
+
+void TreeLandWorker::setFontName(const QString& fontName)
+{
+    qWarning() << "设置字体" << fontName;
+    m_fontName = fontName;
+    m_appearanceContext->set_font(fontName);
+}
+
+void TreeLandWorker::setMonoFontName(const QString& monoFontName)
+{
+    qWarning() << "设置等宽字体" << monoFontName;
+    m_monoFontName = monoFontName;
+    m_appearanceContext->set_monospace_font(monoFontName);
 }
 
 void TreeLandWorker::setIconTheme(const QString &id)
 {
     qWarning() << "设置图标主题" << id;
     PersonalizationWorker::setIconTheme(id);
+    m_iconTheme = id;
     m_appearanceContext->set_icon_theme(id);
 }
 
 void TreeLandWorker::setCursorTheme(const QString &id)
 {
     qWarning() << "设置光标主题" << id;
+    m_cursorTheme = id;
     PersonalizationWorker::setCursorTheme(id);
     m_appearanceContext->set_cursor_theme(id);
+}
+
+void TreeLandWorker::setActiveColor(const QString &hexColor)
+{
+    qWarning() << "设置活动颜色" << hexColor;
+    PersonalizationWorker::setActiveColor(hexColor);
+}
+
+void TreeLandWorker::setFontSize(const int value) 
+{
+    qWarning() << "设置字体大小" << value;
+    PersonalizationWorker::setFontSize(value);
+}
+
+void TreeLandWorker::setTitleBarHeight(int value)
+{
+    qWarning() << "设置标题栏高度" << value;
+    PersonalizationWorker::setTitleBarHeight(value);
+}
+
+void TreeLandWorker::setWindowRadius(int value)
+{
+    qWarning() << "设置窗口圆角" << value;
+    m_appearanceContext->set_round_corner_radius(value);
+    PersonalizationWorker::setWindowRadius(value);
 }
 
 void TreeLandWorker::onWallpaperUrlsChanged()
@@ -129,15 +183,13 @@ void TreeLandWorker::init()
             &TreeLandWorker::wallpaperMetaDataChanged);
         m_wallpaperContext->get_metadata();
     }
-    if (m_appearanceContext.isNull()) {
+    if (m_appearanceContext.isNull()) { 
         m_appearanceContext.reset(new PersonalizationAppearanceContext(m_personalizationManager->get_appearance_context(), this));
     }
 }
 
 void TreeLandWorker::wallpaperMetaDataChanged(const QString &data)
 {
-    qWarning() << "壁纸的meta改变" << data;
-
     QJsonDocument json_doc = QJsonDocument::fromJson(data.toLocal8Bit());
 
     if (!json_doc.isNull()) {
@@ -270,12 +322,12 @@ void PersonalizationAppearanceContext::treeland_personalization_appearance_conte
 
 void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_font(const QString &font_name)
 {
-    // m_work->setf1
+    m_work->setFontName(font_name);
 }
 
 void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_monospace_font(const QString &font_name)
 {
-    // m_work->setAppearanceTheme(const QString &id)
+    m_work->setMonoFontName(font_name);
 }
 
 void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_cursor_theme(const QString &theme_name)

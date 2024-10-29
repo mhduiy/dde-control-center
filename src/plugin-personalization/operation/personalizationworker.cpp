@@ -43,21 +43,6 @@ const QString TITLE_BAR_HEIGHT_SUPPORT_COMPACT_DISPLAY = QStringLiteral("titleBa
 const QString TITLE_BAR_HEIGHT_KEY = QStringLiteral("titlebarHeight");
 const QString EffectMoveWindowArg = "kwin4_effect_translucency";
 
-const int RENDER_DPI = 72;
-const double DPI = 96;
-
-double ptToPx(double pt)
-{
-    double px = pt / RENDER_DPI * DPI + 0.5;
-    return px;
-}
-
-double pxToPt(double px)
-{
-    double pt = px * RENDER_DPI / DPI;
-    return pt;
-}
-
 PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObject *parent)
     : QObject(parent)
     , m_model(model)
@@ -573,11 +558,6 @@ void PersonalizationWorker::setBackgroundForMonitor(const QString &screenName, c
         return;
 
     m_personalizationDBusProxy->SetCurrentWorkspaceBackgroundForMonitor(url, screenName);
-}
-
-QString PersonalizationWorker::getBackgroundForMonitor(const QString &screenName)
-{
-    return m_personalizationDBusProxy->getCurrentWorkSpaceBackgroundForMonitor(screenName);
 }
 
 PersonalizationWatcher::PersonalizationWatcher(PersonalizationWorker *work)

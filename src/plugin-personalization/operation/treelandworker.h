@@ -32,16 +32,36 @@ public:
     TreeLandWorker(PersonalizationModel *model, QObject *parent = nullptr);
 
     void setBackgroundForMonitor(const QString &monitorName, const QString &url) override;
-    QString getBackgroundForMonitor(const QString &monitorName) override;
+    QString getBackgroundForMonitor(const QString &monitorName);
+
+    void setDefault(const QJsonObject &value) override;
 
     void setAppearanceTheme(const QString &id) override;
     QString appearanceTheme() const { return m_appearanceTheme; }
+
+    void setFontName(const QString& fontName);
+    QString fontName() const { return m_fontName; }
+
+    void setMonoFontName(const QString& monoFontName);
+    QString monoFontName() const { return m_monoFontName; }
 
     void setIconTheme(const QString &id) override;
     QString iconTheme() const { return m_iconTheme; }
 
     void setCursorTheme(const QString &id) override;
     QString cursorTheme() const { return m_cursorTheme; }
+
+    void setActiveColor(const QString &hexColor) override;
+    QString activeColor() const { return m_activeColor; }
+
+    void setFontSize(const int value) override;
+    int fontSize() const { return m_fontSize; }
+
+    void setTitleBarHeight(int value) override;
+    int titleBarHeight() const { return m_titleBarHeight; }
+
+    void setWindowRadius(int radius) override;
+    int windowRadius() const { return m_windowRadius; }
 
     void active() override;
     void init();
@@ -66,8 +86,14 @@ private:
 
     QMap<QString, WallpaperMetaData *> m_wallpapers;
     QString m_appearanceTheme;
+    QString m_fontName;
+    QString m_monoFontName;
     QString m_iconTheme;
     QString m_cursorTheme;
+    QString m_activeColor;
+    int m_fontSize;
+    int m_titleBarHeight;
+    int m_windowRadius;
 };
 
 class PersonalizationManager: public QWaylandClientExtensionTemplate<PersonalizationManager>,
@@ -93,12 +119,6 @@ class PersonalizationWindowContext : public QWaylandClientExtensionTemplate<Pers
     Q_OBJECT
 public:
     explicit PersonalizationWindowContext(struct ::treeland_personalization_window_context_v1 *context);
-
-    bool noTitlebar() const;
-    void setNoTitlebar(bool enable);
-
-    int windowRadius();
-    void setWindowRadius(int radius);
 
 private:
     bool m_noTitlebar;

@@ -30,29 +30,27 @@ public:
     void refreshFont();
 
 public Q_SLOTS:
-    void setDefaultByType(const QString &type, const QString &value);
-    void setDefault(const QJsonObject &value);
-    void setFontSize(const int value);
     void switchWM();
     void windowSwitchWM(bool value);
     void movedWindowSwitchWM(bool value);
-    void setOpacity(int opcaity);
-    void setWindowEffect(int value);
-    void setMiniEffect(int effect);
-    void setActiveColor(const QString &hexColor);
-    void setWindowRadius(int radius);
-    void setCompactDisplay(bool value);
-    void setScrollBarPolicy(int policy);
-    void setTitleBarHeight(int value);
-    void setDiabledCompactToTitleHeight();
-    void setGlobalTheme(const QString &themeId);
+
+    virtual void setDefaultByType(const QString &type, const QString &value);
+    virtual void setDefault(const QJsonObject &value);
+    virtual void setFontSize(const int value);
+    virtual void setOpacity(int opcaity);
+    virtual void setWindowEffect(int value);
+    virtual void setMiniEffect(int effect);
+    virtual void setActiveColor(const QString &hexColor);
+    virtual void setWindowRadius(int radius);
+    virtual void setCompactDisplay(bool value);
+    virtual void setScrollBarPolicy(int policy);
+    virtual void setTitleBarHeight(int value);
+    virtual void setDiabledCompactToTitleHeight();
+    virtual void setGlobalTheme(const QString &themeId);
     virtual void setAppearanceTheme(const QString &id);
     virtual void setIconTheme(const QString &id);
     virtual void setCursorTheme(const QString &id);
-
-    // wallpaper
     virtual void setBackgroundForMonitor(const QString &screenName, const QString &url);
-    virtual QString getBackgroundForMonitor(const QString &screenName);
 
 signals:
     void personalizationChanged(const QString &propertyName, const QString &value);
