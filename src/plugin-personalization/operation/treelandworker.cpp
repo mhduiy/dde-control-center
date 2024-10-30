@@ -17,9 +17,12 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <cstdint>
 #include <sys/socket.h>
 #include "treelandworker.h"
 #include "operation/personalizationworker.h"
+#include "qwayland-treeland-personalization-manager-v1.h"
+#include "wayland-treeland-personalization-manager-v1-client-protocol.h"
 
 TreeLandWorker::TreeLandWorker(PersonalizationModel *model, QObject *parent)
 : PersonalizationWorker(model, parent)
@@ -103,27 +106,28 @@ void TreeLandWorker::setAppearanceTheme(const QString &id)
     qWarning() << "设置外观主题" << id;
     m_appearanceTheme = id;
     PersonalizationWorker::setAppearanceTheme(id);
+    m_appearanceContext->set_window_theme_type(PersonalizationAppearanceContext::theme_type::theme_type_auto);
 }
 
 void TreeLandWorker::setFontName(const QString& fontName)
 {
     qWarning() << "设置字体" << fontName;
     m_fontName = fontName;
-    m_appearanceContext->set_font(fontName);
+    m_fontContext->set_font(fontName);
 }
 
 void TreeLandWorker::setMonoFontName(const QString& monoFontName)
 {
     qWarning() << "设置等宽字体" << monoFontName;
     m_monoFontName = monoFontName;
-    m_appearanceContext->set_monospace_font(monoFontName);
+    m_fontContext->set_monospace_font(monoFontName);
 }
 
 void TreeLandWorker::setIconTheme(const QString &id)
 {
     qWarning() << "设置图标主题" << id;
-    PersonalizationWorker::setIconTheme(id);
     m_iconTheme = id;
+    PersonalizationWorker::setIconTheme(id);
     m_appearanceContext->set_icon_theme(id);
 }
 
@@ -132,32 +136,47 @@ void TreeLandWorker::setCursorTheme(const QString &id)
     qWarning() << "设置光标主题" << id;
     m_cursorTheme = id;
     PersonalizationWorker::setCursorTheme(id);
-    m_appearanceContext->set_cursor_theme(id);
+    m_cursorContext->set_theme(id);
 }
 
 void TreeLandWorker::setActiveColor(const QString &hexColor)
 {
     qWarning() << "设置活动颜色" << hexColor;
+    m_activeColor = hexColor;
     PersonalizationWorker::setActiveColor(hexColor);
+    m_appearanceContext->set_active_color(hexColor);
 }
 
 void TreeLandWorker::setFontSize(const int value) 
 {
     qWarning() << "设置字体大小" << value;
+    m_fontSize = value;
     PersonalizationWorker::setFontSize(value);
+    m_fontContext->set_font_size(value);
 }
 
 void TreeLandWorker::setTitleBarHeight(int value)
 {
     qWarning() << "设置标题栏高度" << value;
+    m_titleBarHeight = value;
     PersonalizationWorker::setTitleBarHeight(value);
+    // m_appearanceContext
 }
 
 void TreeLandWorker::setWindowRadius(int value)
 {
     qWarning() << "设置窗口圆角" << value;
-    m_appearanceContext->set_round_corner_radius(value);
+    m_windowRadius = value;
     PersonalizationWorker::setWindowRadius(value);
+    m_appearanceContext->set_round_corner_radius(value);
+}
+
+void TreeLandWorker::setOpacity(int value)
+{
+    qWarning() << "设置透明度" << value;
+    m_opacity = value;
+    PersonalizationWorker::setOpacity(value);
+    m_appearanceContext->set_blur_opacity(value / 100.0);
 }
 
 void TreeLandWorker::onWallpaperUrlsChanged()
@@ -185,6 +204,12 @@ void TreeLandWorker::init()
     }
     if (m_appearanceContext.isNull()) { 
         m_appearanceContext.reset(new PersonalizationAppearanceContext(m_personalizationManager->get_appearance_context(), this));
+    }
+    if (m_cursorContext.isNull()) {
+        m_cursorContext.reset(new PersonalizationCursorContext(m_personalizationManager->get_cursor_context(), this));
+    }
+    if (m_fontContext.isNull()) {
+        m_fontContext.reset(new PersonalizationFontContext(m_personalizationManager->get_font_context(), this));
     }
 }
 
@@ -282,6 +307,48 @@ void PersonalizationManager::handleListenerGlobal(void *data, wl_registry *regis
     }
 }
 
+PersonalizationAppearanceContext::PersonalizationAppearanceContext(struct ::treeland_personalization_appearance_context_v1 *context, TreeLandWorker *worker)
+    : QWaylandClientExtensionTemplate<PersonalizationAppearanceContext>(1)
+    , QtWayland::treeland_personalization_appearance_context_v1(context)
+    , m_work(worker)
+{
+    get_round_corner_radius();
+    get_icon_theme();
+    get_active_color();
+    get_blur_opacity();
+    get_window_theme_type();
+}
+
+void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_round_corner_radius(int32_t radius)
+{
+    m_work->setWindowRadius(radius);
+}
+
+void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_icon_theme(const QString &theme_name)
+{
+    m_work->setIconTheme(theme_name);
+}
+
+void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_active_color(const QString &active_color)
+{
+    m_work->setActiveColor(active_color);
+}
+
+void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_blur_opacity(uint32_t opacity)
+{
+    m_work->setOpacity(opacity);
+}
+
+void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_window_theme_type(uint32_t type)
+{
+    Q_UNUSED(type);
+    // if (type == theme_type_light) {
+    //     m_work->setAppearanceTheme(".light");
+    // } else if (type == theme_type_dark) {
+    //     m_work->setAppearanceTheme(".dark");
+    // }
+}
+
 PersonalizationWallpaperContext::PersonalizationWallpaperContext(struct ::treeland_personalization_wallpaper_context_v1 *context)
     : QWaylandClientExtensionTemplate<PersonalizationWallpaperContext>(1)
     , QtWayland::treeland_personalization_wallpaper_context_v1(context)
@@ -295,47 +362,40 @@ void PersonalizationWallpaperContext::treeland_personalization_wallpaper_context
     Q_EMIT metadataChanged(metadata);
 }
 
-
-PersonalizationCursorContext::PersonalizationCursorContext(struct ::treeland_personalization_cursor_context_v1 *context)
+PersonalizationCursorContext::PersonalizationCursorContext(struct ::treeland_personalization_cursor_context_v1 *context, TreeLandWorker *woker)
     : QWaylandClientExtensionTemplate<PersonalizationCursorContext>(1)
     , QtWayland::treeland_personalization_cursor_context_v1(context)
+    , m_worker(woker)
 {
-
+    get_theme();
 }
 
-PersonalizationAppearanceContext::PersonalizationAppearanceContext(struct ::treeland_personalization_appearance_context_v1 *context, TreeLandWorker *worker)
-    : QWaylandClientExtensionTemplate<PersonalizationAppearanceContext>(1)
-    , QtWayland::treeland_personalization_appearance_context_v1(context)
-    , m_work(worker)
+void PersonalizationCursorContext::treeland_personalization_cursor_context_v1_theme(const QString &name)
 {
-    get_round_corner_radius();
-    get_font();
-    get_monospace_font();
-    get_cursor_theme();
-    get_icon_theme();
+    m_worker->setCursorTheme(name);
 }
 
-void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_round_corner_radius(int32_t radius)
+PersonalizationFontContext::PersonalizationFontContext(struct ::treeland_personalization_font_context_v1 *context, TreeLandWorker *woker)
+    : QWaylandClientExtensionTemplate<PersonalizationFontContext>(1)
+    , QtWayland::treeland_personalization_font_context_v1(context)
+    , m_worker(woker)
 {
-    m_work->setWindowRadius(radius);
+    // get_font();
+    // get_monospace_font();
+    // get_font_size();
 }
 
-void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_font(const QString &font_name)
+void PersonalizationFontContext::treeland_personalization_font_context_v1_font(const QString &font_name)
 {
-    m_work->setFontName(font_name);
+    m_worker->setFontName(font_name);
 }
 
-void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_monospace_font(const QString &font_name)
+void PersonalizationFontContext::treeland_personalization_font_context_v1_monospace_font(const QString &font_name)
 {
-    m_work->setMonoFontName(font_name);
+    m_worker->setMonoFontName(font_name);
 }
 
-void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_cursor_theme(const QString &theme_name)
+void PersonalizationFontContext::treeland_personalization_font_context_v1_font_size(uint32_t font_size)
 {
-    m_work->setCursorTheme(theme_name);
-}
-
-void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_icon_theme(const QString &theme_name)
-{
-    m_work->setIconTheme(theme_name);
+    m_worker->setFontSize(font_size);
 }

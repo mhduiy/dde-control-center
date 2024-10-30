@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.18)
 set(LIB_NAME personalization)
 
 find_package(Qt6 REQUIRED COMPONENTS WaylandClient)
-find_package(TreeLandProtocols)
+find_package(TreelandProtocols REQUIRED)
 
 file(GLOB_RECURSE Personalization_SRCS
     "operation/*.cpp"
@@ -22,6 +22,8 @@ add_library(${LIB_NAME} MODULE
 qt6_generate_wayland_protocol_client_sources(${LIB_NAME} FILES
     ${TREELAND_PROTOCOLS_DATA_DIR}/treeland-personalization-manager-v1.xml
 )
+    message("-----")
+    message(${TREELAND_PROTOCOLS_DATA_DIR}/treeland-personalization-manager-v1.xml)
 
 set(Personalization_Libraries
     ${DTK_NS}::Gui

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtWaylandClient/QWaylandClientExtension>
+#include <cstdint>
 #include "qwayland-treeland-personalization-manager-v1.h"
 #include <dtkgui_global.h>
 #include <qlogging.h>
@@ -11,17 +12,19 @@
 #include <private/qwaylanddisplay_p.h>
 
 #include "personalizationworker.h"
+#include "wayland-treeland-personalization-manager-v1-client-protocol.h"
 
 class PersonalizationManager;
-class PersonalizationWindowContext;
 class PersonalizationAppearanceContext;
+class PersonalizationWindowContext;
 class PersonalizationWallpaperContext;
+class PersonalizationCursorContext;
+class PersonalizationFontContext;
 
 class TreeLandWorker : public PersonalizationWorker
 {
 Q_OBJECT
 public:
-
     struct WallpaperMetaData
     {
         bool isDark;
@@ -63,6 +66,9 @@ public:
     void setWindowRadius(int radius) override;
     int windowRadius() const { return m_windowRadius; }
 
+    void setOpacity(const int value) override;
+    int opacity() const { return m_opacity; }
+
     void active() override;
     void init();
 
@@ -80,8 +86,10 @@ private:
 
 private:
     QScopedPointer<PersonalizationManager> m_personalizationManager;
-    QScopedPointer<PersonalizationWallpaperContext> m_wallpaperContext;
     QScopedPointer<PersonalizationAppearanceContext> m_appearanceContext;
+    QScopedPointer<PersonalizationWallpaperContext> m_wallpaperContext;
+    QScopedPointer<PersonalizationCursorContext> m_cursorContext;
+    QScopedPointer<PersonalizationFontContext> m_fontContext;
     QScopedPointer<PersonalizationWindowContext> m_windowContext;
 
     QMap<QString, WallpaperMetaData *> m_wallpapers;
@@ -94,6 +102,7 @@ private:
     int m_fontSize;
     int m_titleBarHeight;
     int m_windowRadius;
+    int m_opacity;
 };
 
 class PersonalizationManager: public QWaylandClientExtensionTemplate<PersonalizationManager>,
@@ -135,10 +144,10 @@ public:
 
 protected:
     void treeland_personalization_appearance_context_v1_round_corner_radius(int32_t radius) override;
-    void treeland_personalization_appearance_context_v1_font(const QString &font_name) override;
-    void treeland_personalization_appearance_context_v1_monospace_font(const QString &font_name) override;
-    void treeland_personalization_appearance_context_v1_cursor_theme(const QString &theme_name) override;
     void treeland_personalization_appearance_context_v1_icon_theme(const QString &theme_name) override;
+    void treeland_personalization_appearance_context_v1_active_color(const QString &active_color) override;
+    void treeland_personalization_appearance_context_v1_blur_opacity(uint32_t opacity) override;
+    void treeland_personalization_appearance_context_v1_window_theme_type(uint32_t type) override;
 private:
     TreeLandWorker *m_work;
 };
@@ -155,7 +164,6 @@ Q_SIGNALS:
 
 protected:
     void treeland_personalization_wallpaper_context_v1_metadata(const QString &metadata) override;
-
 };
 
 class PersonalizationCursorContext : public QWaylandClientExtensionTemplate<PersonalizationCursorContext>,
@@ -163,6 +171,27 @@ class PersonalizationCursorContext : public QWaylandClientExtensionTemplate<Pers
 {
     Q_OBJECT
 public:
-    explicit PersonalizationCursorContext(struct ::treeland_personalization_cursor_context_v1 *context);
+    explicit PersonalizationCursorContext(struct ::treeland_personalization_cursor_context_v1 *context, TreeLandWorker *worker);
 
+protected:
+    void treeland_personalization_cursor_context_v1_theme(const QString &name) override;
+
+private:
+    TreeLandWorker *m_worker;
+};
+
+class PersonalizationFontContext : public QWaylandClientExtensionTemplate<PersonalizationFontContext>,
+                                   public QtWayland::treeland_personalization_font_context_v1
+{
+    Q_OBJECT
+public:
+    explicit PersonalizationFontContext(struct ::treeland_personalization_font_context_v1 *context, TreeLandWorker *worker);
+
+protected:
+    void treeland_personalization_font_context_v1_font(const QString &font_name) override;
+    void treeland_personalization_font_context_v1_monospace_font(const QString &font_name) override;
+    void treeland_personalization_font_context_v1_font_size(uint32_t font_size) override;
+
+private:
+    TreeLandWorker *m_worker;
 };
