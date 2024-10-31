@@ -40,7 +40,7 @@ public:
     void setDefault(const QJsonObject &value) override;
 
     void setAppearanceTheme(const QString &id) override;
-    QString appearanceTheme() const { return m_appearanceTheme; }
+    uint32_t appearanceTheme() const { return m_appearanceTheme; }
 
     void setFontName(const QString& fontName);
     QString fontName() const { return m_fontName; }
@@ -93,7 +93,7 @@ private:
     QScopedPointer<PersonalizationWindowContext> m_windowContext;
 
     QMap<QString, WallpaperMetaData *> m_wallpapers;
-    QString m_appearanceTheme;
+    uint8_t m_appearanceTheme;
     QString m_fontName;
     QString m_monoFontName;
     QString m_iconTheme;

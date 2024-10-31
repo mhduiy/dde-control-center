@@ -103,29 +103,39 @@ void TreeLandWorker::setDefault(const QJsonObject &value)
 
 void TreeLandWorker::setAppearanceTheme(const QString &id)
 {
-    qWarning() << "设置外观主题" << id;
-    m_appearanceTheme = id;
+    qInfo() << "设置外观主题" << id;
     PersonalizationWorker::setAppearanceTheme(id);
-    m_appearanceContext->set_window_theme_type(PersonalizationAppearanceContext::theme_type::theme_type_auto);
+    if (id == ".light") {
+        m_appearanceTheme = PersonalizationAppearanceContext::theme_type::theme_type_light;
+        m_appearanceContext->set_window_theme_type(PersonalizationAppearanceContext::theme_type::theme_type_light);
+    } else if (id == ".dark") {
+        m_appearanceTheme = PersonalizationAppearanceContext::theme_type::theme_type_dark;
+        m_appearanceContext->set_window_theme_type(PersonalizationAppearanceContext::theme_type::theme_type_dark);
+    } else if (id.isEmpty()) {
+        m_appearanceTheme = PersonalizationAppearanceContext::theme_type::theme_type_auto;
+        m_appearanceContext->set_window_theme_type(PersonalizationAppearanceContext::theme_type::theme_type_auto);
+    } else {
+        qWarning() << "error id" << id;
+    }
 }
 
 void TreeLandWorker::setFontName(const QString& fontName)
 {
-    qWarning() << "设置字体" << fontName;
+    qInfo() << "设置字体" << fontName;
     m_fontName = fontName;
     m_fontContext->set_font(fontName);
 }
 
 void TreeLandWorker::setMonoFontName(const QString& monoFontName)
 {
-    qWarning() << "设置等宽字体" << monoFontName;
+    qInfo() << "设置等宽字体" << monoFontName;
     m_monoFontName = monoFontName;
     m_fontContext->set_monospace_font(monoFontName);
 }
 
 void TreeLandWorker::setIconTheme(const QString &id)
 {
-    qWarning() << "设置图标主题" << id;
+    qInfo() << "设置图标主题" << id;
     m_iconTheme = id;
     PersonalizationWorker::setIconTheme(id);
     m_appearanceContext->set_icon_theme(id);
@@ -133,7 +143,7 @@ void TreeLandWorker::setIconTheme(const QString &id)
 
 void TreeLandWorker::setCursorTheme(const QString &id)
 {
-    qWarning() << "设置光标主题" << id;
+    qInfo() << "设置光标主题" << id;
     m_cursorTheme = id;
     PersonalizationWorker::setCursorTheme(id);
     m_cursorContext->set_theme(id);
@@ -141,7 +151,7 @@ void TreeLandWorker::setCursorTheme(const QString &id)
 
 void TreeLandWorker::setActiveColor(const QString &hexColor)
 {
-    qWarning() << "设置活动颜色" << hexColor;
+    qInfo() << "设置活动颜色" << hexColor;
     m_activeColor = hexColor;
     PersonalizationWorker::setActiveColor(hexColor);
     m_appearanceContext->set_active_color(hexColor);
@@ -149,7 +159,7 @@ void TreeLandWorker::setActiveColor(const QString &hexColor)
 
 void TreeLandWorker::setFontSize(const int value) 
 {
-    qWarning() << "设置字体大小" << value;
+    qInfo() << "设置字体大小" << value;
     m_fontSize = value;
     PersonalizationWorker::setFontSize(value);
     m_fontContext->set_font_size(value);
@@ -157,7 +167,7 @@ void TreeLandWorker::setFontSize(const int value)
 
 void TreeLandWorker::setTitleBarHeight(int value)
 {
-    qWarning() << "设置标题栏高度" << value;
+    qInfo() << "设置标题栏高度" << value;
     m_titleBarHeight = value;
     PersonalizationWorker::setTitleBarHeight(value);
     // m_appearanceContext
@@ -165,7 +175,7 @@ void TreeLandWorker::setTitleBarHeight(int value)
 
 void TreeLandWorker::setWindowRadius(int value)
 {
-    qWarning() << "设置窗口圆角" << value;
+    qInfo() << "设置窗口圆角" << value;
     m_windowRadius = value;
     PersonalizationWorker::setWindowRadius(value);
     m_appearanceContext->set_round_corner_radius(value);
@@ -173,7 +183,7 @@ void TreeLandWorker::setWindowRadius(int value)
 
 void TreeLandWorker::setOpacity(int value)
 {
-    qWarning() << "设置透明度" << value;
+    qInfo() << "设置透明度" << value / 100.0;
     m_opacity = value;
     PersonalizationWorker::setOpacity(value);
     m_appearanceContext->set_blur_opacity(value / 100.0);
@@ -182,7 +192,7 @@ void TreeLandWorker::setOpacity(int value)
 void TreeLandWorker::onWallpaperUrlsChanged()
 {
     QVariantMap wallpaperMap;
-    
+
     for (auto it = m_wallpapers.begin(); it != m_wallpapers.end(); ++it) {
         wallpaperMap.insert(it.key(), it.value()->url);
     }
@@ -341,12 +351,13 @@ void PersonalizationAppearanceContext::treeland_personalization_appearance_conte
 
 void PersonalizationAppearanceContext::treeland_personalization_appearance_context_v1_window_theme_type(uint32_t type)
 {
-    Q_UNUSED(type);
-    // if (type == theme_type_light) {
-    //     m_work->setAppearanceTheme(".light");
-    // } else if (type == theme_type_dark) {
-    //     m_work->setAppearanceTheme(".dark");
-    // }
+    if (type == theme_type_light) {
+        m_work->setAppearanceTheme(".light");
+    } else if (type == theme_type_dark) {
+        m_work->setAppearanceTheme(".dark");
+    } else if (type == theme_type_auto) {
+        m_work->setAppearanceTheme("");
+    }
 }
 
 PersonalizationWallpaperContext::PersonalizationWallpaperContext(struct ::treeland_personalization_wallpaper_context_v1 *context)
