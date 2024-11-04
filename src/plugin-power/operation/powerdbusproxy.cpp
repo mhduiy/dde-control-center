@@ -2,6 +2,10 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "powerdbusproxy.h"
+#include <ddbusinterface.h>
+#include <qcontainerfwd.h>
+#include <qt5/QtCore/qlist.h>
+#include <qvariant.h>
 
 #include <QMetaObject>
 #include <QDBusConnection>
@@ -34,6 +38,10 @@ const QString defaultAccountsPath = QStringLiteral("/org/deepin/dde/Accounts1");
 const QString accountsInterface = QStringLiteral("org.deepin.dde.Accounts1");
 
 const QString accountsUserInterface = QStringLiteral("org.deepin.dde.Accounts1.User");
+
+const QString timeDateService = QStringLiteral("org.deepin.dde.Timedate1");
+const QString timeDatePath = QStringLiteral("/org/deepin/dde/Timedate1");
+const QString timeDateInterface = QStringLiteral("org.deepin.dde.Timedate1");
 
 const QString PropertiesInterface = QStringLiteral("org.freedesktop.DBus.Properties");
 const QString PropertiesChanged = QStringLiteral("PropertiesChanged");
@@ -356,4 +364,44 @@ bool PowerDBusProxy::login1ManagerCanHibernate()
     QList<QVariant> argumentList;
     QDBusPendingReply<QString> reply = m_login1ManagerInter->callWithArgumentList(QDBus::BlockWithGui, QStringLiteral("CanHibernate"), argumentList);
     return reply.value().contains("yes");
+}
+
+void PowerDBusProxy::setScheduledShutdownState(bool value)
+{
+    m_powerInter->setProperty("ScheduledShutdownState", QVariant(value));
+}
+
+bool PowerDBusProxy::scheduledShutdownState()
+{
+    return qvariant_cast<bool>(m_powerInter->property("ScheduledShutdownState"));
+}
+
+void PowerDBusProxy::setShutdownTime(const QString &time)
+{
+    m_powerInter->setProperty("ShutdownTime", QVariant(time));
+}
+
+QString PowerDBusProxy::shutdownTime()
+{
+    return qvariant_cast<QString>(m_powerInter->property("ShutdownTime"));
+}
+
+void PowerDBusProxy::setShutdownRepetition(uint32_t repetition)
+{
+    m_powerInter->setProperty("ShutdownRepetition", QVariant(repetition));
+}
+
+uint32_t PowerDBusProxy::shutdownRepetition()
+{
+    return qvariant_cast<uint32_t>(m_powerInter->property("ShutdownRepetition"));
+}
+
+void PowerDBusProxy::setCustomShutdownWeekDays(const QByteArray &weekdays)
+{
+    m_powerInter->setProperty("CustomShutdownWeekDays", weekdays);
+}
+
+QByteArray PowerDBusProxy::customShutdownWeekDays()
+{
+    return qvariant_cast<QByteArray>(m_powerInter->property("CustomShutdownWeekDays"));
 }

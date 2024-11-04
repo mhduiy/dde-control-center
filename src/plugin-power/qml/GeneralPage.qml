@@ -243,20 +243,30 @@ DccObject {
             weight: 1
             pageType: DccObject.Editor
             page: D.Switch {
-                id: timedShutdownSwitch
+                checked: dccData.model.scheduledShutdownState
+                onCheckedChanged: {
+                    dccData.worker.setScheduledShutdownState(checked)
+                }
             }
         }
 
         DccObject {
             name: "poweroffTime"
             parentName: "power/general/shutdownGroup"
-            visible: timedShutdownSwitch.checked
+            visible: dccData.model.scheduledShutdownState
             displayName: qsTr("Time")
             weight: 2
             pageType: DccObject.Editor
             page: RowLayout {
                 DccTimeRange {
                     Layout.preferredWidth: 100
+                    hour: dccData.model.shutdownTime.split(':')[0]
+                    minute: dccData.model.shutdownTime.split(':')[1]
+                    property string timeStr: `${hour}:${minute}`
+                    onTimeStrChanged: {
+                        console.warn("--timeStr--", timeStr)
+                        dccData.worker.setShutdownTime(timeStr)
+                    }
                 }
             }
         }
@@ -264,7 +274,7 @@ DccObject {
         DccObject {
             name: "repeatDays"
             parentName: "power/general/shutdownGroup"
-            visible: timedShutdownSwitch.checked
+            visible: dccData.model.scheduledShutdownState
             displayName: qsTr("Repeat")
             weight: 3
             pageType: DccObject.Editor
@@ -272,17 +282,32 @@ DccObject {
                 width: 100
                 model: [ qsTr("Once"), qsTr("Every day"), qsTr("Working days"), qsTr("Custom Time") ]
                 flat: true
+                currentIndex: dccData.model.shutdownRepetition
+                onCurrentIndexChanged: {
+                    dccData.worker.setShutdownRepetition(currentIndex)
+                }
             }
         }
         DccObject {
             name: "repeatDaysEdit"
             parentName: "power/general/shutdownGroup"
-            visible: timedShutdownSwitch.checked
+            visible: dccData.model.scheduledShutdownState
             weight: 4
             pageType: DccObject.Editor
             page: RowLayout {
                 Label {
-                    text: "Monday, Tuesday, Wednesday, Thursday"
+                    text: {
+                        var str = ""
+                        var days = dccData.model.customShutdownWeekDays
+                        console.warn("---updateModel---", days)
+                        for (var i = 0; i < days.length; i++) {
+                            str += selectDayDialog.dateStr[days[i] - 1] + ", "
+                        }
+                        if (str.length > 1) {
+                            str = str.slice(0, -2)
+                        }
+                        return str;
+                    }
                 }
                 D.ToolButton {
                     icon.name: "action_edit"
@@ -300,11 +325,32 @@ DccObject {
                         selectDayDialog.show()
                     }
                 }
-
                 D.DialogWindow {
                     id: selectDayDialog
                     width: 330
                     height: 400
+
+                    // Copy is used here to prevent contamination of data in the original model when selecting items
+                    property var selectedDays: dccData.model.customShutdownWeekDays.length === 0 ? [1, 2, 3, 4, 5] : dccData.model.customShutdownWeekDays.slice()
+                    property var dateStr: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+                    property var dayModel: generateDayModel()
+
+                    function generateDayModel() {
+                        var array = []
+                        for (var i = dccData.model.weekBegins; i <= 7; i++) {
+                            array.push(i)
+                        }
+                        for (i = 1; i < dccData.model.weekBegins; i++) {
+                            array.push(i)
+                        }
+                        return array
+                    }
+
+                    // only accept close event , the app can quit normally
+                    onClosing: function(close) {
+                        close.accepted = true
+                    }
+
                     ColumnLayout {
                         implicitWidth: parent.width
                         clip: true
@@ -312,7 +358,7 @@ DccObject {
                             Layout.fillWidth: true
                             height: contentHeight
                             clip: true
-                            model: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                            model: selectDayDialog.dayModel
                             spacing: 2
                             delegate: D.ItemDelegate {
                                 width: ListView.view.width
@@ -322,22 +368,24 @@ DccObject {
                                 checkable: false
                                 corners: getCornersForBackground(index, 7)
                                 cascadeSelected: true
-                                text: modelData
-                                content: D.IconButton {
-                                    icon.name: model.isChecked ? "qrc:/icons/deepin/builtin/actions/checked.png" : "qrc:/icons/deepin/builtin/actions/nocheck.png"
-                                    icon.width: 24
-                                    icon.height: 24
-                                    implicitWidth: 36
-                                    implicitHeight: 36
-                                    background: Rectangle {
-                                        color: "transparent"
-                                        border.color: "transparent"
-                                        border.width: 0
-                                    }
+                                text: selectDayDialog.dateStr[modelData - 1]
+                                onClicked: handleSelected(modelData)
+                                content: DccCheckIcon {
+                                    checked: selectDayDialog.selectedDays.indexOf(modelData) !== -1
+                                    onClicked: handleSelected(modelData)
                                 }
                                 background: DccItemBackground {
                                     separatorVisible: true
                                     highlightEnable: false
+                                }
+
+                                function handleSelected(index) {
+                                    if (selectDayDialog.selectedDays.indexOf(index) === -1) {
+                                        selectDayDialog.selectedDays.push(index);
+                                    } else {
+                                        selectDayDialog.selectedDays.splice(selectDayDialog.selectedDays.indexOf(index), 1);
+                                    }
+                                    selectDayDialog.selectedDays = selectDayDialog.selectedDays.slice();
                                 }
                             }
                         }
@@ -356,6 +404,9 @@ DccObject {
                             D.Button {
                                 text: qsTr("Save")
                                 onClicked: {
+                                    var days = selectDayDialog.selectedDays.sort()
+                                    console.log("Selected days: " + days);
+                                    dccData.worker.setCustomShutdownWeekDays(days)
                                     selectDayDialog.close()
                                 }
                             }

@@ -4,6 +4,9 @@
 #ifndef POWERMODEL_H
 #define POWERMODEL_H
 
+#include <qcontainerfwd.h>
+#include <qtmetamacros.h>
+#include <qvariant.h>
 #include <QObject>
 
 class PowerWorker;
@@ -48,6 +51,11 @@ class PowerModel : public QObject
     Q_PROPERTY(bool isNoPasswdLogin READ isNoPasswdLogin WRITE setNoPasswdLogin NOTIFY noPasswdLoginChanged)
     Q_PROPERTY(double batteryCapacity READ batteryCapacity WRITE setBatteryCapacity NOTIFY batteryCapacityChanged)
     Q_PROPERTY(bool showBatteryTimeToFull READ showBatteryTimeToFull WRITE setShowBatteryTimeToFull NOTIFY showBatteryTimeToFullChanged)
+    Q_PROPERTY(bool scheduledShutdownState READ scheduledShutdownState WRITE setScheduledShutdownState NOTIFY scheduledShutdownStateChanged)
+    Q_PROPERTY(QString shutdownTime READ shutdownTime WRITE setShutdownTime NOTIFY shutdownTimeChanged)
+    Q_PROPERTY(uint32_t shutdownRepetition READ shutdownRepetition WRITE setShutdownRepetition NOTIFY shutdownRepetitionChanged)
+    Q_PROPERTY(int weekBegins READ weekBegins WRITE setWeekBegins NOTIFY weekBeginsChanged)
+    Q_PROPERTY(QVariantList customShutdownWeekDays READ customShutdownWeekDays WRITE setCustomShutdownWeekDays NOTIFY customShutdownWeekDaysChanged)
 
     Q_PROPERTY(QVariantList batteryLockDelayModel READ batteryLockDelayModel WRITE setBatteryLockDelayModel NOTIFY batteryLockDelayModelChanged)
     Q_PROPERTY(QVariantList batteryScreenBlackDelayModel READ batteryScreenBlackDelayModel WRITE setBatteryScreenBlackDelayModel NOTIFY batteryScreenBlackDelayModelChanged)
@@ -178,6 +186,21 @@ public:
     inline bool showBatteryTimeToFull() const { return m_showBatteryTimeToFull; }
     void setShowBatteryTimeToFull(bool showBatteryTimeToFull);
 
+    inline bool scheduledShutdownState() const { return m_scheduledShutdownState; }
+    void setScheduledShutdownState(bool value);
+
+    inline QString shutdownTime() const { return m_shutdownTime; }
+    void setShutdownTime(const QString &time);
+
+    inline uint32_t shutdownRepetition() const { return m_shutdownRepetition; }
+    void setShutdownRepetition(uint32_t repetition);
+
+    inline int weekBegins() const { return m_weekBegins; }
+    void setWeekBegins(int value);
+
+    inline QVariantList customShutdownWeekDays() const { return m_customShutdownWeekDays; }
+    void setCustomShutdownWeekDays(const QVariantList &value);
+
     inline QVariantList batteryLockDelayModel() const { return m_batteryLockDelayModel; };
     void setBatteryLockDelayModel(const QVariantList &value);
 
@@ -242,6 +265,12 @@ Q_SIGNALS:
     void batteryCapacityChanged(double value);
     void showBatteryTimeToFullChanged(bool value);
 
+    void scheduledShutdownStateChanged(bool value);
+    void shutdownTimeChanged(const QString &time);
+    void shutdownRepetitionChanged(uint32_t repetition);
+    void weekBeginsChanged(int value);
+    void customShutdownWeekDaysChanged(const QVariantList &value);
+
     void batteryLockDelayModelChanged(const QVariantList &value);
     void batteryScreenBlackDelayModelChanged(const QVariantList &value);
     void batterySleepDelayModelChanged(const QVariantList &value);
@@ -295,6 +324,13 @@ private:
 
     double m_batteryCapacity;
     bool m_showBatteryTimeToFull;
+
+    // scheduledShutdown
+    bool m_scheduledShutdownState;
+    QString m_shutdownTime;
+    QVariantList m_customShutdownWeekDays;
+    uint32_t m_shutdownRepetition;
+    int m_weekBegins;
 
     QVariantList m_batteryLockDelayModel;
     QVariantList m_batteryScreenBlackDelayModel;
