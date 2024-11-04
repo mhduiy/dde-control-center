@@ -6,9 +6,12 @@
 
 #include "powerdbusproxy.h"
 #include <QObject>
+#include <cstdint>
 #include <DConfig>
+#include "powermodel.h"
+#include <qcontainerfwd.h>
+#include <qtmetamacros.h>
 
-class PowerModel;
 class PowerWorker : public QObject
 {
     Q_OBJECT
@@ -21,6 +24,10 @@ public:
 
 public Q_SLOTS:
     void setScreenBlackLock(const bool lock);
+    void setScheduledShutdownState(const bool state);
+    void setShutdownTime(const QString &time);
+    void setShutdownRepetition(uint32_t repetition);
+    void setCustomShutdownWeekDays(const QString &weekdays);
     void setSleepLock(const bool lock);
     void setSleepOnLidOnPowerClosed(const bool sleep);
     void setSleepDelayOnPower(const int delay);
@@ -64,6 +71,8 @@ private:
     void readConfig(const QString &key, std::function<void(const QVariantList &value)> callback);
     void readConfig(const QString &key, std::function<void(const bool value)> callback);
     QVariantList converToDataMap(const QStringList& conf);
+private slots:
+    void onCustomShutdownWeekDaysChanged(const QByteArray &value);
 
 private:
     PowerModel *m_powerModel;
@@ -71,6 +80,7 @@ private:
 
     Dtk::Core::DConfig *m_cfgDock;
     Dtk::Core::DConfig *m_cfgPower;
+    Dtk::Core::DConfig *m_cfgTime;
 };
 
 #endif // POWERWORKER_H

@@ -3,6 +3,8 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "powermodel.h"
 #include "utils.h"
+#include <qlogging.h>
+#include <qtmetamacros.h>
 
 #include <QDebug>
 
@@ -384,6 +386,53 @@ void PowerModel::setShowBatteryTimeToFull(bool value)
         m_showBatteryTimeToFull = value;
 
         Q_EMIT showBatteryTimeToFullChanged(value);
+    }
+}
+
+void PowerModel::setScheduledShutdownState(bool value)
+{
+    qWarning() << "------setScheduledShutdownState------" << value;
+    if (m_scheduledShutdownState != value) {
+        m_scheduledShutdownState = value;
+
+        Q_EMIT scheduledShutdownStateChanged(value);
+    }
+}
+
+void PowerModel::setShutdownTime(const QString &time)
+{
+    if (m_shutdownTime != time) {
+        m_shutdownTime = time;
+
+        Q_EMIT shutdownTimeChanged(time);
+    }
+}
+
+void PowerModel::setShutdownRepetition(uint32_t repetition)
+{
+    if (m_shutdownRepetition != repetition) {
+        m_shutdownRepetition = repetition;
+
+        Q_EMIT shutdownRepetitionChanged(repetition);
+    }
+}
+
+void PowerModel::setWeekBegins(int value)
+{
+    if (m_weekBegins != value) {
+        m_weekBegins = value;
+
+        Q_EMIT weekBeginsChanged(value);
+    }
+}
+
+void PowerModel::setCustomShutdownWeekDays(const QVariantList &value)
+{
+    qWarning() << "||||||||" << value;
+    if (m_customShutdownWeekDays != value) {
+        m_customShutdownWeekDays = value;
+
+        Q_EMIT customShutdownWeekDaysChanged(value);
     }
 }
 
