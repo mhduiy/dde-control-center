@@ -304,7 +304,7 @@ void PowerWorker::setShutdownTime(const QString &time)
     m_powerDBusProxy->setShutdownTime(time);
 }
 
-void PowerWorker::setShutdownRepetition(uint32_t repetition)
+void PowerWorker::setShutdownRepetition(int repetition)
 {
     m_powerDBusProxy->setShutdownRepetition(repetition);
 }

@@ -131,7 +131,7 @@ DccObject {
                 }
                 D.TipsSlider {
                     id: scrollSlider
-                    readonly property var tips: [("10%"), ("20%"), ("30%"), ("40%")]
+                    readonly property var tips: [("10%"), ("20%"), ("30%"), ("40%"), ("50%")]
                     Layout.preferredHeight: 80
                     Layout.alignment: Qt.AlignCenter
                     Layout.margins: 10
@@ -147,7 +147,8 @@ DccObject {
                         D.SliderTipItem { text: scrollSlider.tips[0]; highlight: scrollSlider.slider.value === 10 },
                         D.SliderTipItem { text: scrollSlider.tips[1]; highlight: scrollSlider.slider.value === 20 },
                         D.SliderTipItem { text: scrollSlider.tips[2]; highlight: scrollSlider.slider.value === 30 },
-                        D.SliderTipItem { text: scrollSlider.tips[3]; highlight: scrollSlider.slider.value === 40 }
+                        D.SliderTipItem { text: scrollSlider.tips[3]; highlight: scrollSlider.slider.value === 40 },
+                        D.SliderTipItem { text: scrollSlider.tips[4]; highlight: scrollSlider.slider.value === 50 }
                     ]
 
                     slider.onValueChanged: {
@@ -285,21 +286,32 @@ DccObject {
                 currentIndex: dccData.model.shutdownRepetition
                 onCurrentIndexChanged: {
                     dccData.worker.setShutdownRepetition(currentIndex)
+                    if (currentIndex === model.length - 1 && dccData.model.customShutdownWeekDays.length === 0) {
+                        repeatDaysEditObject.requestShowSelectDialog()
+                    }
                 }
             }
         }
         DccObject {
+            id: repeatDaysEditObject
             name: "repeatDaysEdit"
             parentName: "power/general/shutdownGroup"
-            visible: dccData.model.scheduledShutdownState
+            visible: dccData.model.scheduledShutdownState && dccData.model.shutdownRepetition === 3
             weight: 4
             pageType: DccObject.Editor
+            signal requestShowSelectDialog()
             page: RowLayout {
+                Connections {
+                    target: repeatDaysEditObject
+                    function onRequestShowSelectDialog() {
+                        selectDayDialog.show()
+                    }
+                }
+
                 Label {
                     text: {
                         var str = ""
                         var days = dccData.model.customShutdownWeekDays
-                        console.warn("---updateModel---", days)
                         for (var i = 0; i < days.length; i++) {
                             str += selectDayDialog.dateStr[days[i] - 1] + ", "
                         }
@@ -328,7 +340,7 @@ DccObject {
                 D.DialogWindow {
                     id: selectDayDialog
                     width: 330
-                    height: 400
+                    height: 420
 
                     // Copy is used here to prevent contamination of data in the original model when selecting items
                     property var selectedDays: dccData.model.customShutdownWeekDays.length === 0 ? [1, 2, 3, 4, 5] : dccData.model.customShutdownWeekDays.slice()
@@ -337,6 +349,11 @@ DccObject {
 
                     function generateDayModel() {
                         var array = []
+                        let weekBegin = dccData.model.weekBegins
+                        if (weekBegin < 1 || weekBegin > 7) {
+                            // default is monday
+                            weekBegin = 1
+                        }
                         for (var i = dccData.model.weekBegins; i <= 7; i++) {
                             array.push(i)
                         }
@@ -354,6 +371,11 @@ DccObject {
                     ColumnLayout {
                         implicitWidth: parent.width
                         clip: true
+                        Text {
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            text: "自定义重复时间"
+                        }
                         ListView {
                             Layout.fillWidth: true
                             height: contentHeight

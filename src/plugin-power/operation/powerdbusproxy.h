@@ -106,19 +106,19 @@ public:
     Q_PROPERTY(bool NoPasswdLogin READ noPasswdLogin NOTIFY noPasswdLoginChanged)
     bool noPasswdLogin();
 
-    Q_PROPERTY(bool scheduledShutdownState READ scheduledShutdownState WRITE setScheduledShutdownState NOTIFY ScheduledShutdownStateChanged)
+    Q_PROPERTY(bool ScheduledShutdownState READ scheduledShutdownState WRITE setScheduledShutdownState NOTIFY ScheduledShutdownStateChanged)
     void setScheduledShutdownState(bool value);
     bool scheduledShutdownState();
 
-    Q_PROPERTY(QString shutdownTime READ shutdownTime WRITE setShutdownTime NOTIFY ShutdownTimeChanged)
+    Q_PROPERTY(QString ShutdownTime READ shutdownTime WRITE setShutdownTime NOTIFY ShutdownTimeChanged)
     void setShutdownTime(const QString &time);
     QString shutdownTime();
 
-    Q_PROPERTY(uint32_t shutdownRepetition READ shutdownRepetition WRITE setShutdownRepetition NOTIFY ShutdownRepetitionChanged)
-    void setShutdownRepetition(uint32_t repetition);
-    uint32_t shutdownRepetition();
+    Q_PROPERTY(int ShutdownRepetition READ shutdownRepetition WRITE setShutdownRepetition NOTIFY ShutdownRepetitionChanged)
+    void setShutdownRepetition(int repetition);
+    int shutdownRepetition();
 
-    Q_PROPERTY(QByteArray customShutdownWeekDays READ customShutdownWeekDays WRITE setCustomShutdownWeekDays NOTIFY CustomShutdownWeekDaysChanged)
+    Q_PROPERTY(QByteArray CustomShutdownWeekDays READ customShutdownWeekDays WRITE setCustomShutdownWeekDays NOTIFY CustomShutdownWeekDaysChanged)
     void setCustomShutdownWeekDays(const QByteArray &weekdays);
     QByteArray customShutdownWeekDays();
 
@@ -159,7 +159,7 @@ signals:
     void noPasswdLoginChanged(bool value);
     void ScheduledShutdownStateChanged(bool value);
     void ShutdownTimeChanged(const QString &time);
-    void ShutdownRepetitionChanged(uint32_t repetition);
+    void ShutdownRepetitionChanged(int repetition);
     void CustomShutdownWeekDaysChanged(const QByteArray &value);
 
 public slots:

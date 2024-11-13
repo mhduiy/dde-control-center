@@ -386,14 +386,14 @@ QString PowerDBusProxy::shutdownTime()
     return qvariant_cast<QString>(m_powerInter->property("ShutdownTime"));
 }
 
-void PowerDBusProxy::setShutdownRepetition(uint32_t repetition)
+void PowerDBusProxy::setShutdownRepetition(int repetition)
 {
-    m_powerInter->setProperty("ShutdownRepetition", QVariant(repetition));
+    m_powerInter->setProperty("ShutdownRepetition", QVariant::fromValue<int>(repetition));
 }
 
-uint32_t PowerDBusProxy::shutdownRepetition()
+int PowerDBusProxy::shutdownRepetition()
 {
-    return qvariant_cast<uint32_t>(m_powerInter->property("ShutdownRepetition"));
+    return qvariant_cast<int>(m_powerInter->property("ShutdownRepetition"));
 }
 
 void PowerDBusProxy::setCustomShutdownWeekDays(const QByteArray &weekdays)

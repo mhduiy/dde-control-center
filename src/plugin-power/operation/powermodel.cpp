@@ -408,7 +408,7 @@ void PowerModel::setShutdownTime(const QString &time)
     }
 }
 
-void PowerModel::setShutdownRepetition(uint32_t repetition)
+void PowerModel::setShutdownRepetition(int repetition)
 {
     if (m_shutdownRepetition != repetition) {
         m_shutdownRepetition = repetition;

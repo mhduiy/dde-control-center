@@ -26,7 +26,7 @@ public Q_SLOTS:
     void setScreenBlackLock(const bool lock);
     void setScheduledShutdownState(const bool state);
     void setShutdownTime(const QString &time);
-    void setShutdownRepetition(uint32_t repetition);
+    void setShutdownRepetition(int repetition);
     void setCustomShutdownWeekDays(const QString &weekdays);
     void setSleepLock(const bool lock);
     void setSleepOnLidOnPowerClosed(const bool sleep);

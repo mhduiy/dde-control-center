@@ -53,7 +53,7 @@ class PowerModel : public QObject
     Q_PROPERTY(bool showBatteryTimeToFull READ showBatteryTimeToFull WRITE setShowBatteryTimeToFull NOTIFY showBatteryTimeToFullChanged)
     Q_PROPERTY(bool scheduledShutdownState READ scheduledShutdownState WRITE setScheduledShutdownState NOTIFY scheduledShutdownStateChanged)
     Q_PROPERTY(QString shutdownTime READ shutdownTime WRITE setShutdownTime NOTIFY shutdownTimeChanged)
-    Q_PROPERTY(uint32_t shutdownRepetition READ shutdownRepetition WRITE setShutdownRepetition NOTIFY shutdownRepetitionChanged)
+    Q_PROPERTY(int shutdownRepetition READ shutdownRepetition WRITE setShutdownRepetition NOTIFY shutdownRepetitionChanged)
     Q_PROPERTY(int weekBegins READ weekBegins WRITE setWeekBegins NOTIFY weekBeginsChanged)
     Q_PROPERTY(QVariantList customShutdownWeekDays READ customShutdownWeekDays WRITE setCustomShutdownWeekDays NOTIFY customShutdownWeekDaysChanged)
 
@@ -192,8 +192,8 @@ public:
     inline QString shutdownTime() const { return m_shutdownTime; }
     void setShutdownTime(const QString &time);
 
-    inline uint32_t shutdownRepetition() const { return m_shutdownRepetition; }
-    void setShutdownRepetition(uint32_t repetition);
+    inline int shutdownRepetition() const { return m_shutdownRepetition; }
+    void setShutdownRepetition(int repetition);
 
     inline int weekBegins() const { return m_weekBegins; }
     void setWeekBegins(int value);
@@ -267,7 +267,7 @@ Q_SIGNALS:
 
     void scheduledShutdownStateChanged(bool value);
     void shutdownTimeChanged(const QString &time);
-    void shutdownRepetitionChanged(uint32_t repetition);
+    void shutdownRepetitionChanged(int repetition);
     void weekBeginsChanged(int value);
     void customShutdownWeekDaysChanged(const QVariantList &value);
 

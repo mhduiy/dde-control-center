@@ -325,30 +325,6 @@ DccObject {
                     Layout.leftMargin: 10
                     text: dccData.model.batteryCapacity
                 }
-
-            DccObject {
-                name: "optimizeChargingTime"
-                parentName: "power/onBattery/batteryManagementGroup"
-                displayName: qsTr("Optimize battery charging")
-                weight: 3
-                pageType: DccObject.Editor
-                page: D.Switch {
-
-                }
-            }
-            DccObject {
-                name: "maximumChargingCapacity"
-                parentName: "power/onBattery/batteryManagementGroup"
-                displayName: qsTr("Maximum charging capacity")
-                description: qsTr("When the battery is not frequently used, the maximum charging capacity of the battery can be limited to slow down battery aging")
-                weight: 4
-                pageType: DccObject.Editor
-                page: D.ComboBox {
-                    width: 100
-                    model: [ "90%", "85%", "80%" ]
-                    flat: true
-                }
-            }
         }
     }
 }
