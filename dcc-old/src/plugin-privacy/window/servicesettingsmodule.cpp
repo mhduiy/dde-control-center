@@ -17,6 +17,7 @@
 #include <DSwitchButton>
 #include <QBoxLayout>
 #include <QScroller>
+#include <DIconTheme>
 
 using namespace DCC_NAMESPACE;
 DWIDGET_USE_NAMESPACE
@@ -28,7 +29,7 @@ ServiceSettingsModule::ServiceSettingsModule(DATE& serviceDate, PrivacySecurityM
     , m_model(model)
     , m_worker(work)
 {
-    deactive();
+    // deactive();
     m_serviceItemDate = m_model->getServiceItem(serviceDate.category);
     // 添加标题
     appendChild(new WidgetModule<SwitchWidget>(m_currentServiceDate.name, m_currentServiceDate.displayName, this, &ServiceSettingsModule::initSwitchWidget));

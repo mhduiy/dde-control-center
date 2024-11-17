@@ -7,4 +7,8 @@
         <file>icons/dark/dcc_none_dark.svg</file>
         <file>icons/light/dcc_none_light.svg</file>
     </qresource>
+
+    <qresource prefix="/dsg">
+        <file>icons/arrow-down.dci</file>
+    </qresource>
 </RCC>

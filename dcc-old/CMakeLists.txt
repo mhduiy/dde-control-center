@@ -1285,44 +1285,44 @@ endif()
 # endif()
 
 #--------------------------plugin-privacy--------------------------
-#if (BUILD_PLUGIN)
-#    set(Privacy_Name dcc-privacy-plugin)
-#    file(GLOB_RECURSE Privacy_SRCS
-#        "src/plugin-privacy/window/*.cpp"
-#        "src/plugin-privacy/operation/*.cpp"
-#        "src/plugin-privacy/operation/qrc/privacy.qrc"
-#    )
+if (BUILD_PLUGIN)
+   set(Privacy_Name dcc-privacy-plugin)
+   file(GLOB_RECURSE Privacy_SRCS
+       "src/plugin-privacy/window/*.cpp"
+       "src/plugin-privacy/operation/*.cpp"
+       "src/plugin-privacy/operation/qrc/privacy.qrc"
+   )
 
-#    add_library(${Privacy_Name} MODULE
-#        ${Privacy_SRCS}
-#    )
+   add_library(${Privacy_Name} MODULE
+       ${Privacy_SRCS}
+   )
 
-#    set(Pricacy_Includes
-#        ${DtkWidget_INCLUDE_DIRS}
-#        Qt5::Widgets
-#        Qt5::DBus
-#        Qt5::Concurrent
-#        src/plugin-privacy/operation
-#        src/plugin-privacy/window
-#    )
-#    set(Privacy_Libraries
-#        ${Dcc_Widgets_Name}
-#        ${DtkWidget_LIBRARIES}
-#        Qt5::Widgets
-#        Qt5::DBus
-#        Qt5::Concurrent
-#        ${Dcc_Widgets_Name}
-#    )
-#    target_include_directories(${Privacy_Name} PUBLIC
-#        ${Pricacy_Includes}
-#    )
+   set(Pricacy_Includes
+       ${DtkWidget_INCLUDE_DIRS}
+       Qt5::Widgets
+       Qt5::DBus
+       Qt5::Concurrent
+       src/plugin-privacy/operation
+       src/plugin-privacy/window
+   )
+   set(Privacy_Libraries
+       ${Dcc_Widgets_Name}
+       ${DtkWidget_LIBRARIES}
+       Qt5::Widgets
+       Qt5::DBus
+       Qt5::Concurrent
+       ${Dcc_Widgets_Name}
+   )
+   target_include_directories(${Privacy_Name} PUBLIC
+       ${Pricacy_Includes}
+   )
 
-#    target_link_libraries(${Privacy_Name} PRIVATE
-#        ${Privacy_Libraries}
-#    )
+   target_link_libraries(${Privacy_Name} PRIVATE
+       ${Privacy_Libraries}
+   )
 
-#    install(TARGETS ${Privacy_Name} DESTINATION ${MODULE_INSTALL_DIR})
-#endif()
+   install(TARGETS ${Privacy_Name} DESTINATION ${MODULE_INSTALL_DIR})
+endif()
 #--------------------------plugin-touchscreen--------------------------
 if (BUILD_PLUGIN)
     set(Touchscreen_Name dcc-touchscreen-plugin)
