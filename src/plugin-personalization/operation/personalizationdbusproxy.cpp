@@ -32,18 +32,18 @@ DGUI_USE_NAMESPACE
 
 PersonalizationDBusProxy::PersonalizationDBusProxy(QObject *parent)
     : QObject(parent)
-    , m_AppearanceInter(new QDBusInterface(AppearanceService, AppearancePath, AppearanceInterface, QDBusConnection::sessionBus(), this))
-    , m_WMSwitcherInter(new QDBusInterface(WMSwitcherService, WMSwitcherPath, WMSwitcherInterface, QDBusConnection::sessionBus(), this))
-
 {
+    m_AppearanceInter = new QDBusInterface(AppearanceService, AppearancePath, AppearanceInterface, QDBusConnection::sessionBus(), this);
     if (!DGuiApplicationHelper::testAttribute(DGuiApplicationHelper::IsWaylandPlatform)) {
         m_WMInter = new QDBusInterface(WMService, WMPath, WMInterface, QDBusConnection::sessionBus(), this);
+        m_WMSwitcherInter = new QDBusInterface(WMSwitcherService, WMSwitcherPath, WMSwitcherInterface, QDBusConnection::sessionBus(), this);
         m_EffectsInter = new QDBusInterface(EffectsService, EffectsPath, EffectsInterface, QDBusConnection::sessionBus(), this);
+
         connect(m_WMSwitcherInter, SIGNAL(WMChanged(const QString &)), this, SIGNAL(WMChanged(const QString &)));
+        QDBusConnection::sessionBus().connect(WMService, WMPath, PropertiesInterface, PropertiesChanged, this, SLOT(onPropertiesChanged(QDBusMessage)));
     }
     
     QDBusConnection::sessionBus().connect(AppearanceService, AppearancePath, PropertiesInterface, PropertiesChanged, this, SLOT(onPropertiesChanged(QDBusMessage)));
-    QDBusConnection::sessionBus().connect(WMService, WMPath, PropertiesInterface, PropertiesChanged, this, SLOT(onPropertiesChanged(QDBusMessage)));
 
     connect(m_AppearanceInter, SIGNAL(Changed(const QString &, const QString &)), this, SIGNAL(Changed(const QString &, const QString &)));
     connect(m_AppearanceInter, SIGNAL(Refreshed(const QString &)), this, SIGNAL(Refreshed(const QString &)));
