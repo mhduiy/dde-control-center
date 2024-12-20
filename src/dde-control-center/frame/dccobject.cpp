@@ -4,6 +4,7 @@
 #include "dccobject.h"
 
 #include "dccobject_p.h"
+#include <qlogging.h>
 
 #include <QLoggingCategory>
 #include <QQmlContext>
@@ -199,10 +200,11 @@ void DccObject::Private::deleteSectionItem()
                 Q_EMIT child->deactive();
             }
         }
+        qWarning()<<__LINE__<<__FUNCTION__;
         // 延时delete等动画完成
-        QTimer::singleShot(500, item, [item]() {
-            item->deleteLater();
-        });
+        // QTimer::singleShot(500, item, [item]() {
+        //     item->deleteLater();
+        // });
     }
 }
 

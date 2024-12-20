@@ -14,9 +14,9 @@ import org.deepin.dtk.private as P
 ColumnLayout {
     id: root
     property var model
-    readonly property int imageRectH: 120
-    readonly property int imageRectW: 180
-    readonly property int imageSpacing: 10
+    readonly property int imageRectW: 84
+    readonly property int imageRectH: 54
+    readonly property int imageSpacing: 5
     property bool isExpand: false
     property var currentItem
 
@@ -32,7 +32,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Label {
             Layout.leftMargin: 10
-            font: D.DTK.fontManager.t4
+            font: D.DTK.fontManager.t6
             text: dccObj.displayName
         }
         Item {
@@ -40,7 +40,6 @@ ColumnLayout {
         }
         D.ToolButton {
             text: isExpand ? qsTr("unfold") : qsTr("show all") + `-${model.rowCount()}` + qsTr("items")
-            font: D.DTK.fontManager.t6
             flat: true
             onClicked: {
                 isExpand = !isExpand
@@ -140,7 +139,7 @@ ColumnLayout {
                         color: "transparent"
                         border.width: 2
                         border.color: D.DTK.platformTheme.activeColor
-                        radius: 9
+                        radius: 6
                     }
 
                     OpacityMask {
@@ -150,7 +149,7 @@ ColumnLayout {
                         maskSource: Rectangle {
                             implicitWidth: image.width
                             implicitHeight: image.height
-                            radius: 8
+                            radius: 6
                         }
                     }
                     Control {

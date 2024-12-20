@@ -63,7 +63,7 @@ DccManager::DccManager(QObject *parent)
 
     initConfig();
     connect(m_plugins, &PluginManager::addObject, this, &DccManager::addObject, Qt::QueuedConnection);
-    connect(qApp, &QCoreApplication::aboutToQuit, this, &DccManager::onQuit);
+    connect(qApp, &QCoreApplication::aboutToQuit, this, &DccManager::onQuit,Qt::QueuedConnection);
     waitShowPage("system", QDBusMessage());
 }
 
@@ -757,6 +757,8 @@ void DccManager::onQuit()
     delete m_noParentObjects;
     delete m_hideObjects;
     qCDebug(dccLog()) << "delete dccobject";
+    qCDebug(dccLog()) << "delete m_window";
+    // delete m_window;
     qCDebug(dccLog()) << "delete QmlEngine";
     delete m_engine;
     qCDebug(dccLog()) << "clear QmlEngine";
