@@ -1,0 +1,143 @@
+// SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+import QtQuick 2.15
+import QtQuick.Window 2.15
+import QtQuick.Controls 2.3
+import QtQuick.Layouts 1.15
+
+import org.deepin.dcc 1.0
+import org.deepin.dtk 1.0 as D
+import org.deepin.dtk.style 1.0 as DS
+
+DccObject {
+    DccObject {
+        name: "filefolderViewGroup"
+        parentName: "privacy/filefolder"
+        weight: 100
+        pageType: DccObject.Item
+        page: DccGroupView {}
+
+        DccObject {
+            name: "title"
+            weight: 1
+            parentName: "privacy/filefolder/filefolderViewGroup"
+            pageType: DccObject.Editor
+            displayName: "允许下面的应用访问您的文件和文件夹"
+        }
+
+        DccRepeater {
+            model: dccData.appsModel
+            delegate: DccObject {
+                id: privacyFolderItem
+                name: "plugin" + model.name
+                property real iconSize: 16
+                property bool isExpaned: false
+                property var dataModel: model
+                parentName: "privacy/filefolder/filefolderViewGroup"
+                weight: 10 + index * 10
+                pageType: DccObject.Item
+                visible: !model.noDisplay
+
+                Connections {
+                    target: parentItem
+                    function onClicked() {
+                        privacyFolderItem.isExpaned = !privacyFolderItem.isExpaned
+                    }
+                }
+
+                page: ColumnLayout {
+                    RowLayout {
+                        Layout.preferredHeight: DS.Style.itemDelegate.height
+                        Layout.leftMargin: 10
+                        Layout.rightMargin: 10
+                        D.DciIcon {
+                            sourceSize: Qt.size(24, 24)
+                            name: model.iconName
+                        }
+                        DccLabel {
+                            text: model.name
+                        }
+                        Item {
+                            Layout.fillWidth: true
+                        }
+                        Control {
+                            id: control
+                            rotation: privacyFolderItem.isExpaned ? 180 : 0
+                            Behavior on rotation {
+                                NumberAnimation {
+                                    duration: 200
+                                }
+                            }
+                            contentItem: D.DciIcon {
+                                name: "arrow_ordinary_down"
+                                sourceSize: Qt.size(12, 12)
+                                theme: D.DTK.themeType
+                                palette: D.DTK.makeIconPalette(control.palette)
+                            }
+                        }
+                        
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                        implicitHeight: coLayout.implicitHeight
+                        Behavior on implicitHeight {
+                            NumberAnimation {
+                                duration: 300
+                                easing.type: Easing.OutQuart
+                            }
+                        }
+
+                        ColumnLayout {
+                            id: coLayout
+                            anchors.fill: parent
+                            Repeater {
+                                id: rep
+                                property var itemIndex: index
+                                model: privacyFolderItem.isExpaned ? [
+                                    { name: "文档", checked: privacyFolderItem.dataModel.documentPermission},
+                                    { name: "图片", checked: privacyFolderItem.dataModel.picturePermission},
+                                    { name: "桌面", checked: privacyFolderItem.dataModel.desktopPermission},
+                                    { name: "视频", checked: privacyFolderItem.dataModel.videoPermission},
+                                    { name: "音乐", checked: privacyFolderItem.dataModel.musicPermission},
+                                    { name: "下载", checked: privacyFolderItem.dataModel.downloadPermission},
+                                    ] : []
+                                delegate: D.ItemDelegate {
+                                    Layout.fillWidth: true
+                                    cascadeSelected: true
+                                    checkable: false
+                                    contentFlow: true
+                                    corners: getCornersForBackground(index, rep.model.count)
+                                    content: RowLayout {
+                                        spacing: 2
+                                        DccLabel {
+                                            text: "\"" + modelData.name + "\""
+                                            color: D.DTK.platformTheme.activeColor
+                                        }
+                                        DccLabel {
+                                            Layout.fillWidth: true
+                                            text: "文件夹"
+                                        }
+                                        D.Switch {
+                                            Layout.alignment: Qt.AlignRight
+                                            checked: modelData.checked
+
+                                            onCheckedChanged: {
+                                                console.log("change folder", rep.itemIndex, "folder is: ", index, checked)
+                                                dccData.worker.setPremissionEnabled(rep.itemIndex, 513, checked)
+                                            }
+                                        }
+                                    }
+                                    background: DccItemBackground {
+                                        separatorVisible: true
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
