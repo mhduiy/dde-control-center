@@ -36,6 +36,7 @@ T.Control {
                 theme: control.D.ColorSelector.controlTheme
                 name: control.checked ? "item_checked" :  "item_unchecked"
                 fallbackToQIcon: false
+                sourceSize: Qt.size(16, 16)
             }
             Text {
                 Layout.alignment: Qt.AlignCenter

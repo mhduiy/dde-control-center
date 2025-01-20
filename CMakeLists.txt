@@ -210,6 +210,7 @@ add_subdirectory(src/plugin-update)
 add_subdirectory(src/plugin-notification)
 add_subdirectory(src/plugin-deepinid)
 add_subdirectory(src/plugin-display)
+add_subdirectory(src/plugin-privacy)
 
 if(BUILE_EXAMPLES)
     add_subdirectory(examples)

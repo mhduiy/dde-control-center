@@ -49,3 +49,5 @@ lupdate.sh
 
 # nix
 .direnv
+
+buikd

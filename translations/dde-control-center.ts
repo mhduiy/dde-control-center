@@ -4589,39 +4589,9 @@ UnionTech Software is committed to research and improve the security, accuracy a
     </message>
 </context>
 <context>
-    <name>PrivacyModule</name>
-    <message>
-        <source>Privacy and Security</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PrivacyPolicyPage</name>
     <message>
         <source>Privacy Policy</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PrivacySecurityModel</name>
-    <message>
-        <source>Camera</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Microphone</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>User Folders</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Calendar</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Screen Capture</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6929,6 +6899,22 @@ UnionTech Software is committed to research and improve the security, accuracy a
         <source>Control Center provides the options for system settings.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>摄像头</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>选择应用是否有摄像头的访问权限</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>文件和文件夹</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>选择应用是否有文件和文件夹的访问权限</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>mouse</name>
@@ -7107,6 +7093,13 @@ UnionTech Software is committed to research and improve the security, accuracy a
     </message>
     <message>
         <source>screen and suspend, low battery, battery management</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>privacy</name>
+    <message>
+        <source>Privacy and Security</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

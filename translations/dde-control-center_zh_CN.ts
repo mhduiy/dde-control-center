@@ -4590,40 +4590,10 @@ In order to better use of face recognition, please pay attention to the followin
     </message>
 </context>
 <context>
-    <name>PrivacyModule</name>
-    <message>
-        <source>Privacy and Security</source>
-        <translation>隐私和安全</translation>
-    </message>
-</context>
-<context>
     <name>PrivacyPolicyPage</name>
     <message>
         <source>Privacy Policy</source>
         <translation>隐私政策</translation>
-    </message>
-</context>
-<context>
-    <name>PrivacySecurityModel</name>
-    <message>
-        <source>Camera</source>
-        <translation>摄像头</translation>
-    </message>
-    <message>
-        <source>Microphone</source>
-        <translation>麦克风</translation>
-    </message>
-    <message>
-        <source>User Folders</source>
-        <translation>用户文件夹</translation>
-    </message>
-    <message>
-        <source>Calendar</source>
-        <translation>日历</translation>
-    </message>
-    <message>
-        <source>Screen Capture</source>
-        <translation>屏幕截图</translation>
     </message>
 </context>
 <context>
@@ -6930,6 +6900,22 @@ In order to better use of face recognition, please pay attention to the followin
         <source>Control Center provides the options for system settings.</source>
         <translation>控制中心提供操作系统的所有设置选项。</translation>
     </message>
+    <message>
+        <source>摄像头</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>选择应用是否有摄像头的访问权限</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>文件和文件夹</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>选择应用是否有文件和文件夹的访问权限</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>mouse</name>
@@ -7109,6 +7095,13 @@ In order to better use of face recognition, please pay attention to the followin
     <message>
         <source>screen and suspend, low battery, battery management</source>
         <translation>屏幕和待机管理、低电量管理、电池管理</translation>
+    </message>
+</context>
+<context>
+    <name>privacy</name>
+    <message>
+        <source>Privacy and Security</source>
+        <translation type="unfinished">隐私和安全</translation>
     </message>
 </context>
 <context>

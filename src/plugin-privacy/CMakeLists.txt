@@ -1,0 +1,69 @@
+set(LIB_NAME privacy)
+
+find_package(DDEApplicationManager REQUIRED)
+find_package(DDEShell REQUIRED)
+find_package(PolkitQt6-1 REQUIRED)
+
+pkg_check_modules(LIBDPKG REQUIRED libdpkg)
+include_directories(${DPKG_INCLUDE_DIRS})
+
+file(GLOB_RECURSE Privacy_SRCS
+    "operation/*.cpp"
+    "operation/*.hpp"
+    "operation/*.h"
+    "operation/qrc/privacy.qrc"
+    )
+
+set(Privacy_Includes
+    src/plugin-privacy/operation
+)
+
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/operation/xml/org.desktopspec.ApplicationManager1.Application.xml
+    PROPERTIES  INCLUDE types/am.h
+                CLASSNAME AppManager1Application
+)
+
+set_source_files_properties(
+    ${CMAKE_CURRENT_SOURCE_DIR}/operation/xml/org.desktopspec.ObjectManager1.xml
+    PROPERTIES  INCLUDE types/am.h
+                CLASSNAME AppManager1ApplicationObjectManager
+)
+
+qt_add_dbus_interfaces(
+    DBUS_INTERFACES
+    ${CMAKE_CURRENT_SOURCE_DIR}/operation/xml/org.desktopspec.ApplicationManager1.Application.xml
+)
+
+qt_add_dbus_interfaces(
+    DBUS_INTERFACES
+    ${CMAKE_CURRENT_SOURCE_DIR}/operation/xml/org.desktopspec.ObjectManager1.xml
+)
+
+
+add_library(${LIB_NAME} MODULE
+    ${Privacy_SRCS}
+    ${DBUS_INTERFACES}
+)
+
+
+set(Privacy_Libraries
+    ${DCC_FRAME_Library}
+    ${DTK_NS}::Gui
+    ${QT_NS}::DBus
+    ${QT_NS}::Qml
+    ${QT_NS}::Concurrent
+    Dde::Shell
+    PolkitQt6-1::Agent
+    dpkg
+)
+
+target_include_directories(${LIB_NAME} PUBLIC
+    ${Privacy_Includes}
+)
+
+target_link_libraries(${LIB_NAME} PRIVATE
+    ${Privacy_Libraries}
+)
+
+dcc_install_plugin(NAME ${LIB_NAME} TARGET ${LIB_NAME})
