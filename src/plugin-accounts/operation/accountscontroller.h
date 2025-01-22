@@ -7,8 +7,7 @@
 
 #include "usermodel.h"
 #include "accountsworker.h"
-#include "charamangerworker.h"
-#include <dareader/reader.h>
+#include "biometricauthcontroller.h"
 
 #include <QObject>
 #include <QSortFilterProxyModel>
@@ -22,11 +21,8 @@ class AccountsController : public QObject
     Q_PROPERTY(QString currentUserName READ currentUserName NOTIFY currentUserNameChanged FINAL)
     Q_PROPERTY(QStringList userIdList READ userIdList NOTIFY userIdListChanged FINAL)
     Q_PROPERTY(QStringList onlineUserList READ onlineUserList NOTIFY onlineUserListChanged FINAL)
-    Q_PROPERTY(CharaMangerModel *faceModel MEMBER m_charaModel CONSTANT)
-    Q_PROPERTY(QString faceImgContent READ faceImgContent NOTIFY faceImgContentChanged FINAL)
-    Q_PROPERTY(bool enrollSuccess READ enrollSuccess NOTIFY enrollSuccessChanged FINAL)
-    Q_PROPERTY(QString enrollTips READ enrollTips NOTIFY enrollTipsChanged FINAL)
 
+    Q_PROPERTY(BiometricAuthController *biometricCtl MEMBER m_biometricCtl CONSTANT)
 public:
     explicit AccountsController(QObject *parent = nullptr);
     virtual ~AccountsController();
@@ -49,11 +45,6 @@ public slots:
     QString userTypeName(const QString &id) const;
     QStringList userTypes(bool createUser = false) const;
     bool isDeleteAble(const QString &id) const;
-
-    void startFaceEnroll();
-    void stopEnroll();
-    void renameFace(const QString &oldName, const QString &newName);
-    void removeFace(QString faceid);
 
     bool isAutoLoginVisable() const;
     bool autoLogin(const QString &id) const;
@@ -95,10 +86,6 @@ public slots:
     QVariantMap checkPasswordResult(int code, const QString &msg, const QString &name, const QString &pwd);
     void showDefender();
 
-    QString faceImgContent();
-    bool    enrollSuccess();
-    QString enrollTips();
-
 signals:
     void currentUserNameChanged();
     void userIdListChanged();
@@ -117,30 +104,20 @@ signals:
     void requestCreateGroup(const QString &userId);
     void requestClearEmptyGroup(const QString &userId);
     void showSafetyPage(const QString &errorTips);
-    void faceImgContentChanged();
-    void enrollSuccessChanged();
-    void enrollTipsChanged();
-    void enrollCompleted();
 protected:
     bool isSystemAdmin(const User *user) const;
     int adminCount() const;
     void checkPwdLimitLevel(int lvl);
 private:
-    static void updateFaceImgContent(void *const context, const DA_img *const img);
-
     AccountsWorker *m_worker = nullptr;
     UserModel      *m_model = nullptr;
-    CharaMangerModel *m_charaModel = nullptr;
-    CharaMangerWorker *m_charaWorker = nullptr;
     QSortFilterProxyModel *m_avatarFilterModel = nullptr;
     QAbstractListModel    *m_avatarTypesModel = nullptr;
     QAbstractListModel    *m_accountsModel = nullptr;
     QHash<QString, QStringList> m_groups;
     QAbstractListModel    *m_groupsModel = nullptr;
-    QString         m_faceImgContent;
-    QString         m_enrollTips;
-    bool            m_enrollSuccess;
-    bool            m_enrollInProgress;
+
+    BiometricAuthController *m_biometricCtl = nullptr;
 };
 
 }

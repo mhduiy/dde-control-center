@@ -3,6 +3,7 @@
 //SPDX-License-Identifier: GPL-3.0-or-later
 #ifndef CHARAMANGERMODEL_H
 #define CHARAMANGERMODEL_H
+#include <qtmetamacros.h>
 #include <QObject>
 
 #define FACE_CHARA 4
@@ -14,6 +15,8 @@ class CharaMangerModel : public QObject
     Q_PROPERTY(bool faceDriverVaild READ faceDriverVaild WRITE setFaceDriverVaild NOTIFY vaildFaceDriverChanged)
     Q_PROPERTY(QStringList facesList READ facesList WRITE setFacesList NOTIFY facesListChanged)
     Q_PROPERTY(bool charaVaild READ charaVaild WRITE setCharaVaild NOTIFY charaVaildChanged)
+
+    Q_PROPERTY(QStringList thumbsList READ thumbsList WRITE setThumbsList NOTIFY thumbsListChanged)
 
 public:
     /**
@@ -61,6 +64,8 @@ public:
         Processing,
     };
 
+    Q_ENUM(AddInfoState)
+
     /**
      * @brief The EnrollResult enum 指纹
      */
@@ -71,6 +76,8 @@ public:
         Enroll_Success,
         Count
     };
+
+    Q_ENUM(EnrollResult)
 
     enum EnrollStatusType {
         ET_Completed = 0,
@@ -97,6 +104,14 @@ public:
         RC_RemoveAndRetry,
         RC_CannotRecognize
     };
+
+    enum EnrollType {
+        Type_Face = 0,
+        Type_Finger,
+        Type_Iris
+    };
+
+    Q_ENUM(EnrollType)
 
 public:
     explicit CharaMangerModel(QObject *parent = nullptr);
