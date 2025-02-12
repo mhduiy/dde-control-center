@@ -4,6 +4,7 @@
 #ifndef PERSONALIZATIONDBUSPROXY_H
 #define PERSONALIZATIONDBUSPROXY_H
 
+#include <qcontainerfwd.h>
 #include <QObject>
 class QDBusInterface;
 class QDBusMessage;
@@ -82,6 +83,11 @@ public:
     QString getCurrentWorkSpaceBackgroundForMonitor(const QString &screenName);
 
     void SetGreeterBackground(const QString &url);
+    
+    // daemon
+    QString saveCustomWallpaper(const QString &userName, const QString &url);
+    void deleteCustomWallpaper(const QString &userName, const QString &url);
+    QStringList getCustomWallpaper(const QString &userName);
 
 signals:
     // Appearance
@@ -138,6 +144,7 @@ private:
     QDBusInterface *m_AppearanceInter = nullptr;
     QDBusInterface *m_WMInter = nullptr;
     QDBusInterface *m_EffectsInter = nullptr;
+    QDBusInterface *m_DaemonInter = nullptr;
 };
 
 #endif // PERSONALIZATIONDBUSPROXY_H

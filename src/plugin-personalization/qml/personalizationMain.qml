@@ -119,11 +119,20 @@ DccObject {
     DccObject {
         name: "wallpaper"
         parentName: "personalization"
-        displayName: qsTr("Wallpaper and screensaver")
+        displayName: qsTr("壁纸")
         description: qsTr("Personalize your wallpaper and screensaver")
         icon: "wallpaper"
         weight: 300
         WallpaperPage {}
+    }
+    DccObject {
+        name: "screenSaver"
+        parentName: "personalization"
+        displayName: qsTr("屏幕保护")
+        description: qsTr("Personalize your wallpaper and screensaver")
+        icon: "screensaver"
+        weight: 400
+        ScreenSaverPage {}
     }
     DccObject {
         name: "colorAndIcons"
@@ -131,7 +140,7 @@ DccObject {
         displayName: qsTr("Colors and icons")
         description: qsTr("Adjust accent color and theme icons")
         icon: "icon_cursor"
-        weight: 400
+        weight: 500
         ColorAndIcons {}
     }
     DccObject {
@@ -140,7 +149,7 @@ DccObject {
         displayName: qsTr("Font and font size")
         description: qsTr("Change system font and size")
         icon: "font_size"
-        weight: 500
+        weight: 600
         FontSizePage {}
     }
 }

@@ -11,6 +11,7 @@ class ThemeModel;
 class FontModel;
 class FontSizeModel;
 class WallpaperModel;
+class WallpaperSortModel;
 class PersonalizationModel : public QObject
 {
     Q_OBJECT
@@ -36,7 +37,9 @@ class PersonalizationModel : public QObject
     Q_PROPERTY(FontModel *monoFontModel MEMBER m_monoFontModel CONSTANT)
     Q_PROPERTY(ThemeModel *iconModel MEMBER m_iconModel CONSTANT)
     Q_PROPERTY(ThemeModel *cursorModel MEMBER m_mouseModel CONSTANT)
-    Q_PROPERTY(WallpaperModel *wallpaperModel MEMBER m_wallpaperModel CONSTANT)
+    Q_PROPERTY(WallpaperSortModel *customWallpaperModel MEMBER m_customWallpaperSortModel CONSTANT)
+    Q_PROPERTY(WallpaperSortModel *sysWallpaperModel MEMBER m_sysWallpaperSortModel CONSTANT)
+    Q_PROPERTY(WallpaperSortModel *solidWallpaperModel MEMBER m_solidWallpaperSortModel CONSTANT)
 
 public:
     explicit PersonalizationModel(QObject *parent = nullptr);
@@ -48,7 +51,10 @@ public:
     inline FontModel *getStandFontModel() const { return m_standFontModel; }
     inline FontModel *getMonoFontModel() const { return m_monoFontModel; }
     inline FontSizeModel *getFontSizeModel() const { return m_fontSizeModel; }
-    inline WallpaperModel *getWallpaperModel() const { return m_wallpaperModel; }
+
+    inline WallpaperModel *getCustomWallpaperModel() const { return m_customWallpaperModel; }
+    inline WallpaperModel *getSysWallpaperModel() const { return m_sysWallpaperModel; }
+    inline WallpaperModel *getSolidWallpaperModel() const { return m_solidWallpaperModel; }
 
     void setWindowRadius(int radius);
     int windowRadius();
@@ -119,7 +125,14 @@ private:
     FontModel *m_standFontModel;
     FontModel *m_monoFontModel;
     FontSizeModel *m_fontSizeModel;
-    WallpaperModel *m_wallpaperModel;
+
+    WallpaperSortModel *m_customWallpaperSortModel;
+    WallpaperSortModel *m_sysWallpaperSortModel;
+    WallpaperSortModel *m_solidWallpaperSortModel;
+
+    WallpaperModel *m_customWallpaperModel;
+    WallpaperModel *m_sysWallpaperModel;
+    WallpaperModel *m_solidWallpaperModel;
 
     bool m_isMoveWindow;
     double m_opacity;

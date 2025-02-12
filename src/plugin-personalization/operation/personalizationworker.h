@@ -6,6 +6,7 @@
 
 #include "operation/wallpaperworker.h"
 #include "personalizationmodel.h"
+#include <qcontainerfwd.h>
 
 #include <QObject>
 #include <QDebug>
@@ -37,6 +38,9 @@ public Q_SLOTS:
 
     // 设置给Appearance分别在深色和浅色下的活动色
     void setActiveColors(const QString &activeColors);
+    void addCutomWallpaper(const QStringList &url);
+    void addSolidWallpaper(const QColor &color);
+    void deleteWallpaper(const QString &str);
 
     virtual void setDefaultByType(const QString &type, const QString &value);
     virtual void setDefault(const QJsonObject &value);

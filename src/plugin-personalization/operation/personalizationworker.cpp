@@ -2,12 +2,17 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "personalizationworker.h"
+#include "operation/wallpaperworker.h"
 #include "personalizationdbusproxy.h"
 #include "model/thememodel.h"
 #include "model/fontmodel.h"
 #include "model/fontsizemodel.h"
 #include "operation/personalizationmodel.h"
 #include "utils.hpp"
+#include <qfileinfo.h>
+#include <qlogging.h>
+#include <qtenvironmentvariables.h>
+#include <qurl.h>
 
 #include <QGuiApplication>
 #include <QScreen>
@@ -18,12 +23,16 @@
 #include <QDBusError>
 #include <QLoggingCategory>
 #include <QTimer>
+#include <QDir>
+#include <QTemporaryFile>
 
 #include <DConfig>
 #include <DDBusSender>
 
 DCORE_USE_NAMESPACE
 Q_LOGGING_CATEGORY(DdcPersonalWorker, "dcc-personal-workder")
+
+#define SOLID_PREFIX "solid::"
 
 static const std::vector<int> OPACITY_SLIDER{ 0, 25, 40, 55, 70, 85, 100 };
 
@@ -42,7 +51,7 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
     : QObject(parent)
     , m_model(model)
     , m_personalizationDBusProxy(new PersonalizationDBusProxy(this))
-    , m_wallpaperWorker(new WallpaperWorker(m_personalizationDBusProxy, m_model->getWallpaperModel(), this))
+    , m_wallpaperWorker(new WallpaperWorker(m_personalizationDBusProxy, m_model, this))
     , m_personalizationConfig(DConfig::create(ORG_DEEPIN_CONTROL_CENTER, CONTROL_CENTER_PERSONALIZATION, "", this))
     , m_dtkConfig(DConfig::createGeneric(DTK_PREFERENCE_NAME, "", this))
 {
@@ -359,6 +368,54 @@ void PersonalizationWorker::setActiveColor(const QString &hexColor)
 void PersonalizationWorker::setActiveColors(const QString &activeColors)
 {
     m_personalizationDBusProxy->setActiveColors(activeColors);
+}
+
+void PersonalizationWorker::addCutomWallpaper(const QStringList &urlList)
+{
+    QString lastHashPath;
+    for (const auto urlItem : urlList) {
+        if (isURI(urlItem)) {
+            lastHashPath = m_personalizationDBusProxy->saveCustomWallpaper(currentUserName(), QUrl(urlItem).toLocalFile());
+        } else {
+            lastHashPath = m_personalizationDBusProxy->saveCustomWallpaper(currentUserName(), urlItem);
+        }
+    }
+    m_wallpaperWorker->fetchData(Wallpaper_Custom);
+    setBackgroundForMonitor(m_model->getCurrentSelectScreen(), lastHashPath, false);
+}
+
+void PersonalizationWorker::addSolidWallpaper(const QColor &color)
+{
+    QString path = QDir::tempPath() + QString("/XXXXXX-solid-color-%0%1%2.jpg").arg(QString::number(color.red(), 16))
+                                                          .arg(QString::number(color.green(), 16))
+                                                          .arg(QString::number(color.blue(), 16));
+    // create img
+    QImage img(1920, 1080, QImage::Format_ARGB32);
+    img.fill(color);
+    QTemporaryFile file(path);
+    file.setAutoRemove(false); // 将临时文件设置为不自动删除
+    if (!file.open()) {
+        qWarning() << "fail to save image" << file.fileName();
+        return;
+    }
+
+    img.save(&file, "JPG");
+
+    //set to dde, and prefix solid:: to tell dde this is a solid color wallpaper.
+    const QString &hashPath = m_personalizationDBusProxy->saveCustomWallpaper(currentUserName(), SOLID_PREFIX + file.fileName());
+    m_wallpaperWorker->fetchData(Wallpaper_Solid);
+    setBackgroundForMonitor(m_model->getCurrentSelectScreen(), hashPath, false);
+}
+
+void PersonalizationWorker::deleteWallpaper(const QString &str)
+{
+    qWarning() << "delete str" << str;
+    if (isURI(str)) {
+        m_personalizationDBusProxy->deleteCustomWallpaper(currentUserName(), QUrl(str).toLocalFile());
+    } else {
+        m_personalizationDBusProxy->deleteCustomWallpaper(currentUserName(), str);
+    }
+    m_wallpaperWorker->fetchData();
 }
 
 void PersonalizationWorker::setWindowRadius(int radius)

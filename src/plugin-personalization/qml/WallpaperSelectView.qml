@@ -1,8 +1,8 @@
 // SPDX-FileCopyrightText: 2024 - 2027 UnionTech Software Technology Co., Ltd.
 // SPDX-License-Identifier: GPL-3.0-or-later
-import QtQuick 2.15
-import QtQuick.Controls 2.3
-import QtQuick.Layouts 1.15
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
 import QtQuick.Dialogs
 import Qt5Compat.GraphicalEffects
 
@@ -13,7 +13,6 @@ import org.deepin.dtk.private as P
 
 ColumnLayout {
     id: root
-    property var model
     readonly property int imageRectW: 84
     readonly property int imageRectH: 54
     readonly property int imageBorder: 2
@@ -22,10 +21,16 @@ ColumnLayout {
     readonly property int itemWidth: imageRectW + imageBorder * 2 + 1
     readonly property int itemHeight: imageRectH + imageBorder * 2 + 1
     readonly property int imageSpacing: 5
+
+    property var model
     property bool isExpand: false
     property var currentItem
+    property string firstItemImgSource: ""
+    property bool firstItemVisible: firstItemImgSource !== ""
 
     signal wallpaperSelected(var url, bool isDark, bool isLock)
+    signal firstItemClicked()
+    signal wallpaperDeleteClicked(var url)
 
     onIsExpandChanged: {
         sortedModel.update()
@@ -91,6 +96,42 @@ ColumnLayout {
             move: Transition {
             }
 
+            Loader {
+                active: root.firstItemVisible
+                sourceComponent: Item {
+                    width: root.itemWidth
+                    height: root.itemHeight
+                    D.DciIcon {
+                        id: firstItemImage
+                        anchors.fill: parent
+                        visible: false
+                        sourceSize: Qt.size(width, height)
+                        name: root.firstItemImgSource
+                        asynchronous: true
+                    }
+
+                    OpacityMask {
+                        anchors.fill: parent
+                        anchors.margins: root.imageMargin
+                        source: firstItemImage
+                        maskSource: Rectangle {
+                            anchors.fill: parent
+                            implicitWidth: firstItemImage.width
+                            implicitHeight: firstItemImage.height
+                            radius: 6
+                        }
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: {
+                            console.warn("firstItemClicked")
+                            root.firstItemClicked()
+                        }
+                    }
+                }
+            }
+
             Repeater {
                 model: sortedModel
             }
@@ -99,7 +140,7 @@ ColumnLayout {
         D.SortFilterModel {
             id: sortedModel
             model: root.model
-            property int maxCount: layout.lineCount * 2
+            property int maxCount: layout.lineCount * 2 - (root.firstItemVisible ? 1 : 0)
             lessThan: function(left, right) {
                 return left.index < right.index
             }
@@ -147,9 +188,11 @@ ColumnLayout {
                         visible: false
                         fillMode: Image.PreserveAspectCrop
                         asynchronous: true
+                        retainWhileLoading: true
                     }
 
                     Rectangle {
+                        id: borderRect
                         anchors.fill: parent
                         visible: model.url === root.currentItem && model.url !== undefined
                         color: "transparent"
@@ -169,35 +212,6 @@ ColumnLayout {
                             radius: 6
                         }
                     }
-                    Control {
-                        implicitHeight: 24
-                        implicitWidth: 24
-                        anchors.right: parent.right
-                        anchors.top: parent.top
-                        anchors.topMargin: - height / 2 + root.imageMargin
-                        anchors.rightMargin: - width / 2 + root.imageMargin
-                        hoverEnabled: true
-                        contentItem: D.IconButton {
-                            icon.name: "close"
-                            // visible: control.hovered || parent.hovered
-                            // FIXME: force false
-                            visible: false
-                            background: P.ButtonPanel {
-                                implicitWidth: DS.Style.iconButton.backgroundSize
-                                implicitHeight: DS.Style.iconButton.backgroundSize
-                                radius: width / 2
-                                button: control
-                            }
-                            scale: visible ? 1 : 0
-                            Behavior on scale {
-                                NumberAnimation {
-                                    duration: 300
-                                    easing.type: Easing.OutExpo
-                                }
-                            }
-                        }
-                    }
-
 
                     MouseArea {
                         anchors.fill: parent
@@ -211,6 +225,37 @@ ColumnLayout {
                                 contextMenu.x = mouse.x
                                 contextMenu.y = mouse.y
                                 contextMenu.open()
+                            }
+                        }
+                    }
+
+                    Control {
+                        implicitHeight: 24
+                        implicitWidth: 24
+                        anchors.right: parent.right
+                        anchors.top: parent.top
+                        anchors.topMargin: - height / 2 + root.imageMargin
+                        anchors.rightMargin: - width / 2 + root.imageMargin
+                        hoverEnabled: true
+                        z: 999
+                        contentItem: D.IconButton {
+                            icon.name: "close"
+                            visible: (control.hovered || parent.hovered) && model.deleteAble && !borderRect.visible
+                            background: P.ButtonPanel {
+                                implicitWidth: DS.Style.iconButton.backgroundSize
+                                implicitHeight: DS.Style.iconButton.backgroundSize
+                                radius: width / 2
+                                button: control
+                            }
+                            onClicked: {
+                                root.wallpaperDeleteClicked(model.url)
+                            }
+                            scale: visible ? 1 : 0
+                            Behavior on scale {
+                                NumberAnimation {
+                                    duration: 300
+                                    easing.type: Easing.OutExpo
+                                }
                             }
                         }
                     }

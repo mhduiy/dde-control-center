@@ -21,6 +21,10 @@ const QString EffectsService = QStringLiteral("org.kde.KWin");
 const QString EffectsPath = QStringLiteral("/Effects");
 const QString EffectsInterface = QStringLiteral("org.kde.kwin.Effects");
 
+const QString DaemonService = QStringLiteral("org.deepin.dde.Daemon1");
+const QString DaemonPath = QStringLiteral("/org/deepin/dde/Daemon1");
+const QString DaemonInterface = QStringLiteral("org.deepin.dde.Daemon1");
+
 const QString PropertiesInterface = QStringLiteral("org.freedesktop.DBus.Properties");
 const QString PropertiesChanged = QStringLiteral("PropertiesChanged");
 
@@ -30,6 +34,7 @@ PersonalizationDBusProxy::PersonalizationDBusProxy(QObject *parent)
     : QObject(parent)
 {
     m_AppearanceInter = new QDBusInterface(AppearanceService, AppearancePath, AppearanceInterface, QDBusConnection::sessionBus(), this);
+    m_DaemonInter = new QDBusInterface(DaemonService, DaemonPath, DaemonInterface, QDBusConnection::systemBus(), this);
     if (!DGuiApplicationHelper::testAttribute(DGuiApplicationHelper::IsWaylandPlatform)) {
         m_WMInter = new QDBusInterface(WMService, WMPath, WMInterface, QDBusConnection::sessionBus(), this);
         m_EffectsInter = new QDBusInterface(EffectsService, EffectsPath, EffectsInterface, QDBusConnection::sessionBus(), this);
@@ -237,6 +242,22 @@ void PersonalizationDBusProxy::SetGreeterBackground(const QString &url)
 QString PersonalizationDBusProxy::getCurrentWorkSpaceBackgroundForMonitor(const QString &screenName)
 {
     return QDBusPendingReply<QString>(m_AppearanceInter->asyncCall(QStringLiteral("GetCurrentWorkspaceBackgroundForMonitor"), screenName));
+}
+
+// Daemon
+void PersonalizationDBusProxy::deleteCustomWallpaper(const QString &userName, const QString &url)
+{
+    m_DaemonInter->asyncCall(QStringLiteral("DeleteCustomWallPaper"), QVariant::fromValue(userName), QVariant::fromValue(url));
+}
+
+QString PersonalizationDBusProxy::saveCustomWallpaper(const QString &userName, const QString &url)
+{
+    return QDBusPendingReply<QString>(m_DaemonInter->asyncCall(QStringLiteral("SaveCustomWallPaper"), QVariant::fromValue(userName), QVariant::fromValue(url)));
+}
+
+QStringList PersonalizationDBusProxy::getCustomWallpaper(const QString &userName)
+{
+    return QDBusPendingReply<QStringList>(m_DaemonInter->asyncCall(QStringLiteral("GetCustomWallPapers"), QVariant::fromValue(userName)));
 }
 
 // WM

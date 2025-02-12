@@ -5,6 +5,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <qtenvironmentvariables.h>
 #include <QObject>
 #include <QUrl>
 
@@ -68,6 +69,12 @@ inline QString enCodeURI(QString content, QString scheme)
         path = content;
     }
     return scheme + path;
+}
+
+inline static QString currentUserName()
+{
+    static QString cutName = qgetenv("USER");
+    return cutName;
 }
 
 #endif // UTILS_H

@@ -116,7 +116,6 @@ DccObject {
                 width: 300
                 height: 300
                 onAccepted: {
-                    console.warn(colorDialog.color)
                     dccData.worker.setActiveColors(colorDialog.color + "," + colorDialog.color)
                     dccData.worker.setActiveColor(colorDialog.color)
                 }
