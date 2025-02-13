@@ -50,11 +50,20 @@ QVariant WallpaperModel::data(const QModelIndex &index, int role) const
     case Item_Url_Role:
         ret = node->url;
         break;
+    case Item_Thumbnail_Role:
+        ret = node->thumbnail;
+        if (ret.toString().isEmpty()) {
+            ret = node->url;
+        }
+        break;
     case Item_deleteAble_Role:
         ret = node->deleteAble;
         break;
     case Item_lastModifiedTime_Role:
         ret = node->lastModifiedTime;
+        break;
+    case Item_configurable_Role:
+        ret = node->url;
         break;
     default:
         break;
@@ -121,11 +130,24 @@ void WallpaperModel::resetData(const QList<WallpaperItemPtr> &list)
     endResetModel();
 }
 
+QString WallpaperSortModel::getThumbnailByUrl(const QString &url) const
+{
+    for(int i = 0; i < sourceModel()->rowCount(); i++) {
+        auto cutIndex = sourceModel()->index(i, 0);
+        if (url == sourceModel()->data(cutIndex, Item_Url_Role).toString()) {
+            return sourceModel()->data(cutIndex, Item_Thumbnail_Role).toString();
+        }
+    }
+    return {};
+}
+
 QHash<int, QByteArray> WallpaperModel::roleNames() const
 {
     QHash<int, QByteArray> roles = QAbstractItemModel::roleNames();;
     roles[Item_Url_Role] = "url";
+    roles[Item_Thumbnail_Role] = "thumbnail";
     roles[Item_deleteAble_Role] = "deleteAble";
     roles[Item_lastModifiedTime_Role] = "lastModifiedTime";
+    roles[Item_configurable_Role] = "configurable";
     return roles;
 }

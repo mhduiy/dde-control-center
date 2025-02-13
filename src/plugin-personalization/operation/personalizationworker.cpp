@@ -2,6 +2,7 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "personalizationworker.h"
+#include "operation/screensaverprovider.h"
 #include "operation/wallpaperworker.h"
 #include "personalizationdbusproxy.h"
 #include "model/thememodel.h"
@@ -52,6 +53,7 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
     , m_model(model)
     , m_personalizationDBusProxy(new PersonalizationDBusProxy(this))
     , m_wallpaperWorker(new WallpaperWorker(m_personalizationDBusProxy, m_model, this))
+    , m_screenSaverProvider(new ScreensaverProvider(m_personalizationDBusProxy, m_model, this))
     , m_personalizationConfig(DConfig::create(ORG_DEEPIN_CONTROL_CENTER, CONTROL_CENTER_PERSONALIZATION, "", this))
     , m_dtkConfig(DConfig::createGeneric(DTK_PREFERENCE_NAME, "", this))
 {
@@ -75,6 +77,7 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::QtActiveColorChanged, this, &PersonalizationWorker::refreshActiveColor);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::WindowRadiusChanged, this, &PersonalizationWorker::onWindowRadiusChanged);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::WallpaperURlsChanged, this, &PersonalizationWorker::onWallpaperUrlsChanged);
+    connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::currentScreenSaverChanged, this, &PersonalizationWorker::onCurrentScreenSaverChanged);
     connect(qApp, &QGuiApplication::screenAdded, this, &PersonalizationWorker::onScreensChanged);
     connect(qApp, &QGuiApplication::screenRemoved, this, &PersonalizationWorker::onScreensChanged);
     connect(m_personalizationDBusProxy, &PersonalizationDBusProxy::Changed, this, [this](const QString &propertyName, const QString &value) {
@@ -95,6 +98,7 @@ PersonalizationWorker::PersonalizationWorker(PersonalizationModel *model, QObjec
     m_fontModels["monospacefont"] = fontMono;
 
     m_wallpaperWorker->fetchData();
+    m_screenSaverProvider->fecthData();
 }
 
 void PersonalizationWorker::active()
@@ -119,6 +123,8 @@ void PersonalizationWorker::active()
 
     m_model->setScrollBarPolicy(m_dtkConfig->value(SCROLLBAR_POLICY_KEY).toInt());
     m_model->setCompactDisplay(m_dtkConfig->value(SIZE_MODE_KEY).toInt());
+
+    m_model->setCurrentScreenSaver(m_personalizationDBusProxy->getCurrentScreenSaver());
 
     QString scrollbarConfig = m_personalizationConfig->value(SCROLLBAR_POLICY_CONFIG_KEY).toString();
     m_model->setScrollBarPolicyConfig(scrollbarConfig);
@@ -233,6 +239,11 @@ void PersonalizationWorker::onScreensChanged()
         screenNameList << screen->name();
     } 
     m_model->setScreens(screenNameList);
+}
+
+void PersonalizationWorker::onCurrentScreenSaverChanged(const QString &value)
+{
+    m_model->setCurrentScreenSaver(value);
 }
 
 void PersonalizationWorker::onWallpaperUrlsChanged()
@@ -416,6 +427,12 @@ void PersonalizationWorker::deleteWallpaper(const QString &str)
         m_personalizationDBusProxy->deleteCustomWallpaper(currentUserName(), str);
     }
     m_wallpaperWorker->fetchData();
+}
+
+void PersonalizationWorker::setScreenSaver(const QString &value)
+{
+    m_personalizationDBusProxy->setCurrentScreenSaver(value);
+    onCurrentScreenSaverChanged(value);
 }
 
 void PersonalizationWorker::setWindowRadius(int radius)

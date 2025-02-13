@@ -89,6 +89,18 @@ public:
     void deleteCustomWallpaper(const QString &userName, const QString &url);
     QStringList getCustomWallpaper(const QString &userName);
 
+    // screenSaver
+    Q_PROPERTY(QStringList allscreensaver READ getAllscreensaver NOTIFY allscreensaverChanged)
+    QStringList getAllscreensaver();
+
+    Q_PROPERTY(QString currentScreenSaver WRITE setCurrentScreenSaver READ getCurrentScreenSaver NOTIFY currentScreenSaverChanged)
+    void setCurrentScreenSaver(const QString &value);
+    QString getCurrentScreenSaver();
+
+    QStringList ConfigurableItems();
+
+    QString GetScreenSaverCover(const QString &name);
+
 signals:
     // Appearance
     void Changed(const QString &in0, const QString &in1);
@@ -114,11 +126,14 @@ signals:
     void compositingEnabledChanged(bool value) const;
     void compositingPossibleChanged(bool value) const;
     void cursorSizeChanged(int value) const;
-    //    void CursorThemeChanged(const QString & value) const;
+    // void CursorThemeChanged(const QString & value) const;
     void ZoneEnabledChanged(bool value) const;
     void DTKSizeModeChanged(int value) const;
     void scrollBarPolicyChanged(int value) const;
     void WallpaperURlsChanged(QString) const;
+    // screenSaver
+    void allscreensaverChanged(const QStringList &value);
+    void currentScreenSaverChanged(const QString &value);
 
 public slots:
     // Appearance
@@ -129,13 +144,13 @@ public slots:
     bool Show(const QString &ty, const QStringList &names, QObject *receiver, const char *member);
     QString Thumbnail(const QString &ty, const QString &name);
     bool Thumbnail(const QString &ty, const QString &name, QObject *receiver, const char *member, const char *errorSlot);
+    QString activeColors();
+    void setActiveColors(const QString &activeColors);
     // Effects
     bool loadEffect(const QString &name);
     void unloadEffect(const QString &name);
     bool isEffectLoaded(const QString &name);
     bool isEffectLoaded(const QString &name, QObject *receiver, const char *member);
-    QString activeColors();
-    void setActiveColors(const QString &activeColors);
 
 private slots:
     void onPropertiesChanged(const QDBusMessage &message);
@@ -145,6 +160,7 @@ private:
     QDBusInterface *m_WMInter = nullptr;
     QDBusInterface *m_EffectsInter = nullptr;
     QDBusInterface *m_DaemonInter = nullptr;
+    QDBusInterface *m_screenSaverInter = nullptr;
 };
 
 #endif // PERSONALIZATIONDBUSPROXY_H

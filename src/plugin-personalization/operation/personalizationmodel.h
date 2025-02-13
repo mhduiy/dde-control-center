@@ -29,17 +29,22 @@ class PersonalizationModel : public QObject
     Q_PROPERTY(QString scrollBarPolicyConfig READ getScrollBarPolicyConfig WRITE setScrollBarPolicyConfig NOTIFY scrollBarPolicyConfigChanged)
     Q_PROPERTY(QString compactDisplayConfig READ getCompactDisplayConfig WRITE setCompactDisplayConfig NOTIFY compactDisplayConfigChanged)
     Q_PROPERTY(QVariantMap wallpaperMap READ getWallpaperMap WRITE setWallpaperMap NOTIFY wallpaperMapChanged)
+    Q_PROPERTY(QString currentScreenSaver READ getCurrentScreenSaver WRITE setCurrentScreenSaver NOTIFY currentScreenSaverChanged)
     Q_PROPERTY(QString currentSelectScreen READ getCurrentSelectScreen WRITE setCurrentSelectScreen NOTIFY currentSelectScreenChanged)
     Q_PROPERTY(QStringList screens READ getScreens WRITE setScreens NOTIFY screensChanged)
 
     Q_PROPERTY(FontSizeModel *fontSizeModel MEMBER m_fontSizeModel CONSTANT)
     Q_PROPERTY(FontModel *standardFontModel MEMBER m_standFontModel CONSTANT)
     Q_PROPERTY(FontModel *monoFontModel MEMBER m_monoFontModel CONSTANT)
+
     Q_PROPERTY(ThemeModel *iconModel MEMBER m_iconModel CONSTANT)
     Q_PROPERTY(ThemeModel *cursorModel MEMBER m_mouseModel CONSTANT)
+
     Q_PROPERTY(WallpaperSortModel *customWallpaperModel MEMBER m_customWallpaperSortModel CONSTANT)
     Q_PROPERTY(WallpaperSortModel *sysWallpaperModel MEMBER m_sysWallpaperSortModel CONSTANT)
     Q_PROPERTY(WallpaperSortModel *solidWallpaperModel MEMBER m_solidWallpaperSortModel CONSTANT)
+
+    Q_PROPERTY(WallpaperSortModel *screenSaverModel MEMBER m_screenSaverSortModel CONSTANT)
 
 public:
     explicit PersonalizationModel(QObject *parent = nullptr);
@@ -55,6 +60,7 @@ public:
     inline WallpaperModel *getCustomWallpaperModel() const { return m_customWallpaperModel; }
     inline WallpaperModel *getSysWallpaperModel() const { return m_sysWallpaperModel; }
     inline WallpaperModel *getSolidWallpaperModel() const { return m_solidWallpaperModel; }
+    inline WallpaperModel *getScreenSaverModel() const { return m_screenSaverModel; }
 
     void setWindowRadius(int radius);
     int windowRadius();
@@ -95,6 +101,9 @@ public:
     inline QString getCurrentSelectScreen() const { return m_currentSelectScreen; }
     void setCurrentSelectScreen(const QString &screen);
 
+    inline QString getCurrentScreenSaver() const { return m_currentScreenSaver; }
+    void setCurrentScreenSaver(const QString &currentScreenSaver);
+
     inline QStringList getScreens() const { return m_screens; }
     void setScreens(const QStringList &screens);
 
@@ -115,6 +124,7 @@ Q_SIGNALS:
     void compactDisplayConfigChanged(const QString &config);
     void wallpaperMapChanged(const QVariantMap &map);
     void currentSelectScreenChanged(const QString &screen);
+    void currentScreenSaverChanged(const QString &current);
     void screensChanged(const QStringList &screens);
 
 private:
@@ -129,10 +139,12 @@ private:
     WallpaperSortModel *m_customWallpaperSortModel;
     WallpaperSortModel *m_sysWallpaperSortModel;
     WallpaperSortModel *m_solidWallpaperSortModel;
+    WallpaperSortModel *m_screenSaverSortModel;
 
     WallpaperModel *m_customWallpaperModel;
     WallpaperModel *m_sysWallpaperModel;
     WallpaperModel *m_solidWallpaperModel;
+    WallpaperModel *m_screenSaverModel;
 
     bool m_isMoveWindow;
     double m_opacity;
@@ -149,6 +161,7 @@ private:
 
     QVariantMap m_wallpaperMap;
     QString m_currentSelectScreen;
+    QString m_currentScreenSaver;
     QStringList m_screens;
 };
 #endif // PERSONALIZATIONMODEL_H

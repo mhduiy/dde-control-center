@@ -17,12 +17,15 @@ struct WallpaperItem {
     QString thumbnail;
     bool deleteAble;
     qint64 lastModifiedTime;
+    bool configurable;
 };
 
 enum ItemTypeRole {
     Item_Url_Role = Qt::UserRole + 1,
+    Item_Thumbnail_Role,
     Item_deleteAble_Role,
     Item_lastModifiedTime_Role,
+    Item_configurable_Role,
 };
 
 typedef QSharedPointer<WallpaperItem> WallpaperItemPtr;
@@ -45,6 +48,8 @@ public:
         }
         return false;
     }
+
+    Q_INVOKABLE QString getThumbnailByUrl(const QString &url) const;
 
 protected:
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override
@@ -71,8 +76,7 @@ public:
     void removeItem(const QString &item);
     WallpaperItemPtr itemNode(const QModelIndex &idx) const;
     QModelIndex itemIndex(const QString &item) const;
-    void resetData(const QList<WallpaperItemPtr> &list);
-    
+    void resetData(const QList<WallpaperItemPtr> &list);    
 protected:
     QHash<int, QByteArray> roleNames() const override;
 private:

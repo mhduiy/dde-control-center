@@ -24,12 +24,32 @@ DccObject {
         weight: 50
         pageType: DccObject.Item
         page: ScreenTab {
+            id: screemTab
             model: dccData.model.screens
             screen: dccData.model.currentSelectScreen
             onScreenChanged: {
                 if (screen !== dccData.model.currentSelectScreen) {
                     dccData.model.currentSelectScreen = screen
+                    if (true) {
+                        indicator.createObject(this, {
+                                                "screen": getQtScreen(screemTab.screen)
+                                            }).show()
+                    }
                 }
+            }
+
+            Component {
+                id: indicator
+                ScreenIndicator {}
+            }
+
+            function getQtScreen(screen) {
+                for (var s of Qt.application.screens) {
+                    if (s.virtualX === screen.x && s.virtualY === screen.y && s.width === screen.currentResolution.width && s.height === screen.currentResolution.height) {
+                        return s
+                    }
+                }
+                return null
             }
         }
     }
@@ -127,10 +147,22 @@ DccObject {
                 displayName: qsTr("自动更换壁纸")
                 weight: 200
                 pageType: DccObject.Editor
-                page: D.ComboBox {
+                page: CustomComboBox {
                     width: 100
                     flat: true
-                    model: ["1分钟"]
+                    textRole: "text"
+                    model: ListModel {
+                        ListElement { text: "从不"; value: "" }
+                        ListElement { text: "30秒"; value: "30" }
+                        ListElement { text: "1分钟"; value: "60" }
+                        ListElement { text: "5分钟"; value: "300" }
+                        ListElement { text: "10分钟"; value: "600" }
+                        ListElement { text: "15分钟"; value: "900" }
+                        ListElement { text: "30分钟"; value: "1800" }
+                        ListElement { text: "1小时"; value: "3600" }
+                        ListElement { text: "登录时"; value: "login" }
+                        ListElement { text: "唤醒时"; value: "wakeup" }
+                    }
                 }
             }
         }

@@ -4,6 +4,7 @@
 #ifndef PERSONALIZATIONWORKER_H
 #define PERSONALIZATIONWORKER_H
 
+#include "operation/screensaverprovider.h"
 #include "operation/wallpaperworker.h"
 #include "personalizationmodel.h"
 #include <qcontainerfwd.h>
@@ -41,6 +42,7 @@ public Q_SLOTS:
     void addCutomWallpaper(const QStringList &url);
     void addSolidWallpaper(const QColor &color);
     void deleteWallpaper(const QString &str);
+    void setScreenSaver(const QString &value);
 
     virtual void setDefaultByType(const QString &type, const QString &value);
     virtual void setDefault(const QJsonObject &value);
@@ -73,6 +75,7 @@ private Q_SLOTS:
     void onCompactDisplayChanged(int value);
     void onWindowEffectChanged(int value);
     void onScreensChanged();
+    void onCurrentScreenSaverChanged(const QString &value);
 
 protected:
     virtual void onWallpaperUrlsChanged();
@@ -97,6 +100,7 @@ protected:
 
 private:
     WallpaperWorker *m_wallpaperWorker;
+    ScreensaverProvider *m_screenSaverProvider;
     Dtk::Core::DConfig *m_personalizationConfig;
     Dtk::Core::DConfig *m_dtkConfig;
 

@@ -39,9 +39,10 @@ Item {
                     anchors.fill: parent
                     hoverEnabled: true
                     onClicked: {
-                        if (!isSelect) {
+                            screen = ""
+                        // if (!isSelect) {
                             screen = modelData
-                        }
+                        // }
                     }
                 }
             }

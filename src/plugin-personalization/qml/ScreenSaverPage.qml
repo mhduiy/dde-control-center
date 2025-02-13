@@ -39,7 +39,7 @@ DccObject {
                 Image {
                     id: image
                     anchors.fill: parent
-                    source: dccData.model.wallpaperMap[dccData.model.currentSelectScreen]
+                    source: dccData.model.screenSaverModel.getThumbnailByUrl(dccData.model.currentScreenSaver)
                     mipmap: true
                     visible: false
                     fillMode: Image.PreserveAspectCrop
@@ -97,7 +97,16 @@ DccObject {
                 page: D.ComboBox {
                     width: 100
                     flat: true
-                    model: ["full screen"]
+                    textRole: "text"
+                    model: ListModel {
+                        ListElement { text: "1分钟"; value: "" }
+                        ListElement { text: "5分钟"; value: "30" }
+                        ListElement { text: "10分钟"; value: "60" }
+                        ListElement { text: "15分钟"; value: "300" }
+                        ListElement { text: "30分钟"; value: "600" }
+                        ListElement { text: "1小时"; value: "900" }
+                        ListElement { text: "从不"; value: "1800" }
+                    }
                 }
             }
             DccObject {
@@ -106,12 +115,27 @@ DccObject {
                 displayName: qsTr("恢复时需要密码")
                 weight: 200
                 pageType: DccObject.Editor
-                page: D.ComboBox {
-                    width: 100
-                    flat: true
-                    model: ["none"]
+                page: D.Switch {
                 }
             }
+        }
+    }
+
+    DccObject {
+        parentName: "personalization/screenSaver"
+        displayName: qsTr("系统屏保")
+        weight: 400
+        backgroundType: DccObject.Normal
+        pageType: DccObject.Item
+        page: WallpaperSelectView {
+            model: dccData.model.screenSaverModel
+            currentItem: dccData.model.currentScreenSaver
+            onWallpaperSelected: (url, isDark, isLock) => {
+                                    // 防止调用两次
+                                    if (isLock) {
+                                        dccData.worker.setScreenSaver(url)
+                                    }
+                                 }
         }
     }
 }

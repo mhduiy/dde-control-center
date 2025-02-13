@@ -21,14 +21,17 @@ PersonalizationModel::PersonalizationModel(QObject *parent)
     m_customWallpaperSortModel = new WallpaperSortModel(this);
     m_sysWallpaperSortModel = new WallpaperSortModel(this);
     m_solidWallpaperSortModel = new WallpaperSortModel(this);
+    m_screenSaverSortModel = new WallpaperSortModel(this);
 
     m_customWallpaperModel = new WallpaperModel(this);
     m_sysWallpaperModel = new WallpaperModel(this);
     m_solidWallpaperModel = new WallpaperModel(this);
+    m_screenSaverModel = new WallpaperModel(this);
 
     m_customWallpaperSortModel->setSourceModel(m_customWallpaperModel);
     m_sysWallpaperSortModel->setSourceModel(m_sysWallpaperModel);
     m_solidWallpaperSortModel->setSourceModel(m_solidWallpaperModel);
+    m_screenSaverSortModel->setSourceModel(m_screenSaverModel);
     m_miniEffect = 0;
 }
 
@@ -150,6 +153,14 @@ void PersonalizationModel::setCurrentSelectScreen(const QString &screenName)
         return;
     m_currentSelectScreen = screenName;
     Q_EMIT currentSelectScreenChanged(screenName);
+}
+
+void PersonalizationModel::setCurrentScreenSaver(const QString &currentScreenSaver)
+{
+    if (m_currentScreenSaver == currentScreenSaver)
+        return;
+    m_currentScreenSaver = currentScreenSaver;
+    Q_EMIT currentScreenSaverChanged(currentScreenSaver);
 }
 
 void PersonalizationModel::setScreens(const QStringList &screens)
