@@ -10,6 +10,8 @@ import Qt5Compat.GraphicalEffects
 
 import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
+import org.deepin.dtk.style 1.0 as DS
+import org.deepin.dtk.private 1.0 as P
 
 DccObject {
     DccTitleObject {
@@ -39,7 +41,8 @@ DccObject {
                 Image {
                     id: image
                     anchors.fill: parent
-                    source: dccData.model.screenSaverModel.getThumbnailByUrl(dccData.model.currentScreenSaver)
+                    source: dccData.model.screenSaverModel.getPicPathByUrl(dccData.model.currentScreenSaver)
+                    sourceSize: Qt.size(width, height)
                     mipmap: true
                     visible: false
                     fillMode: Image.PreserveAspectCrop
@@ -54,6 +57,30 @@ DccObject {
                         implicitHeight: image.height
                         radius: 6
                     }
+                }
+
+                D.Button {
+                    id: previewBtn
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 15
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 68
+                    height: 24
+                    visible: hoverHandler.hovered
+                    text: "全屏预览"
+                    background: P.ButtonPanel {
+                        implicitWidth: DS.Style.button.width
+                        implicitHeight: DS.Style.button.height
+                        button: previewBtn
+                        opacity: 0.6
+                    }
+                    onClicked: {
+                        dccData.worker.startScreenSaverPreview()
+                    }
+                }
+
+                HoverHandler {
+                    id: hoverHandler
                 }
             }
         }
@@ -75,16 +102,14 @@ DccObject {
             DccObject {
                 name: "whenTheLidIsClosed"
                 parentName: "personalization/screenSaver/screenSaverStatusGroup/screenSaverSetGroup/screenSaverSetItemGroup"
-                displayName: qsTr("图片轮播屏保")
+                displayName: qsTr("个性化屏保")
                 weight: 10
                 pageType: DccObject.Editor
-                page: D.ComboBox {
-                    flat: true
-                    implicitWidth: 150
-                    implicitHeight: 30
-                    model: dccData.model.screens
-                    onCurrentTextChanged: {
-                        dccData.model.currentSelectScreen = currentText
+                enabled: dccData.model.screenSaverModel.getConfigAbleByUrl(dccData.model.currentScreenSaver)
+                page: D.Button {
+                    text: "设置"
+                    onClicked: {
+                        dccData.worker.requestScreenSaverConfig(dccData.model.currentScreenSaver)
                     }
                 }
             }
@@ -94,18 +119,25 @@ DccObject {
                 displayName: qsTr("闲置时间")
                 weight: 100
                 pageType: DccObject.Editor
-                page: D.ComboBox {
+                page: CustomComboBox {
                     width: 100
                     flat: true
                     textRole: "text"
+                    currentIndex: {
+                        let value = dccData.model.screenSaverIdleTime
+                        return indexByValue(value)
+                    }
                     model: ListModel {
-                        ListElement { text: "1分钟"; value: "" }
-                        ListElement { text: "5分钟"; value: "30" }
-                        ListElement { text: "10分钟"; value: "60" }
-                        ListElement { text: "15分钟"; value: "300" }
-                        ListElement { text: "30分钟"; value: "600" }
-                        ListElement { text: "1小时"; value: "900" }
-                        ListElement { text: "从不"; value: "1800" }
+                        ListElement { text: "1分钟"; value: 60 }
+                        ListElement { text: "5分钟"; value: 300 }
+                        ListElement { text: "10分钟"; value: 600 }
+                        ListElement { text: "15分钟"; value: 900 }
+                        ListElement { text: "30分钟"; value: 1800 }
+                        ListElement { text: "1小时"; value: 3600 }
+                        ListElement { text: "从不"; value: 0 }
+                    }
+                    onCurrentIndexChanged: {
+                        dccData.worker.setScreenSaverIdleTime(model.get(currentIndex).value)
                     }
                 }
             }
@@ -116,15 +148,42 @@ DccObject {
                 weight: 200
                 pageType: DccObject.Editor
                 page: D.Switch {
+                    checked: dccData.model.lockScreenAtAwake
+                    onCheckedChanged: {
+                        if (checked != dccData.model.lockScreenAtAwake) {
+                            dccData.worker.setLockScreenAtAwake(checked)
+                        }
+                    }
                 }
             }
         }
     }
 
     DccObject {
+        name: "screenSaverPicobj"
+        parentName: "personalization/screenSaver"
+        displayName: qsTr("图片轮播屏保")
+        weight: 400
+        backgroundType: DccObject.Normal
+        pageType: DccObject.Item
+        page: WallpaperSelectView {
+            model: dccData.model.picScreenSaverModel
+            currentItem: dccData.model.currentScreenSaverPicMode
+            onWallpaperSelected: (url, isDark, isLock) => {
+                                    // 防止调用两次
+                                    if (isLock) {
+                                        dccData.worker.setCurrentScreenSaverPicMode(url)
+                                        dccData.worker.setScreenSaver("deepin-custom-screensaver")
+                                    }
+                                 }
+        }
+    }
+
+    DccObject {
+        name: "screenSaverListObj"
         parentName: "personalization/screenSaver"
         displayName: qsTr("系统屏保")
-        weight: 400
+        weight: 500
         backgroundType: DccObject.Normal
         pageType: DccObject.Item
         page: WallpaperSelectView {
@@ -134,6 +193,11 @@ DccObject {
                                     // 防止调用两次
                                     if (isLock) {
                                         dccData.worker.setScreenSaver(url)
+                                        if (url === "deepin-custom-screensaver") {
+                                            dccData.worker.setCurrentScreenSaverPicMode("default")
+                                        } else {
+                                            dccData.worker.setCurrentScreenSaverPicMode("")
+                                        }
                                     }
                                  }
         }

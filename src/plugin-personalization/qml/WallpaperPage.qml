@@ -9,6 +9,7 @@ import Qt5Compat.GraphicalEffects
 
 import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
+// import org.deepin.dcc.personalization 1.0
 
 DccObject {
     DccTitleObject {
@@ -182,12 +183,8 @@ DccObject {
             onFirstItemClicked: {
                 customWallpaperFileDialog.open()
             }
-            onWallpaperSelected: (url, isDark, isLock) => {
-                                     if (isLock) {
-                                         dccData.worker.setLockBackForMonitor(dccData.model.currentSelectScreen, url, isDark)
-                                     } else {
-                                         dccData.worker.setBackgroundForMonitor(dccData.model.currentSelectScreen, url, isDark)
-                                     }
+            onWallpaperSelected: (url, isDark, option) => {
+                                    dccData.worker.setWallpaperForMonitor(dccData.model.currentSelectScreen, url, isDark, option)
                                  }
             
             onWallpaperDeleteClicked: (url) => {
@@ -216,12 +213,8 @@ DccObject {
         page: WallpaperSelectView {
             model: dccData.model.sysWallpaperModel
             currentItem: dccData.model.wallpaperMap[dccData.model.currentSelectScreen]
-            onWallpaperSelected: (url, isDark, isLock) => {
-                                     if (isLock) {
-                                         dccData.worker.setLockBackForMonitor(dccData.model.currentSelectScreen, url, isDark)
-                                     } else {
-                                         dccData.worker.setBackgroundForMonitor(dccData.model.currentSelectScreen, url, isDark)
-                                     }
+            onWallpaperSelected: (url, isDark, option) => {
+                                    dccData.worker.setWallpaperForMonitor(dccData.model.currentSelectScreen, url, isDark, option)
                                  }
         }
     }
@@ -250,12 +243,8 @@ DccObject {
             firstItemImgSource: "wallpaper_addcolor"
             model: dccData.model.solidWallpaperModel
             currentItem: dccData.model.wallpaperMap[dccData.model.currentSelectScreen]
-            onWallpaperSelected: (url, isDark, isLock) => {
-                                     if (isLock) {
-                                         dccData.worker.setLockBackForMonitor(dccData.model.currentSelectScreen, url, isDark)
-                                     } else {
-                                         dccData.worker.setBackgroundForMonitor(dccData.model.currentSelectScreen, url, isDark)
-                                     }
+            onWallpaperSelected: (url, isDark, option) => {
+                                    dccData.worker.setWallpaperForMonitor(dccData.model.currentSelectScreen, url, isDark, option)
                                  }
             onFirstItemClicked: {
                 colorDialog.open()

@@ -2,6 +2,7 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "personalizationdbusproxy.h"
+#include <qlogging.h>
 
 #include <DGuiApplicationHelper>
 #include <QMetaObject>
@@ -292,6 +293,51 @@ QString PersonalizationDBusProxy::getCurrentScreenSaver()
     return qvariant_cast<QString>(m_screenSaverInter->property("currentScreenSaver"));
 }
 
+void PersonalizationDBusProxy::startScreenSaver()
+{
+    m_screenSaverInter->asyncCall(QStringLiteral("Start"));
+}
+
+void PersonalizationDBusProxy::stopScreenSaver()
+{
+    m_screenSaverInter->asyncCall(QStringLiteral("Stop"));
+}
+
+void PersonalizationDBusProxy::setLinePowerScreenSaverTimeout(int value)
+{
+    m_screenSaverInter->setProperty("linePowerScreenSaverTimeout", QVariant::fromValue(value));
+}
+
+void PersonalizationDBusProxy::setBatteryScreenSaverTimeout(int value)
+{
+    m_screenSaverInter->setProperty("batteryScreenSaverTimeout", QVariant::fromValue(value));
+}
+
+int PersonalizationDBusProxy::getLinePowerScreenSaverTimeout()
+{
+    return qvariant_cast<int>(m_screenSaverInter->property("linePowerScreenSaverTimeout"));
+}
+
+int PersonalizationDBusProxy::getBatteryScreenSaverTimeout()
+{
+    return qvariant_cast<int>(m_screenSaverInter->property("batteryScreenSaverTimeout"));
+}
+
+void PersonalizationDBusProxy::requestScreenSaverConfig(const QString& name)
+{
+    m_screenSaverInter->asyncCall(QStringLiteral("StartCustomConfig"), QVariant::fromValue(name));
+}
+
+bool PersonalizationDBusProxy::getLockScreenAtAwake()
+{
+    return qvariant_cast<bool>(m_screenSaverInter->property("lockScreenAtAwake"));
+}
+
+void PersonalizationDBusProxy::setLockScreenAtAwake(bool value)
+{
+    m_screenSaverInter->setProperty("lockScreenAtAwake", QVariant::fromValue(value));
+}
+
 // WM
 bool PersonalizationDBusProxy::compositingAllowSwitch()
 {
@@ -404,6 +450,7 @@ void PersonalizationDBusProxy::setActiveColors(const QString &activeColors)
 
 void PersonalizationDBusProxy::onPropertiesChanged(const QDBusMessage &message)
 {
+    qWarning() << "========" << message;
     QVariantMap changedProps = qdbus_cast<QVariantMap>(message.arguments().at(1).value<QDBusArgument>());
     for (QVariantMap::const_iterator it = changedProps.cbegin(); it != changedProps.cend(); ++it) {
         QMetaObject::invokeMethod(this, it.key().toLatin1() + "Changed", Qt::DirectConnection, QGenericArgument(it.value().typeName(), it.value().data()));

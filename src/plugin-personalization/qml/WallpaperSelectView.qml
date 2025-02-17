@@ -10,6 +10,7 @@ import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
 import org.deepin.dtk.style 1.0 as DS
 import org.deepin.dtk.private as P
+import org.deepin.dcc.personalization 1.0
 
 ColumnLayout {
     id: root
@@ -28,7 +29,7 @@ ColumnLayout {
     property string firstItemImgSource: ""
     property bool firstItemVisible: firstItemImgSource !== ""
 
-    signal wallpaperSelected(var url, bool isDark, bool isLock)
+    signal wallpaperSelected(var url, bool isDark, var option)
     signal firstItemClicked()
     signal wallpaperDeleteClicked(var url)
 
@@ -49,6 +50,7 @@ ColumnLayout {
             Layout.fillWidth: true
         }
         D.ToolButton {
+            visible: layout.lineCount * 2 < root.model.rowCount() + root.firstItemVisible ? 1 : 0
             textColor: D.Palette {
                 normal {
                     common: D.DTK.makeColor(D.Color.Highlight)
@@ -159,10 +161,10 @@ ColumnLayout {
 
                 contentItem: Item {
                     id: wallpaperItem
-                    function requestSetWallpaper(isLock) {
+                    function requestSetWallpaper(option) {
                         img2x2.grabToImage(function(result) {
                             const isDarkType = dccData.imageHelper.isDarkType(result.image)
-                            root.wallpaperSelected(model.url, isDarkType, isLock)
+                            root.wallpaperSelected(model.url, isDarkType, option)
                         }, Qt.size(2, 2))
                     }
 
@@ -219,8 +221,7 @@ ColumnLayout {
                         acceptedButtons: Qt.LeftButton | Qt.RightButton
                         onClicked: {
                             if (mouse.button === Qt.LeftButton) {
-                                wallpaperItem.requestSetWallpaper(false)
-                                wallpaperItem.requestSetWallpaper(true)
+                                wallpaperItem.requestSetWallpaper(PersonalizationExport.Option_All)
                             } else if (mouse.button === Qt.RightButton) {
                                 contextMenu.x = mouse.x
                                 contextMenu.y = mouse.y
@@ -265,13 +266,13 @@ ColumnLayout {
                         MenuItem {
                             text: qsTr("Set lock screen")
                             onTriggered: {
-                                wallpaperItem.requestSetWallpaper(true)
+                                wallpaperItem.requestSetWallpaper(PersonalizationExport.Option_Lock)
                             }
                         }
                         MenuItem {
                             text: qsTr("Set desktop")
                             onTriggered: {
-                                wallpaperItem.requestSetWallpaper(false)
+                                wallpaperItem.requestSetWallpaper(PersonalizationExport.Option_Desktop)
                             }
                         }
                     }

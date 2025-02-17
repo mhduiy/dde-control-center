@@ -90,12 +90,24 @@ public:
     QStringList getCustomWallpaper(const QString &userName);
 
     // screenSaver
-    Q_PROPERTY(QStringList allscreensaver READ getAllscreensaver NOTIFY allscreensaverChanged)
     QStringList getAllscreensaver();
 
-    Q_PROPERTY(QString currentScreenSaver WRITE setCurrentScreenSaver READ getCurrentScreenSaver NOTIFY currentScreenSaverChanged)
     void setCurrentScreenSaver(const QString &value);
     QString getCurrentScreenSaver();
+
+    void setLockScreenAtAwake(bool value);
+    bool getLockScreenAtAwake();
+
+    void startScreenSaver();
+    void stopScreenSaver();
+
+    void setLinePowerScreenSaverTimeout(int value);
+    void setBatteryScreenSaverTimeout(int value);
+
+    int getLinePowerScreenSaverTimeout();
+    int getBatteryScreenSaverTimeout();
+
+    void requestScreenSaverConfig(const QString& name);
 
     QStringList ConfigurableItems();
 
@@ -134,6 +146,9 @@ signals:
     // screenSaver
     void allscreensaverChanged(const QStringList &value);
     void currentScreenSaverChanged(const QString &value);
+    void lockScreenAtAwakeChanged(bool value);
+    void linePowerScreenSaverTimeoutChanged(int value);
+    void batteryScreenSaverTimeoutChanged(int value);
 
 public slots:
     // Appearance

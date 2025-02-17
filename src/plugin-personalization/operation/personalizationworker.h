@@ -4,6 +4,7 @@
 #ifndef PERSONALIZATIONWORKER_H
 #define PERSONALIZATIONWORKER_H
 
+#include "operation/personalizationexport.hpp"
 #include "operation/screensaverprovider.h"
 #include "operation/wallpaperworker.h"
 #include "personalizationmodel.h"
@@ -30,6 +31,7 @@ public:
     void onGetList();
     void refreshTheme();
     void refreshFont();
+    bool checkWallpaperLockStatus();
 
 public Q_SLOTS:
     void setDiabledCompactToTitleHeight();
@@ -43,6 +45,13 @@ public Q_SLOTS:
     void addSolidWallpaper(const QColor &color);
     void deleteWallpaper(const QString &str);
     void setScreenSaver(const QString &value);
+
+    void startScreenSaverPreview();
+    void stopScreenSaverPreview();
+    void setLockScreenAtAwake(bool value);
+    void setScreenSaverIdleTime(int value);
+    void setCurrentScreenSaverPicMode(const QString &mode);
+    void requestScreenSaverConfig(const QString &name);
 
     virtual void setDefaultByType(const QString &type, const QString &value);
     virtual void setDefault(const QJsonObject &value);
@@ -58,6 +67,7 @@ public Q_SLOTS:
     virtual void setAppearanceTheme(const QString &id);
     virtual void setIconTheme(const QString &id);
     virtual void setCursorTheme(const QString &id);
+    virtual void setWallpaperForMonitor(const QString &screen, const QString &url, bool isDark, PersonalizationExport::WallpaperSetOption option);
     virtual void setBackgroundForMonitor(const QString &screenName, const QString &url, bool isDark);
     virtual void setLockBackForMonitor(const QString &screenName, const QString &url, bool isDark);
 
@@ -76,6 +86,8 @@ private Q_SLOTS:
     void onWindowEffectChanged(int value);
     void onScreensChanged();
     void onCurrentScreenSaverChanged(const QString &value);
+    void onLockScreenAtAwakeChanged(bool value);
+    void onLinePowerScreenSaverTimeoutChanged(int value);
 
 protected:
     virtual void onWallpaperUrlsChanged();

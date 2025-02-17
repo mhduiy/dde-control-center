@@ -4,6 +4,7 @@
 
 #include "x11worker.h"
 #include "operation/personalizationworker.h"
+#include <qlogging.h>
 
 #include <QLoggingCategory>
 #include <QTimer>
@@ -109,6 +110,22 @@ void X11Worker::setMiniEffect(int effect)
         break;
     default:
         break;
+    }
+}
+
+void X11Worker::setWallpaperForMonitor(const QString &screen, const QString &url, bool isDark, PersonalizationExport::WallpaperSetOption option)
+{
+    if (checkWallpaperLockStatus()) {
+        return;
+    }
+
+    if (option == PersonalizationExport::Option_Desktop) {
+        setBackgroundForMonitor(screen, url, isDark);
+    } else if (option == PersonalizationExport::Option_Lock) {
+        setLockBackForMonitor(screen, url, isDark);
+    } else if (option == PersonalizationExport::Option_All) {
+        setBackgroundForMonitor(screen, url, isDark);
+        setLockBackForMonitor(screen, url, isDark);
     }
 }
 

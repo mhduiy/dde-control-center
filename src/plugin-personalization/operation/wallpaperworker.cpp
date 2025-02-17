@@ -20,6 +20,7 @@
 #include <qlogging.h>
 #include <qobjectdefs.h>
 #include <qrandom.h>
+#include <qsize.h>
 #include <qtypes.h>
 #include <qurl.h>
 #include "utils.hpp"
@@ -122,7 +123,9 @@ WallpaperItemPtr WallpaperWorker::createItem(const QString &path, bool del)
         url = QUrl::fromLocalFile(path);
         fileInfo = QFileInfo(path);
     }
-    return WallpaperItemPtr(new WallpaperItem{url.toString(), "", del, fileInfo.lastModified().toMSecsSinceEpoch()});
+    return WallpaperItemPtr(new WallpaperItem{url.toString(), url.toString()
+        , generateThumbnail(fileInfo.filePath(), QSize(THUMBNAIL_ICON_WIDTH, THUMBNAIL_ICON_HEIGHT)), 
+            del, fileInfo.lastModified().toMSecsSinceEpoch()});
 }
 
 InterfaceWorker::InterfaceWorker(PersonalizationDBusProxy *proxy, QObject *parent)
@@ -135,31 +138,6 @@ InterfaceWorker::InterfaceWorker(PersonalizationDBusProxy *proxy, QObject *paren
 void InterfaceWorker::terminate()
 {
     m_running = false;
-}
-
-bool InterfaceWorker::generateThumbnail(const QString &path, const QSize &size, bool &pic, QVariant &val)
-{
-    bool ret = true;
-
-    QImage image(path);
-    if (WallpaperWorker::isColor(path)) {
-        pic = false;
-        if (image.sizeInBytes() > 0)
-            val = QVariant::fromValue(image.pixelColor(0, 0));
-        else
-            ret = false;
-    } else {
-        QPixmap pix = QPixmap::fromImage(image.scaled(size, Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
-        const QRect r(QPoint(0, 0), size);
-
-        if (pix.width() > size.width() || pix.height() > size.height())
-            pix = pix.copy(QRect(pix.rect().center() - r.center(), size));
-
-        pic = true;
-        val = QVariant::fromValue(pix);
-    }
-
-    return ret;
 }
 
 void InterfaceWorker::startListBackground(WallpaperType type)

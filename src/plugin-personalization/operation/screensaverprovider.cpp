@@ -5,8 +5,8 @@
 #include "screensaverprovider.h"
 #include "operation/model/wallpapermodel.h"
 #include "operation/personalizationdbusproxy.h"
-#include <qcontainerfwd.h>
-#include <qlogging.h>
+#include "utils.hpp"
+#include <qsize.h>
 
 #include <QThread>
 #include <QSet>
@@ -18,7 +18,7 @@ ScreensaverWorker::ScreensaverWorker(PersonalizationDBusProxy *proxy, QObject *p
     : QObject(parent)
     , m_proxy(proxy)
 {
-
+    
 }
 
 void ScreensaverWorker::terminate()
@@ -62,43 +62,16 @@ void ScreensaverWorker::list()
 
         QString coverPath = m_proxy->GetScreenSaverCover(name);
         temp->url = name;
-        // temp->color = Qt::black;
         temp->configurable = configurable.contains(name);
         temp->deleteAble = false;
-        temp->thumbnail = coverPath;
-        // temp->selectable = true;
+        temp->picPath = coverPath;
+        temp->thumbnail = generateThumbnail(coverPath, QSize(THUMBNAIL_ICON_WIDTH, THUMBNAIL_ICON_HEIGHT));
 
-        qWarning() << "=============" << items.size() << coverPath;
         imgs.insert(name, coverPath);
     }
 
     emit pushScreensaver(items);
-
-    generateThumbnail(imgs);
     running = false;
-}
-
-void ScreensaverWorker::generateThumbnail(const QMap<QString, QString> &paths)
-{
-    // const qreal ratio = qApp->primaryScreen()->devicePixelRatio();
-    // const int itemWidth = static_cast<int>(LISTVIEW_ICON_WIDTH * ratio);
-    // const int itemHeight = static_cast<int>(LISTVIEW_ICON_HEIGHT * ratio);
-    // for (auto it = paths.begin(); it != paths.end(); ++it){
-    //     const QString realPath = it.value();
-    //     QImage image(realPath);
-    //     QPixmap pix = QPixmap::fromImage(image.scaled(QSize(itemWidth, itemHeight),
-    //                                                   Qt::KeepAspectRatioByExpanding, Qt::SmoothTransformation));
-    //     const QRect r(0, 0, itemWidth, itemHeight);
-    //     const QSize size(itemWidth, itemHeight);
-
-    //     if (pix.width() > itemWidth || pix.height() > itemHeight)
-    //         pix = pix.copy(QRect(pix.rect().center() - r.center(), size));
-
-    //     if (!running)
-    //         return;
-
-    //     emit pushThumbnail(it.key(), pix);
-    // }
 }
 
 void ScreensaverProvider::setScreensaver(const QList<WallpaperItemPtr> &items)
@@ -130,6 +103,19 @@ ScreensaverProvider::ScreensaverProvider(PersonalizationDBusProxy *proxy, Person
     worker = new ScreensaverWorker(proxy);
     worker->moveToThread(workThread);
     workThread->start();
+
+    const static QStringList picScreenSaverModes { "default" };
+    QList<WallpaperItemPtr> items;
+
+    for (const auto picMode : picScreenSaverModes) {
+        auto temp = WallpaperItemPtr(new WallpaperItem);
+        items.append(temp);
+        temp->url = picMode;
+        temp->deleteAble = false;
+        temp->thumbnail = "screensaver";
+    }
+
+    m_model->getPicScreenSaverModel()->resetData(items);
 
     connect(worker, &ScreensaverWorker::pushScreensaver, this, &ScreensaverProvider::setScreensaver, Qt::DirectConnection);
     // connect(worker, &ScreensaverWorker::pushThumbnail, this, &ScreensaverProvider::setThumbnail, Qt::QueuedConnection);

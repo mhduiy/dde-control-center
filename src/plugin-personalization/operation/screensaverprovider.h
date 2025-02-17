@@ -20,7 +20,6 @@ signals:
     void pushThumbnail(const QString &item, const QPixmap &pix);
 public slots:
     void list();
-    void generateThumbnail(const QMap<QString, QString> &paths);
 private:
     PersonalizationDBusProxy *m_proxy = nullptr;
     volatile bool running = false;

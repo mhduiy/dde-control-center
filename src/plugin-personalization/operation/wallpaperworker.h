@@ -28,7 +28,6 @@ class InterfaceWorker : public QObject
 public:
     explicit InterfaceWorker(PersonalizationDBusProxy *proxy, QObject *parent = nullptr);
     void terminate();
-    static bool generateThumbnail(const QString &path, const QSize &size, bool &pic, QVariant &val);
 
     void getSysBackground();
     void getCustomBackground();

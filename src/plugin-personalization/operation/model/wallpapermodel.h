@@ -14,6 +14,7 @@
 
 struct WallpaperItem {
     QString url;
+    QString picPath;
     QString thumbnail;
     bool deleteAble;
     qint64 lastModifiedTime;
@@ -22,6 +23,7 @@ struct WallpaperItem {
 
 enum ItemTypeRole {
     Item_Url_Role = Qt::UserRole + 1,
+    Item_PicPath_Role,
     Item_Thumbnail_Role,
     Item_deleteAble_Role,
     Item_lastModifiedTime_Role,
@@ -49,7 +51,8 @@ public:
         return false;
     }
 
-    Q_INVOKABLE QString getThumbnailByUrl(const QString &url) const;
+    Q_INVOKABLE QString getPicPathByUrl(const QString &url) const;
+    Q_INVOKABLE bool getConfigAbleByUrl(const QString &url) const;
 
 protected:
     bool lessThan(const QModelIndex &source_left, const QModelIndex &source_right) const override

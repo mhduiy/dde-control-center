@@ -1,14 +1,17 @@
 //SPDX-FileCopyrightText: 2018 - 2023 UnionTech Software Technology Co., Ltd.
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
+
 #ifndef PERSIONALIZATIONINTERFACE_H
 #define PERSIONALIZATIONINTERFACE_H
 
 #include <QAbstractItemModel>
 
+#include "operation/wallpaperworker.h"
 #include "personalizationworker.h"
 #include "personalizationmodel.h"
 #include "imagehelper.h"
+#include <qtmetamacros.h>
 
 class ThemeVieweModel : public QAbstractItemModel
 {
