@@ -13,6 +13,7 @@
 #include <QScreen>
 #include <QImageReader>
 #include <QPainter>
+#include <QMap>
 
 ScreensaverWorker::ScreensaverWorker(PersonalizationDBusProxy *proxy, QObject *parent)
     : QObject(parent)
@@ -51,7 +52,7 @@ void ScreensaverWorker::list()
 
     for (const QString &name : saverNameList) {
         // remove
-        if ("flurry" == name)
+        if ("flurry" == name || name.startsWith("deepin"))
             continue;
 
         if (!running)
@@ -77,22 +78,7 @@ void ScreensaverWorker::list()
 void ScreensaverProvider::setScreensaver(const QList<WallpaperItemPtr> &items)
 {
     qDebug() << "get screensaver list" << items.size() << "current thread" << QThread::currentThread() << "main:" << qApp->thread();
-    m_model->getScreenSaverModel()->resetData(items);
-    // screensaverMtx.unlock();
-}
-
-void ScreensaverProvider::setThumbnail(const QString &item, const QPixmap &pix)
-{
-    // auto it = std::find_if(screensavers.begin(), screensavers.end(), [item](const ItemNodePtr &node){
-    //     return node->item == item;
-    // });
-
-    // if (it == screensavers.end())
-    //     return;
-    // (*it)->pixmap = pix;
-
-    // emit imageChanged(item);
-}
+    m_model->getScreenSaverModel()->resetData(items);}
 
 ScreensaverProvider::ScreensaverProvider(PersonalizationDBusProxy *proxy, PersonalizationModel *model, QObject *parent)
     : QObject(parent)
@@ -104,21 +90,23 @@ ScreensaverProvider::ScreensaverProvider(PersonalizationDBusProxy *proxy, Person
     worker->moveToThread(workThread);
     workThread->start();
 
-    const static QStringList picScreenSaverModes { "default" };
+    const static QMap<QString, QMap<QString, QString>> picScreenSaverModesMap {
+        {"default", {{"picPath", "qrc:///icons/slideshow_default_preview.webp"}, {"thumbnail", "qrc:///icons/slideshow_default.dci"}}},
+    };
     QList<WallpaperItemPtr> items;
 
-    for (const auto picMode : picScreenSaverModes) {
+    for (auto it = picScreenSaverModesMap.constBegin(); it != picScreenSaverModesMap.constEnd(); ++it) {
         auto temp = WallpaperItemPtr(new WallpaperItem);
         items.append(temp);
-        temp->url = picMode;
+        temp->picPath = it.value()["picPath"];
+        temp->url = it.key();
         temp->deleteAble = false;
-        temp->thumbnail = "screensaver";
+        temp->thumbnail = it.value()["thumbnail"];
     }
 
     m_model->getPicScreenSaverModel()->resetData(items);
 
     connect(worker, &ScreensaverWorker::pushScreensaver, this, &ScreensaverProvider::setScreensaver, Qt::DirectConnection);
-    // connect(worker, &ScreensaverWorker::pushThumbnail, this, &ScreensaverProvider::setThumbnail, Qt::QueuedConnection);
 }
 
 ScreensaverProvider::~ScreensaverProvider()
@@ -136,75 +124,5 @@ ScreensaverProvider::~ScreensaverProvider()
 
 void ScreensaverProvider::fecthData()
 {
-    // get picture
-    // if (screensaverMtx.tryLock(1)) {
-    qWarning() << "**********";
     QMetaObject::invokeMethod(worker, "list", Qt::QueuedConnection);
-    // } else {
-    //     qWarning() << "screensaver is locked...";
-    // }
-}
-
-int ScreensaverProvider::getCurrentIdle()
-{
-    // return screensaverIfs->linePowerScreenSaverTimeout();
-}
-
-void ScreensaverProvider::setCurrentIdle(int sec)
-{
-    // screensaverIfs->setLinePowerScreenSaverTimeout(sec);
-    // screensaverIfs->setBatteryScreenSaverTimeout(sec);
-}
-
-bool ScreensaverProvider::getIsLock()
-{
-    // return screensaverIfs->lockScreenAtAwake();
-}
-
-void ScreensaverProvider::setIsLock(bool l)
-{
-    // screensaverIfs->setLockScreenAtAwake(l);
-}
-
-QString ScreensaverProvider::current()
-{
-    // return screensaverIfs->currentScreenSaver();
-}
-
-void ScreensaverProvider::setCurrent(const QString &name)
-{
-    // qInfo() << "set current screensaver" << name;
-    // if (name.isEmpty())
-    //     return;
-
-    // screensaverIfs->setCurrentScreenSaver(name);
-}
-
-void ScreensaverProvider::configure(const QString &name)
-{
-    // qInfo() << "configure screensaver" << name;
-    // if (name.isEmpty())
-    //     return;
-
-    // screensaverIfs->StartCustomConfig(name);
-}
-
-void ScreensaverProvider::startPreview(const QString &name)
-{
-    // qDebug() << "preview screensaver" << name;
-    // screensaverIfs->Preview(name, 1);
-}
-
-void ScreensaverProvider::stopPreview()
-{
-    // qDebug() << "stop preview screensaver";
-    // screensaverIfs->Stop();
-}
-
-bool ScreensaverProvider::waitScreensaver(int ms) const
-{
-    // bool ret = screensaverMtx.tryLock(ms);
-    // if (ret)
-    //     screensaverMtx.unlock();
-    // return ret;
 }

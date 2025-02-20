@@ -4,13 +4,9 @@
 #ifndef WALLPAPERMODEL_H
 #define WALLPAPERMODEL_H
 
-#include <qabstractitemmodel.h>
-#include <qsortfilterproxymodel.h>
-#include <qtmetamacros.h>
-#include <qtypes.h>
+#include <QSortFilterProxyModel>
 #include <QAbstractItemModel>
 #include <QPixmap>
-#include <cstddef>
 
 struct WallpaperItem {
     QString url;

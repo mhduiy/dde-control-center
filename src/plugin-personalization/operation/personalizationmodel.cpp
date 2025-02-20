@@ -7,8 +7,7 @@
 #include "model/fontsizemodel.h"
 #include "model/wallpapermodel.h"
 #include "operation/screensaverprovider.h"
-#include <qlogging.h>
-#include <qnamespace.h>
+
 PersonalizationModel::PersonalizationModel(QObject *parent)
     : QObject(parent)
 {
@@ -151,6 +150,14 @@ void PersonalizationModel::setWallpaperMap(const QVariantMap &map)
         return;
     m_wallpaperMap = map;
     Q_EMIT wallpaperMapChanged(map);
+}
+
+void PersonalizationModel::setWallpaperSlideShowMap(const QVariantMap &map)
+{
+    if (m_wallpaperSlideShowMap == map)
+        return;
+    m_wallpaperSlideShowMap = map;
+    Q_EMIT wallpaperSlideShowMapChanged(map);
 }
 
 void PersonalizationModel::setCurrentSelectScreen(const QString &screenName)

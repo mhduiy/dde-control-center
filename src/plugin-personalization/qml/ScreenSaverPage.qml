@@ -18,7 +18,7 @@ DccObject {
         name: "screenSaverTitle"
         weight: 10
         parentName: "personalization/screenSaver"
-        displayName: qsTr("屏幕保护")
+        displayName: qsTr("Screensaver")
     }
     DccObject {
         name: "screenSaverStatusGroup"
@@ -38,15 +38,20 @@ DccObject {
                 implicitWidth: 197
                 implicitHeight: 110
 
-                Image {
+                AnimatedImage {
                     id: image
                     anchors.fill: parent
-                    source: dccData.model.screenSaverModel.getPicPathByUrl(dccData.model.currentScreenSaver)
+                    source: dccData.model.currentScreenSaverPicMode === "" ? dccData.model.screenSaverModel.getPicPathByUrl(dccData.model.currentScreenSaver) : dccData.model.picScreenSaverModel.getPicPathByUrl(dccData.model.currentScreenSaverPicMode)
                     sourceSize: Qt.size(width, height)
+                    playing: true
                     mipmap: true
                     visible: false
                     fillMode: Image.PreserveAspectCrop
                     asynchronous: true
+                    onSourceChanged: {
+                        playing = false
+                        playing = true
+                    }
                 }
 
                 OpacityMask {
@@ -102,12 +107,13 @@ DccObject {
             DccObject {
                 name: "whenTheLidIsClosed"
                 parentName: "personalization/screenSaver/screenSaverStatusGroup/screenSaverSetGroup/screenSaverSetItemGroup"
-                displayName: qsTr("个性化屏保")
+                displayName: qsTr("Personalized screensaver")
                 weight: 10
                 pageType: DccObject.Editor
                 enabled: dccData.model.screenSaverModel.getConfigAbleByUrl(dccData.model.currentScreenSaver)
                 page: D.Button {
-                    text: "设置"
+                    implicitWidth: 80
+                    text: "setting"
                     onClicked: {
                         dccData.worker.requestScreenSaverConfig(dccData.model.currentScreenSaver)
                     }
@@ -116,11 +122,11 @@ DccObject {
             DccObject {
                 name: "whenTheLidIsClosed1"
                 parentName: "personalization/screenSaver/screenSaverStatusGroup/screenSaverSetGroup/screenSaverSetItemGroup"
-                displayName: qsTr("闲置时间")
+                displayName: qsTr("idle time")
                 weight: 100
                 pageType: DccObject.Editor
                 page: CustomComboBox {
-                    width: 100
+                    implicitWidth: 200
                     flat: true
                     textRole: "text"
                     currentIndex: {
@@ -128,13 +134,13 @@ DccObject {
                         return indexByValue(value)
                     }
                     model: ListModel {
-                        ListElement { text: "1分钟"; value: 60 }
-                        ListElement { text: "5分钟"; value: 300 }
-                        ListElement { text: "10分钟"; value: 600 }
-                        ListElement { text: "15分钟"; value: 900 }
-                        ListElement { text: "30分钟"; value: 1800 }
-                        ListElement { text: "1小时"; value: 3600 }
-                        ListElement { text: "从不"; value: 0 }
+                        ListElement { text: qsTr("1 minute"); value: 60 }
+                        ListElement { text: qsTr("5 minute"); value: 300 }
+                        ListElement { text: qsTr("10 minute"); value: 600 }
+                        ListElement { text: qsTr("15 minute"); value: 900 }
+                        ListElement { text: qsTr("30 minute"); value: 1800 }
+                        ListElement { text: qsTr("1 hour"); value: 3600 }
+                        ListElement { text: qsTr("never"); value: 0 }
                     }
                     onCurrentIndexChanged: {
                         dccData.worker.setScreenSaverIdleTime(model.get(currentIndex).value)
@@ -144,7 +150,7 @@ DccObject {
             DccObject {
                 name: "whenTheLidIsClosed2"
                 parentName: "personalization/screenSaver/screenSaverStatusGroup/screenSaverSetGroup/screenSaverSetItemGroup"
-                displayName: qsTr("恢复时需要密码")
+                displayName: qsTr("Password required for recovery")
                 weight: 200
                 pageType: DccObject.Editor
                 page: D.Switch {
@@ -162,7 +168,7 @@ DccObject {
     DccObject {
         name: "screenSaverPicobj"
         parentName: "personalization/screenSaver"
-        displayName: qsTr("图片轮播屏保")
+        displayName: qsTr("Picture slideshow screensaver")
         weight: 400
         backgroundType: DccObject.Normal
         pageType: DccObject.Item
@@ -182,7 +188,7 @@ DccObject {
     DccObject {
         name: "screenSaverListObj"
         parentName: "personalization/screenSaver"
-        displayName: qsTr("系统屏保")
+        displayName: qsTr("System screensaver")
         weight: 500
         backgroundType: DccObject.Normal
         pageType: DccObject.Item

@@ -2,7 +2,6 @@
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 #include "personalizationdbusproxy.h"
-#include <qlogging.h>
 
 #include <DGuiApplicationHelper>
 #include <QMetaObject>
@@ -30,6 +29,10 @@ const QString ScreenSaverServive = QStringLiteral("com.deepin.ScreenSaver");
 const QString ScreenSaverPath = QStringLiteral("/com/deepin/ScreenSaver");
 const QString ScreenSaverInterface = QStringLiteral("com.deepin.ScreenSaver");
 
+const QString WallpaperSlideshowService = QStringLiteral("org.deepin.dde.WallpaperSlideshow");
+const QString WallpaperSlideshowPath = QStringLiteral("/org/deepin/dde/WallpaperSlideshow");
+const QString WallpaperSlideshowInterface = QStringLiteral("org.deepin.dde.WallpaperSlideshow");
+
 const QString PropertiesInterface = QStringLiteral("org.freedesktop.DBus.Properties");
 const QString PropertiesChanged = QStringLiteral("PropertiesChanged");
 
@@ -41,6 +44,7 @@ PersonalizationDBusProxy::PersonalizationDBusProxy(QObject *parent)
     m_AppearanceInter = new QDBusInterface(AppearanceService, AppearancePath, AppearanceInterface, QDBusConnection::sessionBus(), this);
     m_DaemonInter = new QDBusInterface(DaemonService, DaemonPath, DaemonInterface, QDBusConnection::systemBus(), this);
     m_screenSaverInter = new QDBusInterface(ScreenSaverServive, ScreenSaverPath, ScreenSaverInterface, QDBusConnection::sessionBus(), this);
+    m_wallpaperSlideshowInter = new QDBusInterface(WallpaperSlideshowService, WallpaperSlideshowPath, WallpaperSlideshowInterface, QDBusConnection::sessionBus(), this);
     if (!DGuiApplicationHelper::testAttribute(DGuiApplicationHelper::IsWaylandPlatform)) {
         m_WMInter = new QDBusInterface(WMService, WMPath, WMInterface, QDBusConnection::sessionBus(), this);
         m_EffectsInter = new QDBusInterface(EffectsService, EffectsPath, EffectsInterface, QDBusConnection::sessionBus(), this);
@@ -50,6 +54,7 @@ PersonalizationDBusProxy::PersonalizationDBusProxy(QObject *parent)
     
     QDBusConnection::sessionBus().connect(AppearanceService, AppearancePath, PropertiesInterface, PropertiesChanged, this, SLOT(onPropertiesChanged(QDBusMessage)));
     QDBusConnection::sessionBus().connect(ScreenSaverServive, ScreenSaverPath, PropertiesInterface, PropertiesChanged, this, SLOT(onPropertiesChanged(QDBusMessage)));
+    QDBusConnection::sessionBus().connect(WallpaperSlideshowService, WallpaperSlideshowPath, WallpaperSlideshowInterface, PropertiesChanged, this, SLOT(onPropertiesChanged(QDBusMessage)));
 
     connect(m_AppearanceInter, SIGNAL(Changed(const QString &, const QString &)), this, SIGNAL(Changed(const QString &, const QString &)));
     connect(m_AppearanceInter, SIGNAL(Refreshed(const QString &)), this, SIGNAL(Refreshed(const QString &)));
@@ -156,12 +161,22 @@ void PersonalizationDBusProxy::setStandardFont(const QString &value)
 
 QString PersonalizationDBusProxy::wallpaperSlideShow()
 {
-    return qvariant_cast<QString>(m_AppearanceInter->property("WallpaperSlideShow"));
+    return qvariant_cast<QString>(m_wallpaperSlideshowInter->property("WallpaperSlideShow"));
 }
 
-void PersonalizationDBusProxy::setWallpaperSlideShow(const QString &value)
+QString PersonalizationDBusProxy::wallpaperSlideShow(const QString &monitorName)
 {
-    m_AppearanceInter->setProperty("WallpaperSlideShow", QVariant::fromValue(value));
+    return QDBusPendingReply<QString>(m_wallpaperSlideshowInter->asyncCall(QStringLiteral("GetWallpaperSlideShow"), QVariant::fromValue(monitorName)));
+}
+
+void PersonalizationDBusProxy::setWallpaperSlideShow(const QString &monitorName, const QString &slideShow)
+{
+    m_wallpaperSlideshowInter->asyncCall("SetWallpaperSlideShow", QVariant::fromValue(monitorName), QVariant::fromValue(slideShow));
+}
+
+void PersonalizationDBusProxy::setWallpaperSlideShow(const QString &wallpaperSlideShow)
+{
+    m_wallpaperSlideshowInter->setProperty("WallpaperSlideShow", QVariant::fromValue(wallpaperSlideShow));
 }
 
 int PersonalizationDBusProxy::windowRadius()

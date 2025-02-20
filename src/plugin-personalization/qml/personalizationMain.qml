@@ -119,7 +119,7 @@ DccObject {
     DccObject {
         name: "wallpaper"
         parentName: "personalization"
-        displayName: qsTr("壁纸")
+        displayName: qsTr("wallpaper")
         description: qsTr("Personalize your wallpaper and screensaver")
         icon: "wallpaper"
         weight: 300
@@ -128,7 +128,7 @@ DccObject {
     DccObject {
         name: "screenSaver"
         parentName: "personalization"
-        displayName: qsTr("屏幕保护")
+        displayName: qsTr("Screensaver")
         description: qsTr("Personalize your wallpaper and screensaver")
         icon: "screensaver"
         weight: 400

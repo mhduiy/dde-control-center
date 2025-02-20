@@ -23,6 +23,8 @@
     <qresource prefix="/">
         <file>icons/download_more_light.png</file>
         <file>icons/download_more_dark.png</file>
+        <file>icons/slideshow_default_preview.webp</file>
+        <file>icons/slideshow_default.dci</file>
     </qresource>
 
     <qresource prefix="/dsg">

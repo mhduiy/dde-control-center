@@ -9,7 +9,7 @@ import Qt5Compat.GraphicalEffects
 
 import org.deepin.dcc 1.0
 import org.deepin.dtk 1.0 as D
-// import org.deepin.dcc.personalization 1.0
+import org.deepin.dcc.personalization 1.0
 
 DccObject {
     DccTitleObject {
@@ -21,9 +21,11 @@ DccObject {
 
 
     DccObject {
+        name: "screenTab"
         parentName: "personalization/wallpaper"
         weight: 50
         pageType: DccObject.Item
+        visible: dccData.model.screens.length > 1
         page: ScreenTab {
             id: screemTab
             model: dccData.model.screens
@@ -44,9 +46,10 @@ DccObject {
                 ScreenIndicator {}
             }
 
-            function getQtScreen(screen) {
+            function getQtScreen(s) {
+                var screen = dccData.worker.getScreen(s)
                 for (var s of Qt.application.screens) {
-                    if (s.virtualX === screen.x && s.virtualY === screen.y && s.width === screen.currentResolution.width && s.height === screen.currentResolution.height) {
+                    if (screen.name === s.name) {
                         return s
                     }
                 }
@@ -117,13 +120,13 @@ DccObject {
                 displayName: {
                     let cutUrl = dccData.model.wallpaperMap[dccData.model.currentSelectScreen]
                     if (dccData.model.customWallpaperModel.hasWallpaper(cutUrl)) {
-                        return qsTr("我的图片")
+                        return qsTr("My pictures")
                     } else if (dccData.model.sysWallpaperModel.hasWallpaper(cutUrl)) {
-                        return qsTr("系统壁纸")
+                        return qsTr("System Wallpaper")
                     } else if (dccData.model.solidWallpaperModel.hasWallpaper(cutUrl)) {
-                        return qsTr("纯色壁纸")
+                        return qsTr("Solid color wallpaper")
                     } else {
-                        return qsTr("自定义壁纸")
+                        return qsTr("Customizable wallpapers")
                     }
                 }
                 pageType: DccObject.Editor
@@ -132,37 +135,44 @@ DccObject {
             DccObject {
                 name: "whenTheLidIsClosed"
                 parentName: "personalization/wallpaper/wallpaperStatusGroup/wallpaperSetGroup/wallpaperSetItemGroup"
-                displayName: qsTr("填充方式")
+                displayName: qsTr("fill style")
                 visible: false
                 weight: 100
                 pageType: DccObject.Editor
                 page: D.ComboBox {
                     width: 100
                     flat: true
-                    model: ["适应"]
+                    model: ["adapt"]
                 }
             }
             DccObject {
                 name: "whenTheLidIsClosed"
                 parentName: "personalization/wallpaper/wallpaperStatusGroup/wallpaperSetGroup/wallpaperSetItemGroup"
-                displayName: qsTr("自动更换壁纸")
+                displayName: qsTr("Automatic wallpaper change")
                 weight: 200
                 pageType: DccObject.Editor
                 page: CustomComboBox {
-                    width: 100
+                    implicitWidth: 170
                     flat: true
                     textRole: "text"
+                    currentIndex: indexByValue(dccData.model.wallpaperSlideShowMap[dccData.model.currentSelectScreen])
                     model: ListModel {
-                        ListElement { text: "从不"; value: "" }
-                        ListElement { text: "30秒"; value: "30" }
-                        ListElement { text: "1分钟"; value: "60" }
-                        ListElement { text: "5分钟"; value: "300" }
-                        ListElement { text: "10分钟"; value: "600" }
-                        ListElement { text: "15分钟"; value: "900" }
-                        ListElement { text: "30分钟"; value: "1800" }
-                        ListElement { text: "1小时"; value: "3600" }
-                        ListElement { text: "登录时"; value: "login" }
-                        ListElement { text: "唤醒时"; value: "wakeup" }
+                        ListElement { text: qsTr("never"); value: "" }
+                        ListElement { text: qsTr("3 second"); value: "3" }
+                        ListElement { text: qsTr("30 second"); value: "30" }
+                        ListElement { text: qsTr("1 minute"); value: "60" }
+                        ListElement { text: qsTr("5 minute"); value: "300" }
+                        ListElement { text: qsTr("10 minute"); value: "600" }
+                        ListElement { text: qsTr("15 minute"); value: "900" }
+                        ListElement { text: qsTr("30 minute"); value: "1800" }
+                        ListElement { text: qsTr("1 hover"); value: "3600" }
+                        ListElement { text: qsTr("login"); value: "login" }
+                        ListElement { text: qsTr("wake up"); value: "wakeup" }
+                    }
+                    onCurrentIndexChanged: {
+                        if (indexByValue(dccData.model.wallpaperSlideShowMap[dccData.model.currentSelectScreen]) !== currentIndex) {
+                            dccData.worker.setWallpaperSlideShow(dccData.model.currentSelectScreen, model.get(currentIndex).value)
+                        }
                     }
                 }
             }
@@ -172,7 +182,7 @@ DccObject {
     DccObject {
         name: "screenAndSuspendTitle"
         parentName: "personalization/wallpaper"
-        displayName: qsTr("我的图片")
+        displayName: qsTr("My pictures")
         weight: 400
         backgroundType: DccObject.Normal
         pageType: DccObject.Item
@@ -195,9 +205,9 @@ DccObject {
                 id: customWallpaperFileDialog
                 title: "Choose an Image File"
                 nameFilters: ["Image files (*.png *.jpg *.jpeg *.bmp *.gif *.svg)", "All files (*)"]
-                fileMode: FileDialog.OpenFiles
+                fileMode: FileDialog.OpenFile
                 onSelectedFilesChanged: {
-                    dccData.worker.addCutomWallpaper(customWallpaperFileDialog.selectedFiles)
+                    dccData.worker.addCustomWallpaper(customWallpaperFileDialog.selectedFile)
                 }
             }
         }
@@ -223,7 +233,7 @@ DccObject {
         name: "screenAndSuspendTitle"
         parentName: "personalization/wallpaper"
         visible: false
-        displayName: qsTr("动态壁纸")
+        displayName: qsTr("Live Wallpaper")
         weight: 600
         backgroundType: DccObject.Normal
         pageType: DccObject.Item
@@ -235,7 +245,7 @@ DccObject {
     DccObject {
         name: "screenAndSuspendTitle"
         parentName: "personalization/wallpaper"
-        displayName: qsTr("纯色壁纸")
+        displayName: qsTr("Solid color wallpaper")
         weight: 600
         backgroundType: DccObject.Normal
         pageType: DccObject.Item

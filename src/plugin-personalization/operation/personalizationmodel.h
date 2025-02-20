@@ -35,6 +35,7 @@ class PersonalizationModel : public QObject
     Q_PROPERTY(bool lockScreenAtAwake WRITE setLockScreenAtAwake READ getLockScreenAtAwake NOTIFY lockScreenAtAwakeChanged)
     Q_PROPERTY(int screenSaverIdleTime WRITE setScreenSaverIdleTime READ getScreenSaverIdleTime NOTIFY screenSaverIdleTimeChanged)
     Q_PROPERTY(QString currentScreenSaverPicMode WRITE setCurrentScreenSaverPicMode READ getCurrentScreenSaverPicMode NOTIFY currentScreenSaverPicModeChanged)
+    Q_PROPERTY(QVariantMap wallpaperSlideShowMap WRITE setWallpaperSlideShowMap READ getWallpaperSlideShowMap NOTIFY wallpaperSlideShowMapChanged)
 
     Q_PROPERTY(FontSizeModel *fontSizeModel MEMBER m_fontSizeModel CONSTANT)
     Q_PROPERTY(FontModel *standardFontModel MEMBER m_standFontModel CONSTANT)
@@ -103,6 +104,9 @@ public:
     inline QVariantMap getWallpaperMap() const { return m_wallpaperMap; }
     void setWallpaperMap(const QVariantMap &map);
 
+    inline QVariantMap getWallpaperSlideShowMap() const { return m_wallpaperSlideShowMap; }
+    void setWallpaperSlideShowMap(const QVariantMap &map);
+
     inline QString getCurrentSelectScreen() const { return m_currentSelectScreen; }
     void setCurrentSelectScreen(const QString &screen);
 
@@ -143,6 +147,7 @@ Q_SIGNALS:
     void lockScreenAtAwakeChanged(bool value);
     void screenSaverIdleTimeChanged(int value);
     void currentScreenSaverPicModeChanged(const QString &value);
+    void wallpaperSlideShowMapChanged(const QVariantMap &value);
 
 private:
     ThemeModel *m_windowModel;
@@ -179,6 +184,7 @@ private:
     QString m_compactDisplayConfig;
 
     QVariantMap m_wallpaperMap;
+    QVariantMap m_wallpaperSlideShowMap;
     QString m_currentSelectScreen;
     QString m_currentScreenSaver;
     QStringList m_screens;
