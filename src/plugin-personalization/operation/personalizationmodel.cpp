@@ -239,3 +239,39 @@ void PersonalizationModel::setSupportEffects(const QStringList &value)
     m_supportEffects = value;
     Q_EMIT supportEffectsChanged(value);
 }
+
+void PersonalizationModel::setWantToSetWallpaperProgress(double value)
+{
+    if (m_wantToSetWallpaperProgress == value)
+        return;
+
+    m_wantToSetWallpaperProgress = value;
+    Q_EMIT wantToSetWallpaperChanged();
+}
+
+void PersonalizationModel::setWantToSetWallpaperStatus(WallpaperInstallStatus status)
+{
+    if (m_wantToSetWallpaperStatus == status)
+        return;
+
+    m_wantToSetWallpaperStatus = status;
+    Q_EMIT wantToSetWallpaperChanged();
+}
+
+void PersonalizationModel::setWantToSetWallpaperThumbnail(const QString value)
+{
+    if (m_wantToSetWallpaperThumbnail == value)
+        return;
+
+    m_wantToSetWallpaperThumbnail = value;
+    Q_EMIT wantToSetWallpaperChanged();
+}
+
+void PersonalizationModel::setWantToSetWallpaper(bool value)
+{
+    if (m_wantToSetWallpaper == value)
+        return;
+
+    m_wantToSetWallpaper = value;
+    Q_EMIT wantToSetWallpaperChanged();
+}
