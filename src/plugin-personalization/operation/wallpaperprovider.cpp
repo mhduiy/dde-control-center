@@ -554,6 +554,7 @@ void InterfaceWorker::generateVideoThumbnail(const QString &videoPath, const QSt
         if (!guard->m_running.load(std::memory_order_acquire))
             return;
 
+        // FIXME(mhduiy): Try not to introduce other dependencies as much as possible
         QProcess ffmpeg;
         ffmpeg.setProgram("/usr/bin/ffmpeg");
         ffmpeg.setArguments({"-i", videoPath, "-ss", "00:00:01", "-vframes", "1",

@@ -259,13 +259,15 @@ void PersonalizationInterface::handleCmdParam(PersonalizationExport::ModuleType 
         if (url.isEmpty()) {
             return;
         }
+
+        PersonalizationExport::WallpaperSetType setType = detectMediaType(url);
         if (type == "lock") {
-            m_work->setLockBackForMonitor(monitor, url, true);
+            m_work->setLockBackForMonitor(monitor, url, true, setType);
         } else if (type == "desktop") {
-            m_work->setBackgroundForMonitor(monitor, url, true);
+            m_work->setBackgroundForMonitor(monitor, url, true, setType);
         } else if (type.isEmpty()) {
-            m_work->setLockBackForMonitor(monitor, url, true);
-            m_work->setBackgroundForMonitor(monitor, url, true);
+            m_work->setLockBackForMonitor(monitor, url, true, setType);
+            m_work->setBackgroundForMonitor(monitor, url, true, setType);
         }
     }
 }

@@ -1,4 +1,4 @@
-//SPDX-FileCopyrightText: 2024 UnionTech Software Technology Co., Ltd.
+//SPDX-FileCopyrightText: 2024 - 2026 UnionTech Software Technology Co., Ltd.
 //
 //SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,6 +10,10 @@
 #include <QBuffer>
 #include <QImage>
 #include <QPixmap>
+#include <QMimeDatabase>
+#include <QMimeType>
+
+#include "personalizationexport.hpp"
 
 const int RENDER_DPI = 72;
 const double DPI = 96;
@@ -81,6 +85,26 @@ inline static QString currentUserName()
 {
     static QString cutName = qgetenv("USER");
     return cutName;
+}
+
+// Do not frequently call this function
+inline static PersonalizationExport::WallpaperSetType detectMediaType(const QString &src)
+{   
+    QMimeDatabase db;
+    QMimeType mime;
+    if (isURI(src)) {
+        mime = db.mimeTypeForFile(QUrl(src).toLocalFile(), QMimeDatabase::MatchContent);
+    } else {
+        mime = db.mimeTypeForFile(src, QMimeDatabase::MatchContent);
+    }
+    
+    if (mime.name().startsWith("image/")) {
+        return PersonalizationExport::WallpaperSetType::Type_Image;
+    } else if (mime.name().startsWith("video/")) {
+        return PersonalizationExport::WallpaperSetType::Type_Video;
+    } else {
+        return PersonalizationExport::WallpaperSetType::Type_Image;
+    }
 }
 
 #endif // UTILS_H
