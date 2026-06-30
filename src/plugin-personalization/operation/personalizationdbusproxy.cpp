@@ -7,6 +7,8 @@
 #include <QMetaObject>
 #include <QDBusConnection>
 #include <QDBusPendingReply>
+#include <QDBusUnixFileDescriptor>
+#include <QFile>
 
 DCORE_USE_NAMESPACE
 
@@ -278,9 +280,19 @@ void PersonalizationDBusProxy::deleteCustomWallpaper(const QString &userName, co
     m_DaemonInter->asyncCall(QStringLiteral("DeleteCustomWallPaper"), QVariant::fromValue(userName), QVariant::fromValue(url));
 }
 
-QString PersonalizationDBusProxy::saveCustomWallpaper(const QString &userName, const QString &url)
+QString PersonalizationDBusProxy::saveCustomWallpaper(const QString &userName, const QString &url, bool isSolid)
 {
-    return QDBusPendingReply<QString>(m_DaemonInter->asyncCall(QStringLiteral("SaveCustomWallPaper"), QVariant::fromValue(userName), QVariant::fromValue(url)));
+    QFile wallpaper(url);
+    if (!wallpaper.open(QIODevice::ReadOnly)) {
+        return "";
+    }
+
+    QDBusUnixFileDescriptor fd(wallpaper.handle());
+    if (!fd.isValid()) {
+        return "";
+    }
+
+    return QDBusPendingReply<QString>(m_DaemonInter->asyncCall(QStringLiteral("SaveCustomWallPaper"), QVariant::fromValue(userName), QVariant::fromValue(fd), QVariant::fromValue(url), QVariant::fromValue(isSolid)));
 }
 
 QStringList PersonalizationDBusProxy::getCustomWallpaper(const QString &userName)
